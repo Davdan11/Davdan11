@@ -18,11 +18,12 @@ RACINE = os.path.dirname(ICI)
 sys.path.insert(0, os.path.join(RACINE, "cad"))
 from params import (BATTERIE, CG_X, COMPAGNON_X, CORDE, DERIVE_BA_X,  # noqa: E402
                     DERIVE_CORDE_PIED, ENVERGURE, HELICE_VTOL, NACELLE_X, PLATEAU_X,
-                    POUTRE_DEBUT, POUTRE_LONG, SECTIONS_FUS, STAB_BA_X, VERSION)
+                    POUTRE_DEBUT, POUTRE_LONG, PROFONDEUR_X, SECTIONS_FUS, STAB_BA_X,
+                    STAB_CORDE, VERSION)
 
 G, RHO = 9.81, 1.225
 
-X_SERVO_PROF = DERIVE_BA_X + DERIVE_CORDE_PIED - 22
+X_SERVO_PROF = STAB_BA_X + PROFONDEUR_X * STAB_CORDE - 21  # baie du servo de profondeur, devant la charnière
 X_POUSSEUR = SECTIONS_FUS[-1][0]
 
 # Hypothèses communes

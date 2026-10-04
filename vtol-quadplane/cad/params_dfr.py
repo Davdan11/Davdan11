@@ -37,6 +37,7 @@ GOUPILLE_D = 6.0          # jonc 6 mm, 300 mm : bloque l'incidence
 GOUPILLE_X = 0.65
 GOUPILLE_FIN = 150.0
 JEU_TUBE = 0.3            # jeu diamétral dans les fourreaux imprimés
+CONDUIT = (0.47, 4.5)     # conduit de câbles dans l'aile (fraction de corde, rayon) : continu jusqu'au fuselage
 FOURREAU = 1.2            # épaisseur des fourreaux autour des tubes
 
 # Ailerons
@@ -74,17 +75,18 @@ SECTIONS_FUS = [
     (225.0, 110.0, 118.0, -29.0),     # pleine section sur toute la corde d'emplanture
     (290.0, 94.0, 96.0, -21.0),
     (340.0, 62.0, 60.0, -9.0),
-    (360.0, 52.0, 50.0, -5.0),
+    (350.0, 54.0, 52.0, -5.0),
+    (360.0, 54.0, 52.0, -5.0),      # bout droit : la cloison moteur s'y glisse par l'arrière
 ]
 SUPER_ELLIPSE_N = 3.0
 # nez (amovible) | avant | milieu | queue ; chaque tronçon fait au plus 250 mm
-COUPES_FUS = [-285.0, -205.0, 35.0, 255.0, 360.0]
+COUPES_FUS = [-285.0, -205.0, 28.0, 255.0, 360.0]
 NOMS_TRONCONS_FUS = ["nez", "avant", "milieu", "queue"]
 PLATEAU_X = (-192.0, 45.0)      # plateau de batterie
 PLATEAU_Z = -72.0               # dessus du fond du fuselage, sur 2 plots
 PLATEAU_LARG = 80.0
 # plateau compagnon : contrôleur de vol (TBS Lucid H7 Wing, 30,5 mm M3) + Raspberry Pi 5
-COMPAGNON_X = (100.0, 228.0)
+COMPAGNON_X = (95.0, 240.0)
 COMPAGNON_Z = -62.0
 COMPAGNON_LARG = 70.0
 FC_TROUS = (30.5, 30.5)         # entraxe des trous du contrôleur de vol (x, y)
@@ -115,7 +117,7 @@ STAB_Z = -8.0            # au-dessus des poutres, dans le souffle du propulseur
 STAB_DEMI_ENV = POUTRE_Y - (POUTRE_D / 2 + 7)   # entre les deux blocs de queue
 STAB_N_SEG = 3
 PROFONDEUR_X = 0.70
-PROFONDEUR_JONC = (0.74, 2.0)     # jonc carbone dans la profondeur (fraction de corde, Ø)
+PROFONDEUR_JONC = (0.77, 2.0)     # jonc carbone dans la profondeur (fraction de corde, Ø)
 STAB_LONGERON_D = 6.0     # tube 6x4 mm, 700 mm
 STAB_LONGERON_X = 0.25
 STAB_JONC_D = 3.0         # jonc 3 mm, 700 mm

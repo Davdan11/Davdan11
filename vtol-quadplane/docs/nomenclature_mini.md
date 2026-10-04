@@ -48,9 +48,22 @@ Boutique : [carbonfibertubes.net](https://carbonfibertubes.net). La livraison ve
 
 Environ 1 bobine de [PLA Aero](https://ca.store.bambulab.com/products/pla-aero), ¼ de bobine de [PETG HF](https://ca.store.bambulab.com/products/petg-hf) et 100 g de [TPU 95A HF](https://ca.store.bambulab.com/products/tpu-95a-hf).
 
-## Petite quincaillerie (≈ 40 à 60 $)
+## Quincaillerie et câblage (≈ 60 à 80 $, liste complète vérifiée pièce par pièce)
 
-4 inserts laiton M3 (Ø4 × 5,7) et 4 vis M3 × 10 nylon pour le contrôleur de vol, vis M2 × 6 autotaraudeuses (6 : trappes de servo d'aileron et trappe d'accès ; les vis fournies avec les servos servent pour la profondeur), prises XT60, câble silicone 14 et 20 AWG, 5 condensateurs 220–470 µF 35 V (un par ESC), supports moteurs : 8 vis M3 × 16 + 8 écrous (colliers), 16 vis M3 × 8 (platines), 20 vis M3 × 6 (5 moteurs), guignols et tringles, ruban de charnière, colle CA, velcro et sangle de batterie.
+| Où | Quoi | Qté |
+|---|---|---:|
+| Supports moteurs VTOL | Vis M3 × 16 + écrous M3 (colliers) ; vis M3 × 8 (vis de coin) | 8 + 8 ; 16 |
+| Moteurs (5) | Vis M3 × 6 (moteur → platine ou cloison ; vérifier la profondeur filetée) | 20 |
+| Cloison du propulseur | Vis M2 × 6 autotaraudeuses, radiales | 3 |
+| Ailes | Vis nylon M3 × 30 + écrou nylon (retenue sur le longeron) | 2 + 2 |
+| Servos d'aileron / trappe d'accès | Vis M2 × 6 autotaraudeuses | 4 + 2 |
+| Servo de profondeur | Vis fournies avec le servo | 2 |
+| Contrôleur de vol | Inserts laiton M3 (Ø4 × 5,7) + vis M3 × 10 nylon | 4 + 4 |
+| Gouvernes | Tringles acier 1,5 mm + chapes + bagues de serrage ; ruban de charnière | 3 |
+| Rallonges | **Rallonges de servo 30 cm** (2 ailerons, 1 profondeur) et **40 cm** (signal des 4 ESC VTOL) | 3 + 4 |
+| Puissance | Câble silicone **18 AWG rouge et noir, 3 m de chaque** (batterie → ESC VTOL), 5 condensateurs 220–470 µF 35 V (un par ESC), prises XT60, gaine thermo | — |
+| Batterie | 2 sangles de 20 mm, velcro adhésif | — |
+| Divers | Colle CA + activateur, époxy, mousse adhésive 3 mm (GPS), colliers de serrage | — |
 
 ## Si tu ne les as pas déjà
 
@@ -71,8 +84,8 @@ Environ 1 bobine de [PLA Aero](https://ca.store.bambulab.com/products/pla-aero),
 | Servos (3) | 30 |
 | Batterie | 58 |
 | Carbone | ≈ 95 |
-| Filament et quincaillerie | ≈ 110 |
-| **Total de l'avion** | **≈ 670 $** avant taxes et livraison |
+| Filament, quincaillerie et câblage | ≈ 130 |
+| **Total de l'avion** | **≈ 690 $** avant taxes et livraison |
 | Radiocommande + chargeur, si tu ne les as pas | + 185 $ |
 
 Tout ce matériel resservira : la radiocommande, le chargeur et le savoir-faire passent au grand Huard DFR.

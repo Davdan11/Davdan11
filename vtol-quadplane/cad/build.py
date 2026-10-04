@@ -47,6 +47,8 @@ def vers_trimesh(wp, tol=0.05):
 def orienter(wp, mode, gauche=False):
     if mode == "Y":  # emplanture (côté fuselage) sur le plateau
         wp = wp.rotate((0, 0, 0), (1, 0, 0), -90 if gauche else 90)
+    elif mode == "Yinv":  # face extérieure sur le plateau (emplanture courbe en haut)
+        wp = wp.rotate((0, 0, 0), (1, 0, 0), 90 if gauche else -90)
     elif mode == "X":
         wp = wp.rotate((0, 0, 0), (0, 1, 0), -90)
     elif mode == "Xinv":

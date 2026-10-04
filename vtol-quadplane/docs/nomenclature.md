@@ -75,19 +75,30 @@ Les pages Amazon.ca n'ont pas pu être ouvertes (CAPTCHA) : liens trouvés en re
 | 1 | **PETG HF** | [ca.store.bambulab.com](https://ca.store.bambulab.com/products/petg-hf) | Supports moteurs, pylônes, cloison, selle, plateaux |
 | 1 | **TPU 95A HF** | [ca.store.bambulab.com](https://ca.store.bambulab.com/products/tpu-95a-hf) | Pattes d'atterrissage (pas compatible AMS : charger à la main) |
 
-## 8. Petite quincaillerie
+## 8. Quincaillerie et câblage (liste complète, vérifiée pièce par pièce)
 
-- Contrôleur de vol : 4 inserts laiton M3 (Ø4 × 5,7) + 4 vis M3 × 10 en nylon ; Raspberry Pi : 4 inserts laiton M2.5 + 4 vis M2.5 × 6
-- Vis M2 × 6 autotaraudeuses : 6 (trappes de servo d'aileron et trappe d'accès) (les vis fournies avec les servos servent pour la profondeur)
-
-- Supports moteurs : 8 vis M3 × 16 + 8 écrous M3 (colliers), 16 vis M3 × 8 (vis de coin des platines), 16 vis M3 pour les moteurs (longueur selon la profondeur filetée du moteur, souvent × 6 ou × 8)
-- Vis M3 : 2 × 35 mm pour la selle de nacelle, 4 × 8 mm pour le contrôleur de vol
-- Vis M2.5 : 4 × 8 mm (Raspberry Pi, A8 mini) ; vis M3 × 8 mm pour la ZT6
-- 3 guignols, 3 tringles de 1,5 mm avec chapes
-- Ruban de charnière (Blenderm ou équivalent)
-- Colle CA moyenne + activateur, époxy 30 min
-- Velcro, 2 sangles de batterie de 20 mm
-- Prises XT60, câble silicone 12 AWG et 20 AWG, gaine thermo
+| Où | Quoi | Qté |
+|---|---|---:|
+| Supports moteurs VTOL | Vis M3 × 16 + écrous M3 (serrage des colliers) | 8 + 8 |
+| | Vis M3 × 8 (vis de coin platine → bride, passées par-dessous) | 16 |
+| | Vis M3 pour les moteurs (4 mm de platine + profondeur filetée du moteur − 0,5 mm ; souvent × 6 ou × 8) | 16 |
+| Moteur propulsif | Vis M3 (souvent fournies) pour le fixer sur la cloison | 4 |
+| | Vis M2 × 6 autotaraudeuses (cloison → fuselage, radiales) | 3 |
+| Ailes | Vis nylon M3 × 40 + écrou nylon (retenue de chaque aile sur le longeron) | 2 + 2 |
+| Servos d'aileron | Vis M2 × 6 autotaraudeuses (trappes) | 4 |
+| Servo de profondeur | Vis fournies avec le servo (oreilles) | 2 |
+| Trappe d'accès | Vis M2 × 6 autotaraudeuses | 2 |
+| Contrôleur de vol | Inserts laiton M3 (Ø4 × 5,7) + vis M3 × 10 en nylon | 4 + 4 |
+| Raspberry Pi | Inserts laiton M2.5 + vis M2.5 × 6 | 4 + 4 |
+| Nacelle | Vis M3 × 35 tête plate (selle → plateau) ; vis M2.5 × 8 (A8 mini) ou M3 × 8 (ZT6) | 2 ; 4 |
+| Gouvernes | Tringles acier 1,5 mm + chapes réglables + bagues de serrage (2 ailerons, 1 profondeur) | 3 |
+| | Ruban de charnière (Blenderm ou équivalent) | 1 rouleau |
+| Rallonges | **Rallonges de servo 50 cm** (2 servos d'aileron) | 2 |
+| | **Rallonges de servo 80 cm** (servo de profondeur, et signal des 4 ESC VTOL qui passent par la poutre et l'aile) | 5 |
+| Puissance | Câble silicone **14 AWG rouge et noir, 4 m de chaque** (batterie → 4 ESC VTOL par les poutres et les ailes) | 2 × 4 m |
+| | Câble silicone 16 AWG rouge et noir, 1 m (ESC du propulseur) ; prises XT60, gaine thermo | — |
+| Batterie | 2 sangles de 20 mm, velcro adhésif | — |
+| Divers | Colle CA moyenne + activateur, époxy 30 min, mousse adhésive 3 mm (GPS), colliers de serrage | — |
 
 ## Ce qu'il te faut peut-être déjà
 

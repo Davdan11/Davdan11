@@ -35,6 +35,7 @@ GOUPILLE_D = 4.0          # jonc 4 mm, 200 mm
 GOUPILLE_X = 0.65
 GOUPILLE_FIN = 100.0
 JEU_TUBE = 0.3
+CONDUIT = (0.47, 3.5)   # conduit de câbles dans l'aile (fraction de corde, rayon) : continu jusqu'au fuselage
 FOURREAU = 1.2
 
 # Ailerons
@@ -70,8 +71,9 @@ SECTIONS_FUS = [
     (-195.0, 80.0, 86.0, -21.0),
     (165.0, 80.0, 86.0, -21.0),      # pleine section sur toute la corde d'emplanture
     (215.0, 66.0, 68.0, -15.0),
-    (250.0, 44.0, 42.0, -7.0),
-    (265.0, 38.0, 36.0, -4.0),
+    (250.0, 50.0, 48.0, -6.0),
+    (257.0, 48.0, 46.0, -4.0),
+    (265.0, 48.0, 46.0, -4.0),      # bout droit : la cloison moteur s'y glisse par l'arrière
 ]
 SUPER_ELLIPSE_N = 3.0
 # nez allongé : la batterie doit être loin devant pour équilibrer poutres et empennage
@@ -110,7 +112,7 @@ STAB_Z = POUTRE_Z + 17.0
 STAB_DEMI_ENV = POUTRE_Y - (POUTRE_D / 2 + 7)
 STAB_N_SEG = 2
 PROFONDEUR_X = 0.70
-PROFONDEUR_JONC = (0.73, 1.5)
+PROFONDEUR_JONC = (0.77, 1.5)
 STAB_LONGERON_D = 5.0     # tube 5x3 mm
 STAB_LONGERON_X = 0.25
 STAB_JONC_D = 2.0

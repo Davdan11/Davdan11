@@ -25,7 +25,7 @@ Les pièces imprimées sont conçues pour une **Bambu Lab A1** (plateau 256 mm) 
 | Temps pour arriver | 3 min | 7 min | 10 min | 13 min |
 | Temps sur place | ≈ 68 min | ≈ 52 min | ≈ 35 min | ≈ 19 min |
 
-Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](docs/bilan.md). La **liste d'achats avec les modèles exacts et les liens** est dans [docs/nomenclature.md](docs/nomenclature.md) : le CAD est percé pour ces modèles.
+Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](docs/bilan.md). La **vérification d'intégration** (l'avion monté en 3D avec toutes les pièces achetées : collisions, débattements, hélices, garde au sol, chemins de câbles et de tubes) est dans [docs/verification.md](docs/verification.md) et [docs/verification_mini.md](docs/verification_mini.md). La **liste d'achats avec les modèles exacts et les liens** est dans [docs/nomenclature.md](docs/nomenclature.md) : le CAD est percé pour ces modèles.
 
 ## Deux versions : commencer petit
 
@@ -54,6 +54,7 @@ cad/params_dfr.py       toutes les cotes du DFR (changer une valeur et régéné
 cad/params_mini.py      toutes les cotes du Mini
 cad/pieces.py           géométrie de chaque pièce (CadQuery)
 cad/build.py            génère STL, STEP, masses, centre de gravité et rendus
+cad/verification.py     monte l'avion complet en 3D et vérifie que tout rentre et que tout bouge
 cad/out/stl/            pièces prêtes à trancher, déjà orientées pour l'impression
 cad/out/step/           pièces dans le repère avion, pour modifier dans Fusion ou Onshape
 cad/out/assemblage.glb  avion complet en 3D
@@ -118,25 +119,26 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
 ## Assemblage, dans l'ordre
 
 1. **Aile** : coller les segments de chaque côté à la CA en les enfilant sur le longeron pour l'alignement. Coller le saumon.
-   - **Ailerons** : enfiler les deux morceaux d'aileron sur le jonc carbone de 2 mm, glisser le **guignol PETG** par-dessous dans sa fente (le jonc passe dans son trou), puis coller le tout à la CA. Poser l'aileron avec une charnière en ruban sur l'extrados.
+   - **Ailerons** : enfiler les deux morceaux d'aileron sur le jonc carbone de 2 mm, glisser le **guignol PETG** par-dessous dans sa fente (le jonc passe dans son trou), puis coller le tout à la CA. Poser l'aileron avec une **charnière en ruban sur le dessus** (extrados), en laissant le V ouvert dessous : c'est ce V qui permet à l'aileron de monter de plus de 25°.
    - **Servo d'aileron** (coupe : [DFR](docs/images/coupe_servo_aileron_dfr.png), [Mini](docs/images/coupe_servo_aileron_mini.png)) :
      1. Coller le **cadre de servo** à l'époxy dans la baie ouverte sous l'aile, contre la peau du dessus. Il ne bouge plus.
      2. Centrer le servo (palonnier enlevé) avec la radio, puis l'emboîter dans le cadre, couché, axe vers le saumon : ses **oreilles s'engagent dans les encoches** du cadre, ce qui l'empêche de glisser. Pas de colle sur le servo.
-     3. Passer le fil par le trou côté emplanture : il suit les alvéoles de l'aile jusqu'au fuselage.
+     3. Brancher une **rallonge de servo** (50 cm DFR, 30 cm Mini) et la passer dans le **conduit de câbles** : un tunnel continu dans l'aile, du servo jusqu'au trou du flanc du fuselage. Le plus simple est d'enfiler un fil de fer avant de coller les segments, puis de tirer les câbles avec.
      4. Visser la **trappe** par-dessous avec **2 vis M2 × 6** (autotaraudeuses, dans les avant-trous du cadre). Elle tient le servo prisonnier.
      5. Remettre le palonnier à travers la fente de la trappe, et relier son trou à celui du bas du guignol par une tringle de 1,5 mm (Z d'un côté, chape de l'autre pour régler).
      Pour changer un servo : 2 vis, la trappe s'enlève, le servo sort.
-2. **Longerons** : le longeron extérieur (DFR : tube 8 mm × 500 mm ; Mini : 6 mm × 310 mm) est collé à l'époxy dans les segments extérieurs. Le longeron principal (12 mm ; Mini 10 mm) et la goupille (6 mm ; Mini 4 mm) traversent le fuselage et restent démontables.
-3. **Pylônes** : les coller à l'époxy sous l'aile, centrés à **360 mm** de l'axe du fuselage (Mini : **210 mm**), sous le segment qui porte le trou de câble. Le trou de câble du pylône doit tomber sur celui de l'aile. Percer la poutre au même endroit (Ø 8 mm) pour passer les fils.
+2. **Longerons et fixation des ailes** : le longeron extérieur (DFR : tube 8 mm × 500 mm ; Mini : 6 mm × 310 mm) est collé à l'époxy dans les segments extérieurs. Le longeron principal (12 mm ; Mini 10 mm) et la goupille (6 mm ; Mini 4 mm) traversent le fuselage et restent démontables. L'emplanture de l'aile épouse le flanc du fuselage. Pour **retenir chaque aile**, une **vis nylon M3** traverse l'aile de haut en bas, près de l'emplanture, et le longeron : au premier montage, percer le longeron à Ø3,2 mm à travers le trou de l'aile, aile en place. Pour démonter : 1 vis par aile.
+3. **Pylônes** : les coller à l'époxy sous l'aile, centrés à **360 mm** de l'axe du fuselage (Mini : **210 mm**), sous le segment qui porte le trou de câble. Le trou de câble du pylône doit tomber sur celui de l'aile, qui débouche dans le conduit. Percer la poutre au même endroit (Ø 8 mm) : les fils des moteurs, des ESC et du servo de profondeur passent dans la poutre, remontent par le pylône et filent dans le conduit de l'aile jusqu'au fuselage.
 4. **Poutres et moteurs VTOL** (vue éclatée : [DFR](docs/images/support_moteur_dfr.png), [Mini](docs/images/support_moteur_mini.png)) :
    1. **Moteur sur sa platine, à l'établi** : poser la platine sous le moteur et visser les 4 vis M3 du moteur par-dessous. Longueur = 4 mm de platine + la profondeur filetée du moteur − 0,5 mm (en général M3 × 6 ou × 8). Une vis trop longue touche le bobinage et le détruit. Les têtes de ces vis se logeront dans les creux de la bride.
    2. **Enfiler sur la poutre**, dans l'ordre : patte avant, support moteur avant, pylône, patte arrière, support moteur arrière. Coller ensuite le bloc de queue au bout.
    3. **Placer les supports** : axe du moteur avant à **22 mm** du bout avant du tube et axe du moteur arrière à **752 mm** (DFR) ; **18 mm** et **468 mm** (Mini). Mettre la bride bien à l'horizontale, puis serrer le collier avec ses **2 vis M3 × 16** (écrous logés dans les hexagones). Une goutte de CA entre collier et tube empêche la rotation sous le couple du moteur.
    4. **Poser le moteur** : la platine se pose sur la bride et se fixe par **4 vis de coin M3 × 8 passées par-dessous**, à côté du collier. Elles s'atteignent au tournevis même sur la poutre : pour changer un moteur, 4 vis, sans toucher au réglage du collier.
-   5. **ESC** : collés ou attachés (collier de serrage + gaine thermo) sur la poutre, près du moteur, à l'air. Les fils de puissance passent dans la poutre jusqu'au pylône.
+   5. **ESC** : collés ou attachés (collier de serrage + gaine thermo) sur le flanc intérieur de la poutre, entre la patte et le pylône (ou le support arrière), à l'air. Leurs fils de puissance (14 AWG DFR, 18 AWG Mini) et leur fil de signal (rallonge de servo) passent dans la poutre jusqu'au pylône.
    6. **Pattes TPU** : enfilées serrées sur la poutre. Une goutte de CA si elles tournent.
-5. **Empennage** : coller les 3 segments de stab sur le tube de 6 mm et le jonc de 3 mm, puis les insérer dans les deux blocs de queue. Enfiler les profondeurs sur leur jonc carbone, glisser le **guignol de profondeur** par le dessus dans sa fente (côté droit, près du bloc de queue), coller, et poser avec une charnière en ruban. Le servo de profondeur s'enfonce dans la baie du bloc droit par la face intérieure, jusqu'à ce que ses oreilles touchent la face du bloc : on les **visse avec les 2 vis fournies avec le servo**, dans les avant-trous déjà percés. Son fil descend dans la poutre par le trou au fond de la baie.
-6. **Fuselage** : coller la cloison moteur en PETG à l'époxy au bout de la queue. Glisser le plateau électronique dans l'avant et le plateau compagnon dans le milieu, puis coller avant, milieu et queue (lèvres d'emboîtement). Le nez reste amovible, tenu par du ruban ou deux aimants. Le tube de Pitot sort par la pointe du nez.
+5. **Empennage** : coller les 3 segments de stab sur le tube de 6 mm et le jonc de 3 mm, puis les insérer dans les deux blocs de queue. Enfiler les profondeurs sur leur jonc carbone, glisser le **guignol de profondeur** par le dessus dans sa fente (côté droit, près du bloc de queue), coller, et poser avec une **charnière en ruban sur le dessus** (V ouvert dessous). Le servo de profondeur s'enfonce dans la baie du bloc droit par la face intérieure, jusqu'à ce que ses oreilles touchent la face du bloc : on les **visse avec les 2 vis fournies avec le servo**, dans les avant-trous déjà percés. Son palonnier, vers le haut, est juste devant la charnière, au-dessus du stab : une tringle courte le relie au guignol. Son fil (rallonge 80 cm DFR, 30 cm Mini) descend dans la poutre par le trou au fond de la baie.
+6. **Fuselage** : glisser le plateau électronique dans l'avant et le plateau compagnon dans le milieu, puis coller avant, milieu et queue (lèvres d'emboîtement). Le nez reste amovible, tenu par du ruban ou deux aimants. Le tube de Pitot sort par la pointe du nez.
+   - **Moteur propulsif** : le boulonner sur la **cloison** à l'établi (vis par l'avant de la cloison). Glisser la cloison par l'arrière dans le bout du fuselage jusqu'à l'**anneau d'appui**, et la fixer par **3 vis M2 × 6 radiales** à travers la peau. La poussée appuie la cloison contre l'anneau ; les vis la retiennent. Pour changer le moteur : 3 vis. L'ESC du propulseur se colle à plat sur le fond, juste derrière le plateau compagnon.
 7. **Batterie** (coupe de côté : [DFR](docs/images/batterie_dfr.png), [Mini](docs/images/batterie_mini.png)) :
    1. **Avant de coller le plateau** : passer 2 sangles de batterie de 20 mm dans les fentes avant du plateau. Coller une bande de velcro adhésif (côté crochets) sur le plateau, et l'autre côté sous la batterie.
    2. **Mettre la batterie** : nez enlevé, glisser la batterie sur le plateau et la **pousser jusqu'à la butée arrière**. La butée est placée pour que le centre de gravité tombe juste ; c'est la seule chose qui change le centrage d'un vol à l'autre. Les fils de la batterie passent par l'encoche au milieu de la butée.
@@ -148,7 +150,8 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
    2. **Plateau compagnon** : le glisser dans le tronçon milieu avant d'assembler le fuselage, puis le coller à l'époxy contre les flancs.
    3. **Contrôleur** : le poser avec les **œillets caoutchouc fournis** (ils filtrent les vibrations), la **flèche de la carte dans le sens de la flèche gravée** sur le plateau, vers le nez. Le fixer avec 4 vis M3 × 10 en nylon dans les inserts, serrées à la main : il faut écraser les œillets à peine.
    4. **Trappe d'accès** sur le dessus du fuselage, au-dessus du contrôleur : elle repose sur une feuillure et tient par **2 vis M2 × 6**. Au premier montage, percer les avant-trous Ø1,6 mm dans les bossages en se servant des trous de la trappe comme gabarit. Par la trappe, on branche le câble USB pour la configuration, on change la carte SD et on vérifie le câblage sans rien démonter.
-   5. **GPS** collé à plat sous la trappe ou sur le dessus du tronçon queue, loin des câbles de puissance, avec assez de fil pour ouvrir la trappe. Raspberry Pi, modem et antennes LTE (DFR) sur le même plateau ou contre les flancs. Les ESC VTOL sont fixés sur les poutres (voir l'étape 4).
+   5. **GPS** collé à plat sous la trappe avec de la mousse adhésive de 3 mm, flèche vers le nez, avec assez de fil pour ouvrir la trappe.
+   6. **DFR** : Raspberry Pi sur ses entretoises (inserts M2.5) à l'arrière du plateau compagnon ; modem 4G collé debout contre le flanc gauche à côté du Pi ; antennes LTE souples collées à l'intérieur de la peau ; capteur de vitesse collé au plafond de l'avant, au-dessus de la batterie, relié au Pitot du nez par son tube silicone.
 
 ### Moteurs et sens de rotation (ordre ArduPilot Quad X)
 

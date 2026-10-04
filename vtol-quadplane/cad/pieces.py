@@ -97,18 +97,25 @@ def extrude_xz(geom, y0, y1):
 
 
 def section_coque(code, corde, xmin=0.0, xmax=1.0, tubes=(), ames=0, peau=PEAU,
-                  ame=AME, ame_tube=0.8):
+                  ame=AME, ame_tube=0.8, clip=None, fourreau=FOURREAU, conduit=None):
     """Section creuse d'un profil : peau + âmes en zigzag + fourreaux de tubes.
 
-    tubes : liste de (fraction de corde, diamètre du tube)
+    tubes   : liste de (fraction de corde, diamètre du tube)
+    clip    : polygone qui remplace la découpe [xmin, xmax] (charnières en V)
+    conduit : (fraction de corde, rayon) : passage de câbles percé dans les âmes
     """
     profil = Polygon(naca_points(code, corde))
-    x0, x1 = xmin * corde, xmax * corde
-    zone = profil.intersection(box(x0, -100, x1, 100))
-    ferme0 = peau if xmin > 0 else 0
-    ferme1 = peau if xmax < 1 else 0
-    interieur = profil.buffer(-peau, join_style=2).intersection(
-        box(x0 + ferme0, -100, x1 - ferme1, 100))
+    if clip is None:
+        x0, x1 = xmin * corde, xmax * corde
+        zone = profil.intersection(box(x0, -100, x1, 100))
+        ferme0 = peau if xmin > 0 else 0
+        ferme1 = peau if xmax < 1 else 0
+        interieur = profil.buffer(-peau, join_style=2).intersection(
+            box(x0 + ferme0, -100, x1 - ferme1, 100))
+    else:
+        zone = profil.intersection(clip)
+        x0, _, x1, _ = zone.bounds
+        interieur = profil.buffer(-peau, join_style=2).intersection(clip.buffer(-peau, join_style=2))
     coque = zone.difference(interieur)
 
     if ames:
@@ -124,12 +131,16 @@ def section_coque(code, corde, xmin=0.0, xmax=1.0, tubes=(), ames=0, peau=PEAU,
                 p, q = (xs[i], za[0] + 2), (xs[i + 1], zb[1] - 2)
             lignes.append(LineString([p, q]).buffer(ame / 2, cap_style=2))
         coque = coque.union(unary_union(lignes).intersection(zone))
+    if conduit is not None:  # passage de câbles : on perce les âmes, jamais la peau
+        xc, rc = conduit
+        trou_c = Point(xc * corde, naca_cambrure(code, xc) * corde).buffer(rc)
+        coque = coque.difference(trou_c.intersection(interieur))
 
     trous = []
     for xc, d in tubes:
         cz = naca_cambrure(code, xc) * corde
         c = Point(xc * corde, cz)
-        coque = coque.union(c.buffer(d / 2 + JEU_TUBE / 2 + FOURREAU).intersection(zone))
+        coque = coque.union(c.buffer(d / 2 + JEU_TUBE / 2 + fourreau).intersection(zone))
         # âme verticale : relie le fourreau aux deux peaux (sinon il flotte dans le vide)
         coque = coque.union(box(xc * corde - ame_tube / 2, -100, xc * corde + ame_tube / 2, 100)
                             .intersection(zone))
@@ -142,6 +153,24 @@ def section_coque(code, corde, xmin=0.0, xmax=1.0, tubes=(), ames=0, peau=PEAU,
 def caler(wp, angle, x0=0.0, z0=0.0):
     """Applique une incidence (cabrer = bord de fuite vers le bas) autour de (x0, z0)."""
     return wp.rotate((x0, 0, z0), (x0, 1, z0), angle)
+
+
+ANGLE_V = 22.0   # demi-ouverture du V sous la charnière (débattement vers le haut ≈ 2 x 22°)
+
+
+def charniere(code, corde, xh):
+    """Découpes 2D d'une charnière sur l'extrados : (partie fixe, gouverne, x avant-bas de la gouverne).
+
+    La charnière (ruban) est sur le dessus, au point (xh, extrados). Les deux faces
+    s'écartent en V vers le bas : la gouverne peut monter jusqu'à ~2 x ANGLE_V et
+    descendre sans rien toucher."""
+    xh *= corde
+    z_haut, z_bas = naca_surfaces(code, corde, xh / corde)
+    t = math.tan(math.radians(ANGLE_V))
+    j = AILERON_JEU / 2
+    fixe = Polygon([(-1e3, 1e3), (xh - j, 1e3), (xh - j, z_haut), (xh - j - t * 300, z_haut - 300), (-1e3, z_haut - 300)])
+    mobile = Polygon([(1e3, 1e3), (xh + j, 1e3), (xh + j, z_haut), (xh + j + t * 300, z_haut - 300), (1e3, z_haut - 300)])
+    return fixe, mobile, xh + j + t * (z_haut - z_bas)
 
 
 def miroir(wp):
@@ -186,7 +215,8 @@ def _servo_aile():
     demi = SERVO["oreilles"] / 2 + 2.2           # demi-largeur du cadre (le long de la corde)
     # place libre entre le fourreau du longeron extérieur et la charnière d'aileron
     xmin = LONGERON_EXT_X * CORDE + LONGERON_EXT_D / 2 + FOURREAU + 1.0
-    xmax = AILERON_X * CORDE - AILERON_JEU / 2 - 1.0
+    zh, zl = naca_surfaces(PROFIL_AILE, CORDE, AILERON_X)
+    xmax = AILERON_X * CORDE - AILERON_JEU / 2 - math.tan(math.radians(ANGLE_V)) * (zh - zl) - 1.0
     if xmax - xmin < 2 * demi:
         raise ValueError("cadre de servo trop large pour la place entre longeron et aileron")
     def hauteur(xc):
@@ -249,16 +279,18 @@ def segment_aile(i):
     """Segment i (0 = emplanture) de la demi-aile droite, sans aileron."""
     ya, yb = bornes_segments()[i]
     tubes = _tubes_aile(ya, yb)
-    pleine = section_coque(PROFIL_AILE, CORDE, tubes=tubes, ames=N_AMES)
+    pleine = section_coque(PROFIL_AILE, CORDE, tubes=tubes, ames=N_AMES, conduit=CONDUIT)
 
     a0 = max(ya, AILERON_DEBUT) if yb > AILERON_DEBUT else None
+    if i == 0:  # l'emplanture déborde dans le fuselage, puis est découpée à sa forme
+        ya = DEMI_LARGEUR_FUS - 15
     if a0 is None:
         seg = extrude_xz(pleine, ya, yb)
     else:
         a1 = min(yb, AILERON_FIN)
-        xa = AILERON_X - AILERON_JEU / 2 / CORDE
-        avant = section_coque(PROFIL_AILE, CORDE, xmax=xa, tubes=tubes,
-                              ames=N_AMES - 2)
+        fixe, _, _ = charniere(PROFIL_AILE, CORDE, AILERON_X)
+        avant = section_coque(PROFIL_AILE, CORDE, clip=fixe, tubes=tubes,
+                              ames=N_AMES - 2, conduit=CONDUIT)
         seg = extrude_xz(avant, a0, a1)
         if a0 > ya:
             seg = seg.union(extrude_xz(pleine, ya, a0))
@@ -268,20 +300,26 @@ def segment_aile(i):
     if i == segments_aileron()[0]:  # baie du cadre de servo d'aileron, ouverte par-dessous
         g = _servo_aile()
         seg = seg.cut(extrude_xz(g["baie"], g["y0"] - 0.3, g["y1"] + 0.3))
-        # passage du fil du servo vers l'emplanture (il suit ensuite les alvéoles de l'aile)
-        fil = Point(g["xc"], g["z0"] + SERVO["W"] / 2).buffer(3.0)
-        seg = seg.cut(extrude_xz(fil, g["y0"] - 16, g["y0"] + 1))
+        # le fil du servo sort du cadre côté emplanture et file dans le conduit jusqu'au fuselage
+
+    if i == 0:  # vis nylon M3 de retenue : traverse l'aile et le longeron (percé à travers ce trou)
+        xv = LONGERON_PRINC_X * CORDE
+        seg = seg.cut(cq.Workplane("XY", origin=(xv, Y_VIS_AILE, -60)).circle(1.65).extrude(120))
 
     if ya < POUTRE_Y < yb:  # passage des câbles vers la poutre
         trou = (cq.Workplane("XY").workplane(offset=-30)
-                .center(0.45 * CORDE, POUTRE_Y).circle(5).extrude(30))
+                .center(CONDUIT[0] * CORDE, POUTRE_Y).circle(5).extrude(30 + naca_cambrure(PROFIL_AILE, CONDUIT[0]) * CORDE))
         seg = seg.cut(trou)
 
-    return caler(seg, CALAGE_AILE)
+    seg = caler(seg, CALAGE_AILE)
+    if i == 0:
+        seg = seg.cut(fuselage_complet()[1])   # l'emplanture épouse le flanc du fuselage
+    return seg
 
 
+Y_VIS_AILE = DEMI_LARGEUR_FUS + 15          # vis de retenue de l'aile, près de l'emplanture
 Y_GUIGNOL_AILERON = AILERON_DEBUT + 42      # en face de la baie du servo d'aileron
-Y_GUIGNOL_PROF = STAB_DEMI_ENV - 14          # près du bloc de queue droit (servo de profondeur)
+Y_GUIGNOL_PROF = STAB_DEMI_ENV - 10          # près du bloc de queue droit (servo de profondeur)
 
 
 def segments_aileron():
@@ -297,45 +335,45 @@ def aileron(i):
         a0 += AILERON_JEU / 2
     if i != segs[-1]:
         a1 -= AILERON_JEU / 2
-    xa = AILERON_X + AILERON_JEU / 2 / CORDE
+    _, mobile, _ = charniere(PROFIL_AILE, CORDE, AILERON_X)
     xj, dj = AILERON_JONC
-    sect = section_coque(PROFIL_AILE, CORDE, xmin=xa, tubes=[AILERON_JONC], ames=2,
-                         peau=PEAU_GOUVERNE)
-    pleine = Polygon(naca_points(PROFIL_AILE, CORDE)).intersection(
-        box(xa * CORDE, -50, CORDE, 50))
+    sect = section_coque(PROFIL_AILE, CORDE, clip=mobile, tubes=[AILERON_JONC], ames=2,
+                         peau=PEAU_GOUVERNE, fourreau=0.6)
+    pleine = Polygon(naca_points(PROFIL_AILE, CORDE)).intersection(mobile)
     pleine = pleine.difference(Point(xj * CORDE, naca_cambrure(PROFIL_AILE, xj) * CORDE)
                                .buffer(dj / 2 + JEU_TUBE / 2))
     ail = extrude_xz(sect, a0, a1)
     ail = ail.union(extrude_xz(pleine, a0, a0 + 1.2)).union(extrude_xz(pleine, a1 - 1.2, a1))
     if i == segs[0]:  # fente du guignol (le guignol PETG s'y glisse par-dessous)
         yh = Y_GUIGNOL_AILERON
-        ail = ail.cut(extrude_xz(_fente_guignol(PROFIL_AILE, CORDE, xa, -1), yh - 1.1, yh + 1.1))
+        ail = ail.cut(extrude_xz(_fente_guignol(PROFIL_AILE, CORDE, AILERON_X, -1), yh - 1.1, yh + 1.1))
     return caler(ail, CALAGE_AILE)
 
 
-def _x_guignol(corde, xa):
-    """Étendue du guignol le long de la corde : juste derrière l'avant de la gouverne."""
-    x0 = xa * corde + PEAU_GOUVERNE
+def _x_guignol(code, corde, xh):
+    """Étendue du guignol le long de la corde : juste derrière l'avant (en V) de la gouverne."""
+    _, _, x_av = charniere(code, corde, xh)
+    x0 = x_av + PEAU_GOUVERNE + 0.3
     return x0, x0 + 0.10 * corde
 
 
-def _fente_guignol(code, corde, xa, sens):
+def _fente_guignol(code, corde, xh, sens):
     """Volume (2D) retiré dans la gouverne pour loger le guignol : tout sauf la peau opposée.
 
     sens = -1 : guignol sous la gouverne ; +1 : guignol sur le dessus."""
     profil = Polygon(naca_points(code, corde))
-    x0, x1 = _x_guignol(corde, xa)
+    x0, x1 = _x_guignol(code, corde, xh)
     garde = translate(profil, 0, sens * PEAU_GOUVERNE)  # garde la peau du côté opposé
     return profil.intersection(garde).intersection(box(x0 - 0.1, -100, x1 + 0.1, 100))
 
 
-def guignol(code, corde, xa, jonc, sens, haut):
+def guignol(code, corde, xh, jonc, sens, haut):
     """Guignol en PETG imprimé à plat : plaque de 2 mm qui remplit la gouverne sur sa
     hauteur, enfilée sur le jonc carbone et collée aux deux peaux, avec une patte qui
     sort de 'haut' mm pour la chape de la tringle."""
     profil = Polygon(naca_points(code, corde))
-    x0, x1 = _x_guignol(corde, xa)
-    dedans = _fente_guignol(code, corde, xa, sens).buffer(-0.1)
+    x0, x1 = _x_guignol(code, corde, xh)
+    dedans = _fente_guignol(code, corde, xh, sens).buffer(-0.1)
     zs = [z for x in (x0, x1) for z in naca_surfaces(code, corde, x / corde)]
     if sens < 0:
         z_bord = min(zs)
@@ -353,15 +391,13 @@ def guignol(code, corde, xa, jonc, sens, haut):
 
 
 def guignol_aileron():
-    xa = AILERON_X + AILERON_JEU / 2 / CORDE
-    g = guignol(PROFIL_AILE, CORDE, xa, AILERON_JONC, -1, GUIGNOL_HAUT * CORDE)
+    g = guignol(PROFIL_AILE, CORDE, AILERON_X, AILERON_JONC, -1, GUIGNOL_HAUT * CORDE)
     yh = Y_GUIGNOL_AILERON
     return caler(extrude_xz(g, yh - 1.0, yh + 1.0), CALAGE_AILE)
 
 
 def guignol_profondeur():
-    xp = PROFONDEUR_X + 0.5 / STAB_CORDE
-    g = guignol(STAB_PROFIL, STAB_CORDE, xp, PROFONDEUR_JONC, +1, GUIGNOL_HAUT * 2 * STAB_CORDE)
+    g = guignol(STAB_PROFIL, STAB_CORDE, PROFONDEUR_X, PROFONDEUR_JONC, +1, GUIGNOL_HAUT * 2 * STAB_CORDE)
     yh = Y_GUIGNOL_PROF
     return extrude_xz(g, yh - 1.0, yh + 1.0).translate((STAB_BA_X, 0, STAB_Z))
 
@@ -387,14 +423,15 @@ def pylone():
              .polyline(cote).close().extrude(l))
     aile = caler(extrude_xz(Polygon(naca_points(PROFIL_AILE, CORDE)),
                             POUTRE_Y - l, POUTRE_Y + l), CALAGE_AILE)
-    corps = corps.cut(aile)
-    try:
+    try:  # arrondis d'abord (sinon l'arrondi des angles rentrants déborderait dans l'aile)
         corps = corps.edges("|Y").fillet(3)
     except Exception:
         pass
+    corps = corps.cut(aile)
     alesage = (cq.Workplane("YZ", origin=(-10, POUTRE_Y, POUTRE_Z))
                .circle((POUTRE_D + JEU_TUBE) / 2).extrude(CORDE + 40))
-    cable = (cq.Workplane("XY", origin=(0.45 * CORDE, POUTRE_Y, POUTRE_Z))
+    xcd, _ = position_tube(PROFIL_AILE, CORDE, CONDUIT[0], CALAGE_AILE)
+    cable = (cq.Workplane("XY", origin=(xcd, POUTRE_Y, POUTRE_Z))
              .circle(min(5.0, POUTRE_D / 2 - 1)).extrude(40))
     return corps.cut(alesage).cut(cable)
 
@@ -465,8 +502,8 @@ def fuselage_complet():
         fus = fus.cut(trou)
 
     # passages de câbles vers les ailes (servos, ESC)
-    xp, zp = position_tube(PROFIL_AILE, CORDE, 0.45, CALAGE_AILE)
-    fus = fus.cut(cq.Workplane("XZ", origin=(0, DEMI_LARGEUR_FUS + 15, 0)).center(xp, zp).circle(5)
+    xp, zp = position_tube(PROFIL_AILE, CORDE, CONDUIT[0], CALAGE_AILE)
+    fus = fus.cut(cq.Workplane("XZ", origin=(0, DEMI_LARGEUR_FUS + 15, 0)).center(xp, zp).circle(CONDUIT[1])
                   .extrude(2 * DEMI_LARGEUR_FUS + 30))
 
     # ouverture du dessous pour les câbles de la nacelle caméra
@@ -494,6 +531,14 @@ def fuselage_complet():
         z_haut = zc + h / 2 - 2.5
         bos = cq.Workplane("XY", origin=(xv, 0, z_haut - 7)).circle(3.5).extrude(7)
         fus = fus.union(bos.intersect(inte))
+    # anneau d'appui de la cloison moteur (en escalier : s'imprime sans support) et
+    # trous des 3 vis radiales M2 qui la retiennent
+    xm = SECTIONS_FUS[-1][0]
+    for k, ext_k in enumerate(_anneau_cloison()):
+        fus = fus.union(_lamelle(xm - 5 - 2 * (k + 1), 2, PAROI_FUS - 0.2, PAROI_FUS + ext_k))
+    for ang in ANGLES_VIS_CLOISON:
+        fus = fus.cut(_vis_radiale(xm - 2.5, ang, 1.1, 20))
+
     # (les avant-trous Ø1,6 des vis se percent à la main en se servant de la trappe comme gabarit)
     fus = fus.cut(boite(a, b, hw, zt).intersect(ext.cut(l16)))
 
@@ -519,15 +564,53 @@ def trappe_acces():
     return t
 
 
+ANGLES_VIS_CLOISON = (90.0, 210.0, 330.0)
+
+
+def _anneau_cloison():
+    """Largeurs (vers l'intérieur) des 3 marches de l'anneau d'appui, laissant passer les
+    têtes des vis du moteur."""
+    xm = SECTIONS_FUS[-1][0]
+    w, h, _ = _section_a(xm)
+    r_int = min(w, h) / 2 - PAROI_FUS
+    r_tetes = max(math.hypot(a, b) for a, b in POUSSEUR_TROUS) + 3.0
+    largeur = max(1.5, min(5.0, r_int - r_tetes - 0.5))
+    return (largeur / 3, 2 * largeur / 3, largeur)
+
+
+def _vis_radiale(x, ang, r, longueur):
+    """Cylindre radial (depuis l'extérieur vers l'axe du moteur) à l'angle donné (0° = côté droit)."""
+    w, h, zc = _section_a(x)
+    a = math.radians(ang)
+    d = cq.Vector(0, math.cos(a), math.sin(a))
+    rayon = max(w, h) / 2 + 5
+    base = cq.Vector(x, rayon * d.y, POUSSEUR_Z + rayon * d.z)
+    return cq.Workplane().add(cq.Solid.makeCylinder(r, longueur, base, -d))
+
+
 def cloison_moteur():
-    """Cloison en PETG collée au bout du fuselage, reçoit le moteur propulsif."""
+    """Cloison PETG glissée par l'arrière dans le bout du fuselage, en appui sur l'anneau
+    intérieur et retenue par 3 vis M2 radiales : le moteur se boulonne dessus à l'établi
+    et l'ensemble se démonte sans rien couper."""
     xm, ep = SECTIONS_FUS[-1][0], 5.0
     cloison = _lamelle(xm - ep, ep, PAROI_FUS + 0.15, None)
+    for ang in ANGLES_VIS_CLOISON:  # avant-trous Ø1,6 des vis radiales, dans la tranche
+        cloison = cloison.cut(_vis_radiale(xm - 2.5, ang, 0.8, 12))
     o = (xm - 10, 0, POUSSEUR_Z)
     perc = cq.Workplane("YZ", origin=o).circle(5).extrude(20)
     for cy, cz in POUSSEUR_TROUS:  # vis M3 du moteur
         perc = perc.union(cq.Workplane("YZ", origin=o).center(cy, cz).circle(1.7).extrude(20))
     return cloison.cut(perc)
+
+
+def _levre(x, long=10.0):
+    """Lèvre d'emboîtement qui suit la forme du fuselage (même là où il rétrécit)."""
+    def fil(xx, r):
+        w, h, zc = _section_a(xx)
+        return _super_ellipse(xx, w - 2 * r, h - 2 * r, zc)
+    ext = cq.Solid.makeLoft([fil(x, PAROI_FUS + 0.25), fil(x + long, PAROI_FUS + 0.25)], True)
+    inte = cq.Solid.makeLoft([fil(x - 1, PAROI_FUS + 1.45), fil(x + long + 1, PAROI_FUS + 1.45)], True)
+    return cq.Workplane().add(ext).cut(cq.Workplane().add(inte))
 
 
 @functools.lru_cache(maxsize=None)
@@ -543,8 +626,7 @@ def fuselage_pieces():
 
     # lèvres d'emboîtement : chaque tronçon s'emboîte dans le suivant (le nez reste amovible)
     for k, x in enumerate(c[1:-1]):
-        levre = _lamelle(x, 10, PAROI_FUS + 0.25, PAROI_FUS + 1.45)
-        morceaux[k] = morceaux[k].union(levre)
+        morceaux[k] = morceaux[k].union(_levre(x))
     return morceaux  # dans l'ordre de NOMS_TRONCONS_FUS
 
 
@@ -715,21 +797,21 @@ def _stab_bornes():
 
 def stab_segment(i):
     ya, yb = _stab_bornes()[i]
-    xp = PROFONDEUR_X - 0.5 / STAB_CORDE
-    sect = section_coque(STAB_PROFIL, STAB_CORDE, xmax=xp, ames=3,
+    fixe, _, _ = charniere(STAB_PROFIL, STAB_CORDE, PROFONDEUR_X)
+    sect = section_coque(STAB_PROFIL, STAB_CORDE, clip=fixe, ames=3,
                          tubes=[(STAB_LONGERON_X, STAB_LONGERON_D), (STAB_JONC_X, STAB_JONC_D)])
     return extrude_xz(sect, ya, yb).translate((STAB_BA_X, 0, STAB_Z))
 
 
 def profondeur(i):
     ya, yb = _stab_bornes()[i]
-    xp = PROFONDEUR_X + 0.5 / STAB_CORDE
-    sect = section_coque(STAB_PROFIL, STAB_CORDE, xmin=xp, tubes=[PROFONDEUR_JONC], ames=2,
-                         peau=PEAU_GOUVERNE)
+    _, mobile, _ = charniere(STAB_PROFIL, STAB_CORDE, PROFONDEUR_X)
+    sect = section_coque(STAB_PROFIL, STAB_CORDE, clip=mobile, tubes=[PROFONDEUR_JONC], ames=2,
+                         peau=PEAU_GOUVERNE, fourreau=0.6)
     prof = extrude_xz(sect, ya + 0.5, yb - 0.5)
     if i == STAB_N_SEG - 1:  # fente du guignol, côté droit près du servo
         yh = Y_GUIGNOL_PROF
-        prof = prof.cut(extrude_xz(_fente_guignol(STAB_PROFIL, STAB_CORDE, xp, +1), yh - 1.1, yh + 1.1))
+        prof = prof.cut(extrude_xz(_fente_guignol(STAB_PROFIL, STAB_CORDE, PROFONDEUR_X, +1), yh - 1.1, yh + 1.1))
     return prof.translate((STAB_BA_X, 0, STAB_Z))
 
 
@@ -760,14 +842,14 @@ def bloc_queue():
                     .extrude(fin_tube - x0 + 5))
     # prises du longeron (6 mm) et du jonc (3 mm) du stab, côté intérieur
     for xc, d in ((STAB_LONGERON_X, STAB_LONGERON_D), (STAB_JONC_X, STAB_JONC_D)):
-        bloc = bloc.cut(cq.Workplane("XZ", origin=(0, y0, 0))
-                        .center(STAB_BA_X + xc * STAB_CORDE, STAB_Z)
-                        .circle((d + JEU_TUBE) / 2).extrude(-20))
+        xs_ = STAB_BA_X + xc * STAB_CORDE
+        bloc = bloc.cut(cq.Workplane().add(cq.Solid.makeCylinder(
+            (d + JEU_TUBE) / 2, 15, cq.Vector(xs_, y0 - dl - 1, STAB_Z), cq.Vector(0, 1, 0))))
     # baie de servo de profondeur, ouverte côté intérieur : le boîtier s'enfonce jusqu'aux
     # oreilles, qui s'appuient sur la face du bloc et s'y vissent (vis M2 fournies avec le servo)
     L, W = SERVO["L"], SERVO["W"]
     prof = SERVO["oreille_y"] + 0.5
-    xs = x1 - 22
+    xs = X_SERVO_PROF            # axe du servo ~15 mm devant la charnière : palonnier au-dessus du stab
     zc = STAB_Z + 6 + (W + 0.4) / 2
     bloc = bloc.cut(cq.Workplane("XY", origin=(0, 0, STAB_Z + 6)).center(xs, y0 - dl + prof / 2)
                     .rect(L + 0.6, prof).extrude(W + 0.4))
@@ -775,7 +857,7 @@ def bloc_queue():
         bloc = bloc.cut(cq.Workplane("XZ", origin=(0, y0 - dl - 1, 0)).center(xs + sx * SERVO["entraxe"] / 2, zc)
                         .circle(0.75).extrude(-9))
     # passage de câble poutre -> servo
-    bloc = bloc.cut(cq.Workplane("XY", origin=(0, 0, zb)).center(xs - 6, y0).circle(min(3.0, POUTRE_D / 2 - 1.5))
+    bloc = bloc.cut(cq.Workplane("XY", origin=(0, 0, zb)).center(xs - 8, y0).circle(min(3.0, POUTRE_D / 2 - 1.5))
                     .extrude(STAB_Z + 7 - zb))
     return bloc
 
@@ -787,7 +869,8 @@ X_MOT_AV = CG_X - MOTEUR_ECART
 X_MOT_AR = CG_X + MOTEUR_ECART
 X_PATTE_AV = X_MOT_AV + PATTE_DECALAGE
 X_PATTE_AR = X_MOT_AR - PATTE_DECALAGE
-X_SERVO_PROF = DERIVE_BA_X + DERIVE_CORDE_PIED - 22
+X_AXE_SERVO_PROF = STAB_BA_X + PROFONDEUR_X * STAB_CORDE - 15
+X_SERVO_PROF = X_AXE_SERVO_PROF - (SERVO["L"] / 2 - SERVO["axe"])   # centre du boîtier
 
 
 def inventaire():
@@ -800,7 +883,8 @@ def inventaire():
     """
     inv = []
     for i in range(N_SEGMENTS):
-        inv.append((f"aile_segment_{i + 1}", lambda i=i: segment_aile(i), 1, "PLA Aero", "Y", None, 0, True))
+        inv.append((f"aile_segment_{i + 1}", lambda i=i: segment_aile(i), 1, "PLA Aero",
+                    "Yinv" if i == 0 else "Y", None, 0, True))
     for k, i in enumerate(segments_aileron()):
         inv.append((f"aileron_{k + 1}", lambda i=i: aileron(i), 1, "PLA Aero", "Y", None, 0, True))
     inv += [
