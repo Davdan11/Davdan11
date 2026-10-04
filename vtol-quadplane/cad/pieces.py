@@ -301,7 +301,7 @@ def _lamelle(x, ep, retrait_ext, retrait_int):
 
 def fuselage_complet():
     ext = _loft_fus(SECTIONS_FUS)
-    inte = _loft_fus([s for s in SECTIONS_FUS if s[0] >= -200], PAROI_FUS)
+    inte = _loft_fus(SECTIONS_FUS[1:], PAROI_FUS)  # pointe du nez pleine
     fus = ext.cut(inte)
 
     # fourreaux de longeron et de goupille traversant le fuselage
@@ -325,6 +325,10 @@ def fuselage_complet():
     xp, zp = position_tube(PROFIL_AILE, CORDE, 0.45, CALAGE_AILE)
     fus = fus.cut(cq.Workplane("XZ", origin=(0, 70, 0)).center(xp, zp).circle(5)
                   .extrude(140))
+
+    # ouverture du dessous pour les câbles de la nacelle caméra
+    fus = fus.cut(cq.Workplane("XY", origin=(NACELLE_X, 0, -100)).rect(50, 36).extrude(20)
+                  .edges("|Z").fillet(6))
 
     # tube de Pitot dans le nez
     fus = fus.cut(cq.Workplane("YZ", origin=(-230, 0, SECTIONS_FUS[0][3]))
@@ -350,7 +354,7 @@ def cloison_moteur():
 
 
 def fuselage_pieces():
-    fus, ext = fuselage_complet()
+    fus, _ = fuselage_complet()
     c = COUPES_FUS
     morceaux = []
     for k, (a, b) in enumerate(zip(c, c[1:])):
@@ -359,36 +363,68 @@ def fuselage_pieces():
         boite = cq.Workplane().box(b - a, 400, 400, centered=(False, True, True)).translate((a, 0, 0))
         morceaux.append(fus.intersect(boite))
 
-    # lèvres d'emboîtement : le nez s'emboîte dans l'avant, l'avant dans l'arrière
-    for idx, x in ((0, c[1]), (1, c[2])):
+    # lèvres d'emboîtement : chaque tronçon s'emboîte dans le suivant (le nez reste amovible)
+    for k, x in enumerate(c[1:-1]):
         levre = _lamelle(x, 10, PAROI_FUS + 0.25, PAROI_FUS + 1.45)
-        morceaux[idx] = morceaux[idx].union(levre)
-    return morceaux  # [nez, avant, arriere]
+        morceaux[k] = morceaux[k].union(levre)
+    return morceaux  # [nez, avant, milieu, queue]
 
 
 def plateau_electronique():
-    """Plancher glissé dans le fuselage : batterie devant, électronique derrière."""
+    """Plancher glissé dans le fuselage : batterie (sangles) et vis du support de nacelle."""
     z0, ep, larg = -78.0, 2.0, 76.0
-    x0, x1 = -115.0, 105.0
+    x0, x1 = PLATEAU_X
     p = (cq.Workplane("XY", origin=(0, 0, z0)).center((x0 + x1) / 2, 0)
          .rect(x1 - x0, larg).extrude(ep).edges("|Z").fillet(6))
     # fentes pour sangles de batterie
-    for xs in (-95.0, -35.0):
+    for xs in (x0 + 12, x0 + 122):
         for ys in (-28.0, 28.0):
             p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(xs, ys)
                       .slot2D(22, 4, 90).extrude(ep + 2))
-    # entretoises 30,5 mm (contrôleur de vol) et 20 mm (récepteur)
-    for cx, pas, h in ((60.0, 30.5, 6.0), (20.0, 20.0, 5.0)):
-        for sx in (-1, 1):
-            for sy in (-1, 1):
-                pos = (cx + sx * pas / 2, sy * pas / 2)
-                p = p.union(cq.Workplane("XY", origin=(0, 0, z0 + ep)).center(*pos)
-                            .circle(3.2).extrude(h))
-                p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(*pos)
-                          .circle(1.35).extrude(ep + h + 2))
-    # passage de câbles sous le contrôleur de vol
-    p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(88, 0)
-              .rect(14, 40).extrude(ep + 2).edges("|Z").fillet(3))
+    return p
+
+
+def support_nacelle():
+    """Selle collée et vissée sous le fuselage : face plane pour la nacelle caméra."""
+    x0, lx, ly = NACELLE_X, 76.0, 70.0
+    bloc = (cq.Workplane("XY", origin=(x0, 0, NACELLE_Z)).rect(lx, ly).extrude(25)
+            .edges("|Z").fillet(8))
+    _, ext = fuselage_complet()
+    selle = bloc.cut(ext)
+    # passage de câbles et vis M3 (mêmes positions que le plateau électronique)
+    selle = selle.cut(cq.Workplane("XY", origin=(x0, 0, NACELLE_Z - 1)).rect(46, 32).extrude(40)
+                      .edges("|Z").fillet(6))
+    for dx in (-28.0, 28.0):
+        for ys in (-18.0, 18.0):
+            selle = selle.cut(cq.Workplane("XY", origin=(x0 + dx, ys, NACELLE_Z - 1))
+                              .circle(1.7).extrude(40))
+    # 4 trous Ø6,5 pour amortisseurs caoutchouc, entraxe 60 x 50 (à adapter à la nacelle)
+    for dx in (-30.0, 30.0):
+        for dy in (-25.0, 25.0):
+            selle = selle.cut(cq.Workplane("XY", origin=(x0 + dx, dy, NACELLE_Z - 1))
+                              .circle(3.25).extrude(8))
+    return selle
+
+
+def plateau_compagnon():
+    """Plateau du fuselage milieu : contrôleur de vol, ordinateur de bord (Raspberry Pi 5), modem 4G."""
+    z0, ep = -62.0, 2.0
+    x0, x1, larg = 100.0, 228.0, 70.0
+    p = (cq.Workplane("XY", origin=(0, 0, z0)).center((x0 + x1) / 2, 0)
+         .rect(x1 - x0, larg).extrude(ep).edges("|Z").fillet(6))
+    for sx in (-1, 1):  # entretoises 30,5 mm du contrôleur de vol
+        for sy in (-1, 1):
+            pos = (x0 + 22 + sx * 15.25, sy * 15.25)
+            p = p.union(cq.Workplane("XY", origin=(0, 0, z0 + ep)).center(*pos).circle(3.2).extrude(6))
+            p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(*pos).circle(1.35).extrude(ep + 8))
+    cx = x1 - 38
+    for sx in (-1, 1):  # trous de fixation Raspberry Pi : 58 x 49 mm
+        for sy in (-1, 1):
+            pos = (cx + sx * 29, sy * 24.5)
+            p = p.union(cq.Workplane("XY", origin=(0, 0, z0 + ep)).center(*pos).circle(3.2).extrude(5))
+            p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(*pos).circle(1.35).extrude(ep + 7))
+    p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(cx, 0).rect(30, 20).extrude(ep + 2)
+              .edges("|Z").fillet(4))
     return p
 
 
@@ -484,10 +520,10 @@ def bloc_queue():
                         .center(STAB_BA_X + xc * STAB_CORDE, STAB_Z)
                         .circle((d + JEU_TUBE) / 2).extrude(-20))
     # baie de servo de profondeur, ouverte côté intérieur
-    bloc = bloc.cut(cq.Workplane("XY", origin=(0, 0, -2)).center(686, y0 - 15 + 12.5)
+    bloc = bloc.cut(cq.Workplane("XY", origin=(0, 0, -2)).center(DERIVE_BA_X + 86, y0 - 15 + 12.5)
                     .rect(33, 25.5).extrude(13))
     # passage de câble poutre -> servo
-    bloc = bloc.cut(cq.Workplane("XY", origin=(0, 0, zb)).center(680, y0).circle(3).extrude(20))
+    bloc = bloc.cut(cq.Workplane("XY", origin=(0, 0, zb)).center(DERIVE_BA_X + 80, y0).circle(3).extrude(20))
     return bloc
 
 
@@ -518,9 +554,12 @@ def inventaire():
         ("pylone_poutre", pylone, 1, "PETG", "X", 1.2, 0.10, True),
         ("fuselage_nez", lambda: fuselage_pieces()[0], 1, "PLA Aero", "Xinv", None, 0, False),
         ("fuselage_avant", lambda: fuselage_pieces()[1], 1, "PLA Aero", "X", None, 0, False),
-        ("fuselage_arriere", lambda: fuselage_pieces()[2], 1, "PLA Aero", "X", None, 0, False),
+        ("fuselage_milieu", lambda: fuselage_pieces()[2], 1, "PLA Aero", "X", None, 0, False),
+        ("fuselage_queue", lambda: fuselage_pieces()[3], 1, "PLA Aero", "X", None, 0, False),
         ("cloison_moteur", cloison_moteur, 1, "PETG", "X", 1.6, 0.50, False),
         ("plateau_electronique", plateau_electronique, 1, "PETG", "Z", 1.2, 0.30, False),
+        ("plateau_compagnon", plateau_compagnon, 1, "PETG", "Z", 1.2, 0.30, False),
+        ("support_nacelle", support_nacelle, 1, "PETG", "Z", 1.6, 0.30, False),
         ("support_moteur", lambda: support_moteur(X_MOT_AV), 4, "PETG", "Zinv", 1.6, 0.40, False),
         ("patte_atterrissage", lambda: patte(X_PATTE_AV), 4, "TPU 95A", "Z", 1.6, 0.25, False),
         ("bloc_queue", bloc_queue, 1, "PLA Aero", "Z", 1.2, 0.08, True),

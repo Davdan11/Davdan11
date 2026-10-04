@@ -1,4 +1,4 @@
-"""Paramètres du quadplane « Huard ».
+"""Paramètres du quadplane « Huard DFR » (drone premier intervenant).
 
 Repère global (mm) :
   X vers l'arrière, origine au bord d'attaque de l'aile
@@ -48,33 +48,40 @@ POUTRE_Y = 330.0          # entraxe des poutres : ±330
 POUTRE_D = 16.0           # tube carbone 16x14 mm, 1000 mm
 POUTRE_Z = -25.0          # axe des poutres
 CG_X = 62.0               # centre de gravité visé (28 % de corde)
-MOTEUR_ECART = 350.0      # moteurs VTOL à CG_X ± 350
-POUTRE_DEBUT = CG_X - MOTEUR_ECART - 22.0   # = -310
+MOTEUR_ECART = 365.0      # moteurs VTOL à CG_X ± 365
+POUTRE_DEBUT = CG_X - MOTEUR_ECART - 22.0   # = -325
 POUTRE_LONG = 1000.0
-HELICE_VTOL = 12 * 25.4   # 12 pouces
+HELICE_VTOL = 13 * 25.4   # 13 pouces
 
 # --- Fuselage -----------------------------------------------------------------
 PAROI_FUS = 1.0
 # (x, largeur, hauteur, z_centre) ; exposant de super-ellipse commun
 SECTIONS_FUS = [
-    (-215.0, 14.0, 14.0, -20.0),
-    (-200.0, 44.0, 44.0, -22.0),
-    (-170.0, 82.0, 84.0, -27.0),
-    (-120.0, 104.0, 108.0, -31.0),
-    (-60.0, 110.0, 118.0, -29.0),
-    (110.0, 110.0, 118.0, -29.0),
-    (200.0, 100.0, 104.0, -25.0),
-    (280.0, 76.0, 76.0, -14.0),
-    (350.0, 52.0, 50.0, -5.0),
+    (-285.0, 14.0, 14.0, -20.0),
+    (-270.0, 44.0, 44.0, -22.0),
+    (-240.0, 82.0, 84.0, -27.0),
+    (-190.0, 104.0, 108.0, -31.0),
+    (-130.0, 110.0, 118.0, -29.0),
+    (225.0, 110.0, 118.0, -29.0),     # pleine section sur toute la corde d'emplanture
+    (290.0, 94.0, 96.0, -21.0),
+    (340.0, 62.0, 60.0, -9.0),
+    (360.0, 52.0, 50.0, -5.0),
 ]
 SUPER_ELLIPSE_N = 3.0
-COUPES_FUS = [-215.0, -120.0, 110.0, 350.0]   # nez | avant | arrière
+# nez (amovible) | avant | milieu | queue ; chaque tronçon fait au plus 250 mm
+COUPES_FUS = [-285.0, -190.0, 45.0, 255.0, 360.0]
+PLATEAU_X = (-185.0, 45.0)      # plateau électronique (batterie + contrôleur de vol)
 POUSSEUR_Z = -5.0         # axe du moteur propulsif
 HELICE_POUSSEUR = 10 * 25.4
 
+# --- Charge utile -------------------------------------------------------------
+NACELLE_X = -140.0        # centre de la nacelle caméra sous le fuselage
+NACELLE_Z = -96.0         # face de fixation de la nacelle (dessous du support)
+BATTERIE = (150.0, 70.0, 68.0)   # 6S3P 21700 : longueur, largeur, hauteur avec emballage
+
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 110.0
-STAB_BA_X = 600.0
+STAB_BA_X = 625.0
 STAB_PROFIL = "0009"
 STAB_Z = -8.0            # au-dessus des poutres, dans le souffle du propulseur
 STAB_DEMI_ENV = 315.0     # entre les deux blocs de queue
@@ -87,10 +94,10 @@ STAB_JONC_X = 0.55
 DERIVE_CORDE_PIED = 140.0
 DERIVE_CORDE_SAUMON = 90.0
 DERIVE_HAUTEUR = 130.0
-DERIVE_BA_X = 600.0
+DERIVE_BA_X = 625.0
 
 # --- Atterrisseur -------------------------------------------------------------
-PATTE_LONG = 138.0        # sol à POUTRE_Z - PATTE_LONG = -163 mm
+PATTE_LONG = 180.0        # sol à POUTRE_Z - PATTE_LONG = -205 mm (garde sous la nacelle)
 
 # --- Densités (g/cm³) pour l'estimation de masse ------------------------------
 DENSITE = {"PLA Aero": 0.65, "PLA": 1.24, "PETG": 1.27, "TPU 95A": 1.21}

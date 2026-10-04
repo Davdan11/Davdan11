@@ -24,6 +24,7 @@ import pieces as P  # noqa: E402
 from params import *  # noqa: E402,F403
 
 ICI = os.path.dirname(os.path.abspath(__file__))
+X_BATTERIE = -85.0  # position du centre de la batterie (voir docs/bilan.md pour le centrage)
 OUT = os.path.join(ICI, "out")
 
 COULEURS = {
@@ -106,12 +107,22 @@ def materiel():
     cyl(17.5, (xm, 0, POUSSEUR_Z), (xm + 34, 0, POUSSEUR_Z), "moteur")
     cyl(HELICE_POUSSEUR / 2, (xm + 44, 0, POUSSEUR_Z), (xm + 45, 0, POUSSEUR_Z), "helice", 48)
     # batterie 4S2P 21700 et contrôleur de vol
-    bat = trimesh.creation.box(extents=(75, 88, 44))
-    bat.apply_translation((-75, 0, -75.6 + 22))
+    lb, wb, hb = BATTERIE
+    bat = trimesh.creation.box(extents=(lb, wb, hb))
+    bat.apply_translation((X_BATTERIE, 0, -76 + hb / 2))
     objs.append((bat, "batterie"))
-    fc = trimesh.creation.box(extents=(36, 36, 8))
-    fc.apply_translation((60, 0, -62))
-    objs.append((fc, "electronique"))
+    for ext, pos in (((36, 36, 8), (122, 0, -50)),       # contrôleur de vol
+                     ((85, 56, 20), (190, 0, -48))):     # Raspberry Pi + modem 4G
+        b = trimesh.creation.box(extents=ext)
+        b.apply_translation(pos)
+        objs.append((b, "electronique"))
+    # nacelle caméra (boîtier + boule)
+    n = trimesh.creation.box(extents=(56, 56, 20))
+    n.apply_translation((NACELLE_X, 0, NACELLE_Z - 18))
+    objs.append((n, "electronique"))
+    boule = trimesh.creation.icosphere(subdivisions=2, radius=30)
+    boule.apply_translation((NACELLE_X, 0, NACELLE_Z - 55))
+    objs.append((boule, "TPU 95A"))
     return objs
 
 
@@ -177,12 +188,13 @@ def main():
                 problemes.append(f"{nom_f} : {dims[0]:.0f} x {dims[1]:.0f} x {dims[2]:.0f} mm")
             m = vers_trimesh(wp, 0.05)
             g = masse(m, mat, paroi, rempl)
+            copies = placements(nom)
+            xg = m.center_mass[0] + (np.mean([dx for dx, _ in copies]) if copies else 0.0)
             lignes.append([nom_f, qte, mat, f"{dims[0]:.0f}x{dims[1]:.0f}x{dims[2]:.0f}",
-                           f"{g:.1f}", f"{g * qte:.1f}"])
+                           f"{g:.1f}", f"{g * qte:.1f}", f"{xg:.0f}"])
             print(f"  {nom_f:28s} x{qte}  {mat:8s} {lignes[-1][3]:>13s} mm  {g:6.1f} g")
 
             mr = vers_trimesh(wp, 0.3)
-            copies = placements(nom)
             coul = mat
             if copies is None:
                 scene.append((mr, coul))
@@ -196,11 +208,13 @@ def main():
                     scene.append((c, coul))
 
     total = sum(float(l[5]) for l in lignes)
+    x_cg = sum(float(l[5]) * float(l[6]) for l in lignes) / total
     with open(os.path.join(OUT, "masses.csv"), "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["piece", "quantite", "materiau", "dimensions_impression_mm", "masse_g", "masse_totale_g"])
+        w.writerow(["piece", "quantite", "materiau", "dimensions_impression_mm", "masse_g",
+                    "masse_totale_g", "x_cg_mm"])
         w.writerows(lignes)
-        w.writerow(["TOTAL pièces imprimées", "", "", "", "", f"{total:.0f}"])
+        w.writerow(["TOTAL pièces imprimées", "", "", "", "", f"{total:.0f}", f"{x_cg:.0f}"])
     print(f"\nMasse totale des pièces imprimées : {total:.0f} g")
     if problemes:
         print("ATTENTION, pièces trop grandes pour le plateau :")
@@ -220,7 +234,7 @@ def main():
 
     if not rapide:
         r = os.path.join(OUT, "rendus")
-        rendu(scene, os.path.join(r, "vue_3-4.png"), 25, -130, "Quadplane Huard — vue 3/4", zoom=1.25)
+        rendu(scene, os.path.join(r, "vue_3-4.png"), 25, -130, "Huard DFR — vue 3/4", zoom=1.25)
         rendu(scene, os.path.join(r, "vue_dessus.png"), 90, -90, "Vue de dessus", zoom=1.0)
         rendu(scene, os.path.join(r, "vue_cote.png"), 0, -90, "Vue de côté")
         rendu(scene, os.path.join(r, "vue_face.png"), 5, 180, "Vue de face", zoom=1.0)

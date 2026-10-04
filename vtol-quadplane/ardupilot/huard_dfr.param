@@ -1,4 +1,4 @@
-# Paramètres de départ ArduPilot Plane (4.5 / 4.6) pour le quadplane Huard
+# Paramètres de départ ArduPilot Plane (4.5 / 4.6) pour le quadplane Huard DFR (6S)
 # Contrôleur : Matek H743-WING V3. Charger dans Mission Planner :
 #   Config > Full Parameter List > Load from file, puis Write Params et redémarrer.
 # Les noms de paramètres changent parfois d'une version à l'autre : si Mission
@@ -14,10 +14,10 @@ Q_M_PWM_TYPE,6
 Q_M_SPIN_ARM,0.08
 Q_M_SPIN_MIN,0.12
 Q_M_THST_HOVER,0.40
-Q_M_BAT_VOLT_MAX,16.8
-Q_M_BAT_VOLT_MIN,11.6
+Q_M_BAT_VOLT_MAX,25.2
+Q_M_BAT_VOLT_MIN,17.4
 Q_ANGLE_MAX,3000
-Q_ASSIST_SPEED,12
+Q_ASSIST_SPEED,14
 Q_TRANSITION_MS,5000
 Q_TRANS_DECEL,2
 Q_RTL_MODE,1
@@ -42,18 +42,18 @@ SERVO9_FUNCTION,19
 # --- Vitesse air (Matek ASPD-4525 en I2C) -----------------------------------
 ARSPD_TYPE,1
 ARSPD_USE,1
-AIRSPEED_MIN,13
-AIRSPEED_CRUISE,15
-AIRSPEED_MAX,24
-TRIM_THROTTLE,40
+AIRSPEED_MIN,16
+AIRSPEED_CRUISE,25
+AIRSPEED_MAX,30
+TRIM_THROTTLE,50
 
-# --- Batterie 4S2P Li-ion (capteur intégré au H743-WING) ---------------------
+# --- Batterie 6S3P Li-ion (capteur intégré au H743-WING) ---------------------
 BATT_MONITOR,4
-BATT_CAPACITY,9000
-BATT_LOW_VOLT,12.6
-BATT_CRT_VOLT,12.0
-BATT_LOW_MAH,2000
-BATT_CRT_MAH,900
+BATT_CAPACITY,13500
+BATT_LOW_VOLT,18.9
+BATT_CRT_VOLT,18.0
+BATT_LOW_MAH,3000
+BATT_CRT_MAH,1500
 # faible -> retour au point de départ ; critique -> atterrissage vertical sur place
 BATT_FS_LOW_ACT,1
 BATT_FS_CRT_ACT,4
@@ -64,6 +64,20 @@ FS_SHORT_ACTN,0
 FS_LONG_ACTN,1
 FS_LONG_TIMEOUT,5
 RTL_ALTITUDE,60
+
+# --- Vol en cercle au-dessus des lieux ----------------------------------------
+# rayon du cercle (m) ; en mission AUTO, utiliser LOITER_UNLIM sur le point de l'accident
+WP_LOITER_RAD,120
+
+# --- Nacelle caméra (SIYI ou autre, liaison série) ---------------------------
+# Adapter SERIALx au port réellement câblé (voir la page ArduPilot du H743-WING)
+MNT1_TYPE,8
+SERIAL6_PROTOCOL,8
+SERIAL6_BAUD,115
+
+# --- Ordinateur de bord (Raspberry Pi, MAVLink vers la 4G) -------------------
+SERIAL2_PROTOCOL,2
+SERIAL2_BAUD,921
 
 # --- Divers ------------------------------------------------------------------
 ARMING_CHECK,1
