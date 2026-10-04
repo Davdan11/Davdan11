@@ -245,7 +245,7 @@ def cadre_servo_aile():
     """Cadre PETG collé dans l'aile : le servo s'y emboîte, oreilles dans leurs encoches."""
     g = _servo_aile()
     L, W, H = SERVO["L"], SERVO["W"], SERVO["H"]
-    bloc = extrude_xz(g["sous_peau"].intersection(
+    bloc = extrude_xz(Polygon(naca_points(PROFIL_AILE, CORDE)).buffer(-(PEAU + 0.2)).intersection(
         box(g["xc"] - g["demi"], g["z0"], g["xc"] + g["demi"], 100)), g["y0"], g["y1"])
     def boite(x0, x1, y0, y1, z0, z1):
         return cq.Workplane("XY").box(x1 - x0, y1 - y0, z1 - z0, centered=False).translate((x0, y0, z0))
@@ -421,7 +421,7 @@ def pylone():
             (110 * k, 6), (14 * k, 4), (0, -6)]
     corps = (cq.Workplane("XZ", origin=(0, POUTRE_Y + l / 2, 0))
              .polyline(cote).close().extrude(l))
-    aile = caler(extrude_xz(Polygon(naca_points(PROFIL_AILE, CORDE)),
+    aile = caler(extrude_xz(Polygon(naca_points(PROFIL_AILE, CORDE)).buffer(0.15),   # 0,15 mm pour la colle
                             POUTRE_Y - l, POUTRE_Y + l), CALAGE_AILE)
     try:  # arrondis d'abord (sinon l'arrondi des angles rentrants déborderait dans l'aile)
         corps = corps.edges("|Y").fillet(3)

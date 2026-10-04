@@ -2,24 +2,17 @@
 
 Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les pièces imprimées et toutes les pièces achetées à leurs cotes (moteurs, hélices, servos, ESC, batterie, contrôleur de vol, GPS, Raspberry Pi, modem, capteur de vitesse, nacelle, tubes carbone), puis chaque contrôle est fait par calcul.
 
-**Résultat : 3 contrôle(s) en échec.**
+**Résultat : 1 contrôle(s) en échec.**
 
 
 ## 1. Collisions entre éléments
 
-❌ 88 éléments montés (31 modèles de pièces imprimées + pièces achetées) : 12 collision(s)
+❌ 88 éléments montés (31 modèles de pièces imprimées + pièces achetées) : 5 collision(s)
    - aile_segment_2_d ↔ pylone_poutre_d : 5.3 mm³
    - aile_segment_2_g ↔ pylone_poutre_g : 5.3 mm³
-   - fuselage_avant ↔ fuselage_milieu : 4.3 mm³
-   - fuselage_milieu ↔ fuselage_queue : 3908.8 mm³
-   - fuselage_queue ↔ esc_propulseur : 146.0 mm³
-   - bloc_queue_d ↔ longeron_stab : 339.3 mm³
-   - bloc_queue_d ↔ jonc_stab : 84.8 mm³
-   - bloc_queue_d ↔ servo_profondeur : 552.4 mm³
-   - bloc_queue_g ↔ longeron_stab : 339.3 mm³
-   - bloc_queue_g ↔ jonc_stab : 84.8 mm³
-   - trappe_acces ↔ gps_sous_trappe : 34.4 mm³
-   - controleur_de_vol ↔ raspberry_pi : 702.0 mm³
+   - fuselage_milieu ↔ modem_4g : 18.4 mm³
+   - fuselage_milieu ↔ esc_propulseur : 21.8 mm³
+   - fuselage_queue ↔ esc_propulseur : 183.8 mm³
 
 ## 2. Débattement des gouvernes (±25°)
 
@@ -36,12 +29,12 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 ## 5. Chemins libres (câbles et tubes)
 
 ✅ conduit de câbles de l'aile (Ø9 mm) libre du flanc du fuselage jusqu'au servo d'aileron, en passant au-dessus du pylône
-❌ poutre bloquée par : ['bloc_queue_d']
+✅ la poutre de 16 mm passe dans les supports moteurs, le pylône et le bloc de queue
 ✅ longeron principal Ø12 mm : passage libre de Y = -500 à 500 mm
 ✅ goupille d'aile Ø6 mm : passage libre de Y = -150 à 150 mm
 ✅ longeron extérieur Ø8 mm : passage libre de Y = 380 à 880 mm
 ✅ trou de la vis nylon de retenue d'aile (Y = 70 mm) dégagé à travers l'aile
-❌ prises du longeron de stab ouvertes côté intérieur des blocs de queue (12 mm)
+✅ prises du longeron de stab ouvertes côté intérieur des blocs de queue (12 mm)
 
 ## 6. Tubes carbone : longueurs à couper
 

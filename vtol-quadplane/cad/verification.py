@@ -135,15 +135,16 @@ def achete():
     out.append(("gps_sous_trappe", boite(gps, (xg, 0, zc_f + h / 2 - 1.6 - 3.0 - gps[2] / 2))))   # mousse adhésive 3 mm
     if PI5:
         out.append(("raspberry_pi", boite((85, 56, 20), (x1c - 38, 0, COMPAGNON_Z + 7 + 10 + 0.01))))
-        out.append(("modem_4g", boite((89.5, 15, 45.5), (x1c - 32, -(DEMI_LARGEUR_FUS - 14), -17))))
+        out.append(("modem_4g", boite((89.5, 15, 45.5), (190, -(DEMI_LARGEUR_FUS - 14), -22.5))))   # debout, flanc gauche
         out.append(("capteur_vitesse", boite((20, 20, 8), (SECTIONS_FUS[3][0] + 20, 0, 6))))
     if NACELLE_X is not None:
         out.append(("nacelle_boitier", boite((70, 70, 30), (NACELLE_X, 0, NACELLE_Z - 15.01))))
         sph = cq.Workplane().add(cq.Solid.makeSphere(37)).translate((NACELLE_X, 0, NACELLE_Z - 131.5 + 37))
         out.append(("nacelle_boule", sph))
-    xe = COMPAGNON_X[1] + 22         # à plat sur le fond, juste derrière le plateau compagnon
-    _, he, zce = P._section_a(xe)
-    out.append(("esc_propulseur", boite((34.5, 17.5, 5), (xe, 0, zce - he / 2 + PAROI_FUS + 1.5 + 2.5))))
+    # ESC du propulseur : debout contre le flanc droit, dans la partie droite du fuselage
+    xe = COMPAGNON_X[0] + 80 if PI5 else COMPAGNON_X[0] + 35
+    we, he, zce = P._section_a(xe)
+    out.append(("esc_propulseur", boite((34.5, 5, 17.5), (xe, we / 2 - PAROI_FUS - 6.5, zce + (0.2 if PI5 else -0.1) * he))))
     return out
 
 
