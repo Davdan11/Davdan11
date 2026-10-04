@@ -578,30 +578,61 @@ def plateau_compagnon():
 # ---------------------------------------------------------------------------
 # Propulsion VTOL et atterrisseur
 # ---------------------------------------------------------------------------
-def support_moteur(x0, y0=POUTRE_Y):
-    zb = POUTRE_Z
+def _geom_support():
     r_int = (POUTRE_D + JEU_TUBE) / 2
     r_ext = r_int + 4.8
-    zp = r_ext - 4                       # dessous de la platine moteur
-    cote = MOTEUR_VTOL_DIAM + 4          # platine carrée
+    zp = r_ext - 4                       # dessous de la bride (au-dessus de l'axe de la poutre)
+    s = r_ext + 4.0                      # vis de coin : à côté du collier, accessibles par-dessous
+    cote = max(MOTEUR_VTOL_DIAM + 4, 2 * s + 8)
     lg = min(36.0, cote - 6)             # longueur du collier
-    wp = cq.Workplane("YZ", origin=(x0 - lg / 2, y0, zb))
-    corps = wp.circle(r_ext).extrude(lg)
+    return r_int, r_ext, zp, s, cote, lg
+
+
+def support_moteur(x0, y0=POUTRE_Y):
+    """Collier serré sur la poutre (2 vis M3 + écrous) surmonté d'une bride carrée.
+
+    La platine moteur se visse sur la bride par 4 vis M3 x 8 passées par-dessous, à côté
+    du collier : on les atteint avec un tournevis même quand le support est sur la poutre.
+    """
+    zb = POUTRE_Z
+    r_int, r_ext, zp, s, cote, lg = _geom_support()
+    corps = cq.Workplane("YZ", origin=(x0 - lg / 2, y0, zb)).circle(r_ext).extrude(lg)
     corps = corps.union(cq.Workplane("XY", origin=(x0, y0, zb)).box(lg, POUTRE_D + 4, zp, centered=(True, True, False)))
     corps = corps.union(cq.Workplane("XY", origin=(x0, y0, zb + zp)).box(cote, cote, 4, centered=(True, True, False))
-                        .edges("|Z").fillet(6))
+                        .edges("|Z").fillet(5))
     corps = corps.union(cq.Workplane("XY", origin=(x0, y0, zb - r_ext - 8)).box(lg, 12, 9, centered=(True, True, False)))
     corps = corps.cut(cq.Workplane("YZ", origin=(x0 - lg / 2 - 2, y0, zb)).circle(r_int).extrude(lg + 4))
     corps = corps.cut(cq.Workplane("XY", origin=(x0, y0, zb - r_ext - 12)).box(lg + 4, 1.5, r_ext + 12, centered=(True, True, False)))
-    for dx in (-lg / 4, lg / 4):  # vis de serrage M3
+    for dx in (-lg / 4, lg / 4):  # vis de serrage M3 + écrou logé dans un hexagone
         corps = corps.cut(cq.Workplane("XZ", origin=(0, y0 + 10, 0)).center(x0 + dx, zb - r_ext - 3.5)
                           .circle(1.65).extrude(20))
-    # perçage exact du moteur (vis M3 dégagées sur toute la hauteur) et logement central
-    plat = cq.Workplane("XY", origin=(x0, y0, zb + 1))
-    corps = corps.cut(cq.Workplane("XY", origin=(x0, y0, zb + zp - 2)).circle(5.5).extrude(10))
+        corps = corps.cut(cq.Workplane("XZ", origin=(0, y0 + 6.01, 0)).center(x0 + dx, zb - r_ext - 3.5)
+                          .polygon(6, 6.4).extrude(2.6))
+    # vis de coin M3 (passage) et logements des têtes de vis du moteur
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            corps = corps.cut(cq.Workplane("XY", origin=(x0 + sx * s, y0 + sy * s, zb + zp - 1)).circle(1.65).extrude(6))
     for dx, dy in MOTEUR_VTOL_TROUS:
-        corps = corps.cut(plat.center(dx, dy).circle(1.7).extrude(zp + 8))
+        corps = corps.cut(cq.Workplane("XY", origin=(x0 + dx, y0 + dy, zb + zp + 0.8)).circle(3.3).extrude(4))
+    corps = corps.cut(cq.Workplane("XY", origin=(x0, y0, zb + zp + 1)).circle(6.0).extrude(4))
     return corps
+
+
+def platine_moteur(x0, y0=POUTRE_Y):
+    """Platine vissée sous le moteur (vis M3 par-dessous, têtes logées dans la bride),
+    puis posée sur la bride et tenue par 4 vis de coin M3 x 8 qui s'y taraudent."""
+    zb = POUTRE_Z
+    r_int, r_ext, zp, s, cote, lg = _geom_support()
+    z0 = zb + zp + 4
+    p = (cq.Workplane("XY", origin=(x0, y0, z0)).box(cote, cote, 4, centered=(True, True, False))
+         .edges("|Z").fillet(5))
+    for dx, dy in MOTEUR_VTOL_TROUS:
+        p = p.cut(cq.Workplane("XY", origin=(x0 + dx, y0 + dy, z0 - 1)).circle(1.7).extrude(6))
+    for sx in (-1, 1):
+        for sy in (-1, 1):  # avant-trous des vis de coin
+            p = p.cut(cq.Workplane("XY", origin=(x0 + sx * s, y0 + sy * s, z0 - 1)).circle(1.3).extrude(4.5))
+    p = p.cut(cq.Workplane("XY", origin=(x0, y0, z0 - 1)).circle(6.0).extrude(6))
+    return p
 
 
 def patte(x0, y0=POUTRE_Y):
@@ -729,6 +760,7 @@ def inventaire():
         ("plateau_electronique", plateau_electronique, 1, "PETG", "Z", 1.2, 0.30, False),
         ("plateau_compagnon", plateau_compagnon, 1, "PETG", "Z", 1.2, 0.30, False),
         ("support_moteur", lambda: support_moteur(X_MOT_AV), 4, "PETG", "Zinv", 1.6, 0.40, False),
+        ("platine_moteur", lambda: platine_moteur(X_MOT_AV), 4, "PETG", "Z", 1.6, 1.0, False),
         ("patte_atterrissage", lambda: patte(X_PATTE_AV), 4, "TPU 95A", "Z", 1.6, 0.25, False),
         ("bloc_queue", bloc_queue, 1, "PLA Aero", "Z", 1.2, 0.08, True),
     ]

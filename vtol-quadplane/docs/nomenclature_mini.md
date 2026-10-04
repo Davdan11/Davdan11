@@ -50,7 +50,7 @@ Environ 1 bobine de [PLA Aero](https://ca.store.bambulab.com/products/pla-aero),
 
 ## Petite quincaillerie (≈ 40 à 60 $)
 
-Vis M2 × 6 autotaraudeuses (4, pour les trappes de servo d'aileron ; les vis fournies avec les servos servent pour la profondeur), prises XT60, câble silicone 14 et 20 AWG, 5 condensateurs 220–470 µF 35 V (un par ESC), vis M3 × 16 pour les colliers, M3 × 8 pour les moteurs, guignols et tringles, ruban de charnière, colle CA, velcro et sangle de batterie.
+Vis M2 × 6 autotaraudeuses (4, pour les trappes de servo d'aileron ; les vis fournies avec les servos servent pour la profondeur), prises XT60, câble silicone 14 et 20 AWG, 5 condensateurs 220–470 µF 35 V (un par ESC), supports moteurs : 8 vis M3 × 16 + 8 écrous (colliers), 16 vis M3 × 8 (platines), 20 vis M3 × 6 (5 moteurs), guignols et tringles, ruban de charnière, colle CA, velcro et sangle de batterie.
 
 ## Si tu ne les as pas déjà
 

@@ -72,7 +72,7 @@ def placements(nom):
     """Copies de la pièce dans l'assemblage (transformations sur la pièce droite)."""
     dx = P.X_MOT_AR - P.X_MOT_AV
     dxp = P.X_PATTE_AR - P.X_PATTE_AV
-    if nom == "support_moteur":
+    if nom in ("support_moteur", "platine_moteur"):
         return [(0, False), (dx, False), (0, True), (dx, True)]
     if nom == "patte_atterrissage":
         return [(0, False), (dxp, False), (0, True), (dxp, True)]
@@ -93,7 +93,7 @@ def materiel():
         y = s * POUTRE_Y
         cyl(POUTRE_D / 2, (POUTRE_DEBUT, y, zb), (POUTRE_DEBUT + POUTRE_LONG, y, zb), "carbone")
         for xm in (P.X_MOT_AV, P.X_MOT_AR):
-            zm = zb + (POUTRE_D + JEU_TUBE) / 2 + 4.8   # dessus de la platine moteur
+            zm = zb + (POUTRE_D + JEU_TUBE) / 2 + 8.8   # dessus de la platine moteur
             hm = MOTEUR_VTOL_HAUT
             cyl(MOTEUR_VTOL_DIAM / 2, (xm, y, zm), (xm, y, zm + hm), "moteur")
             cyl(2.5, (xm, y, zm + hm), (xm, y, zm + hm + 10), "carbone", 12)
