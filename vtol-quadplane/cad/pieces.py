@@ -7,7 +7,7 @@ l'impression et de les exporter.
 import math
 
 import cadquery as cq
-from shapely.affinity import scale as sh_scale
+from shapely.affinity import scale as sh_scale, translate
 from shapely.geometry import LineString, Point, Polygon, box
 from shapely.ops import unary_union
 
@@ -96,7 +96,7 @@ def extrude_xz(geom, y0, y1):
 
 
 def section_coque(code, corde, xmin=0.0, xmax=1.0, tubes=(), ames=0, peau=PEAU,
-                  ame=AME):
+                  ame=AME, ame_tube=0.8):
     """Section creuse d'un profil : peau + âmes en zigzag + fourreaux de tubes.
 
     tubes : liste de (fraction de corde, diamètre du tube)
@@ -129,6 +129,9 @@ def section_coque(code, corde, xmin=0.0, xmax=1.0, tubes=(), ames=0, peau=PEAU,
         cz = naca_cambrure(code, xc) * corde
         c = Point(xc * corde, cz)
         coque = coque.union(c.buffer(d / 2 + JEU_TUBE / 2 + FOURREAU).intersection(zone))
+        # âme verticale : relie le fourreau aux deux peaux (sinon il flotte dans le vide)
+        coque = coque.union(box(xc * corde - ame_tube / 2, -100, xc * corde + ame_tube / 2, 100)
+                            .intersection(zone))
         trous.append(c.buffer(d / 2 + JEU_TUBE / 2))
     if trous:
         coque = coque.difference(unary_union(trous))
@@ -194,10 +197,14 @@ def segment_aile(i):
     if i == segments_aileron()[0]:  # baie de servo d'aileron (servo 9 g couché, palonnier sous l'aile)
         profil = Polygon(naca_points(PROFIL_AILE, CORDE))
         bloc = profil.intersection(box(0.45 * CORDE, -50, 0.64 * CORDE, 50))
-        poche = bloc.intersection(box(0.47 * CORDE, -50, 0.62 * CORDE, 10.0))
-        yc = max(ya, AILERON_DEBUT) + 42
+        z_bas = min(naca_surfaces(PROFIL_AILE, CORDE, f)[1] for f in (0.47, 0.545, 0.62))
+        poche = bloc.intersection(box(0.47 * CORDE, -50, 0.62 * CORDE, z_bas + 13.5))
+        yc = Y_GUIGNOL_AILERON
         seg = seg.union(extrude_xz(bloc, yc - 22, yc + 22))
         seg = seg.cut(extrude_xz(poche, yc - 15, yc + 15))
+        # passage du fil du servo vers l'emplanture (il suit ensuite les alvéoles de l'aile)
+        fil = Point(0.52 * CORDE, z_bas + 6.5).buffer(3.0)
+        seg = seg.cut(extrude_xz(fil, yc - 30, yc - 14))
 
     if ya < POUTRE_Y < yb:  # passage des câbles vers la poutre
         trou = (cq.Workplane("XY").workplane(offset=-30)
@@ -205,6 +212,10 @@ def segment_aile(i):
         seg = seg.cut(trou)
 
     return caler(seg, CALAGE_AILE)
+
+
+Y_GUIGNOL_AILERON = AILERON_DEBUT + 42      # en face de la baie du servo d'aileron
+Y_GUIGNOL_PROF = STAB_DEMI_ENV - 14          # près du bloc de queue droit (servo de profondeur)
 
 
 def segments_aileron():
@@ -221,14 +232,72 @@ def aileron(i):
     if i != segs[-1]:
         a1 -= AILERON_JEU / 2
     xa = AILERON_X + AILERON_JEU / 2 / CORDE
-    sect = section_coque(PROFIL_AILE, CORDE, xmin=xa, tubes=[(0.80, 2.0)])
+    xj, dj = AILERON_JONC
+    sect = section_coque(PROFIL_AILE, CORDE, xmin=xa, tubes=[AILERON_JONC], ames=2,
+                         peau=PEAU_GOUVERNE)
     pleine = Polygon(naca_points(PROFIL_AILE, CORDE)).intersection(
         box(xa * CORDE, -50, CORDE, 50))
-    pleine = pleine.difference(Point(0.80 * CORDE, naca_cambrure(PROFIL_AILE, 0.80) * CORDE)
-                               .buffer(1.0 + JEU_TUBE / 2))
+    pleine = pleine.difference(Point(xj * CORDE, naca_cambrure(PROFIL_AILE, xj) * CORDE)
+                               .buffer(dj / 2 + JEU_TUBE / 2))
     ail = extrude_xz(sect, a0, a1)
-    ail = ail.union(extrude_xz(pleine, a0, a0 + 1.0)).union(extrude_xz(pleine, a1 - 1.0, a1))
+    ail = ail.union(extrude_xz(pleine, a0, a0 + 1.2)).union(extrude_xz(pleine, a1 - 1.2, a1))
+    if i == segs[0]:  # fente du guignol (le guignol PETG s'y glisse par-dessous)
+        yh = Y_GUIGNOL_AILERON
+        ail = ail.cut(extrude_xz(_fente_guignol(PROFIL_AILE, CORDE, xa, -1), yh - 1.1, yh + 1.1))
     return caler(ail, CALAGE_AILE)
+
+
+def _x_guignol(corde, xa):
+    """Étendue du guignol le long de la corde : juste derrière l'avant de la gouverne."""
+    x0 = xa * corde + PEAU_GOUVERNE
+    return x0, x0 + 0.10 * corde
+
+
+def _fente_guignol(code, corde, xa, sens):
+    """Volume (2D) retiré dans la gouverne pour loger le guignol : tout sauf la peau opposée.
+
+    sens = -1 : guignol sous la gouverne ; +1 : guignol sur le dessus."""
+    profil = Polygon(naca_points(code, corde))
+    x0, x1 = _x_guignol(corde, xa)
+    garde = translate(profil, 0, sens * PEAU_GOUVERNE)  # garde la peau du côté opposé
+    return profil.intersection(garde).intersection(box(x0 - 0.1, -100, x1 + 0.1, 100))
+
+
+def guignol(code, corde, xa, jonc, sens, haut):
+    """Guignol en PETG imprimé à plat : plaque de 2 mm qui remplit la gouverne sur sa
+    hauteur, enfilée sur le jonc carbone et collée aux deux peaux, avec une patte qui
+    sort de 'haut' mm pour la chape de la tringle."""
+    profil = Polygon(naca_points(code, corde))
+    x0, x1 = _x_guignol(corde, xa)
+    dedans = _fente_guignol(code, corde, xa, sens).buffer(-0.1)
+    zs = [z for x in (x0, x1) for z in naca_surfaces(code, corde, x / corde)]
+    if sens < 0:
+        z_bord = min(zs)
+        patte = box(x0, z_bord - haut, x1, z_bord + 2)
+    else:
+        z_bord = max(zs)
+        patte = box(x0, z_bord - 2, x1, z_bord + haut)
+    plaque = dedans.union(patte.difference(profil)).union(patte.intersection(dedans.buffer(0.5)))
+    plaque = plaque.buffer(0.8).buffer(-0.8)  # arrondit les angles
+    xj, dj = jonc
+    trous = [Point(xj * corde, naca_cambrure(code, xj) * corde).buffer(dj / 2 + 0.15)]
+    for f in (0.55, 0.85):  # deux trous Ø1,6 pour le Z de la tringle
+        trous.append(Point(x0 + 3.0, z_bord + sens * f * haut).buffer(0.8))
+    return plaque.difference(unary_union(trous))
+
+
+def guignol_aileron():
+    xa = AILERON_X + AILERON_JEU / 2 / CORDE
+    g = guignol(PROFIL_AILE, CORDE, xa, AILERON_JONC, -1, GUIGNOL_HAUT * CORDE)
+    yh = Y_GUIGNOL_AILERON
+    return caler(extrude_xz(g, yh - 1.0, yh + 1.0), CALAGE_AILE)
+
+
+def guignol_profondeur():
+    xp = PROFONDEUR_X + 0.5 / STAB_CORDE
+    g = guignol(STAB_PROFIL, STAB_CORDE, xp, PROFONDEUR_JONC, +1, GUIGNOL_HAUT * 2 * STAB_CORDE)
+    yh = Y_GUIGNOL_PROF
+    return extrude_xz(g, yh - 1.0, yh + 1.0).translate((STAB_BA_X, 0, STAB_Z))
 
 
 def saumon():
@@ -477,10 +546,11 @@ def patte(x0, y0=POUTRE_Y):
     bague = (cq.Workplane("YZ", origin=(x0 - 9, y0, zb)).circle(POUTRE_D / 2 + 4).extrude(18)
              .cut(cq.Workplane("YZ", origin=(x0 - 10, y0, zb)).circle(POUTRE_D / 2 - 0.1).extrude(20)))
     jambe = (cq.Workplane("XY", origin=(x0, y0, zb - PATTE_LONG + 5))
-             .rect(b0, b1).workplane(offset=PATTE_LONG - 15).rect(b2, b3).loft())
+             .rect(b0, b1).workplane(offset=PATTE_LONG - 5 - (POUTRE_D / 2 + 1)).rect(b2, b3).loft())
     pied = (cq.Workplane("XY", origin=(x0, y0, zb - PATTE_LONG)).rect(*PATTE_PIED).extrude(6)
             .edges("|Z").fillet(8))
-    return bague.union(jambe).union(pied)
+    alesage = cq.Workplane("YZ", origin=(x0 - 10, y0, zb)).circle(POUTRE_D / 2 - 0.1).extrude(20)
+    return bague.union(jambe).union(pied).cut(alesage)
 
 
 # ---------------------------------------------------------------------------
@@ -502,8 +572,13 @@ def stab_segment(i):
 def profondeur(i):
     ya, yb = _stab_bornes()[i]
     xp = PROFONDEUR_X + 0.5 / STAB_CORDE
-    sect = section_coque(STAB_PROFIL, STAB_CORDE, xmin=xp, tubes=[PROFONDEUR_JONC], peau=0.5)
-    return extrude_xz(sect, ya + 0.5, yb - 0.5).translate((STAB_BA_X, 0, STAB_Z))
+    sect = section_coque(STAB_PROFIL, STAB_CORDE, xmin=xp, tubes=[PROFONDEUR_JONC], ames=2,
+                         peau=PEAU_GOUVERNE)
+    prof = extrude_xz(sect, ya + 0.5, yb - 0.5)
+    if i == STAB_N_SEG - 1:  # fente du guignol, côté droit près du servo
+        yh = Y_GUIGNOL_PROF
+        prof = prof.cut(extrude_xz(_fente_guignol(STAB_PROFIL, STAB_CORDE, xp, +1), yh - 1.1, yh + 1.1))
+    return prof.translate((STAB_BA_X, 0, STAB_Z))
 
 
 def bloc_queue():
@@ -586,6 +661,8 @@ def inventaire():
         ("patte_atterrissage", lambda: patte(X_PATTE_AV), 4, "TPU 95A", "Z", 1.6, 0.25, False),
         ("bloc_queue", bloc_queue, 1, "PLA Aero", "Z", 1.2, 0.08, True),
     ]
+    inv.append(("guignol_aileron", guignol_aileron, 2, "PETG", "Y", 2.0, 1.0, False))
+    inv.append(("guignol_profondeur", guignol_profondeur, 1, "PETG", "Y", 2.0, 1.0, False))
     if NACELLE_X is not None:
         inv.append(("support_nacelle", support_nacelle, 1, "PETG", "Z", 1.6, 0.30, False))
     for i in range(STAB_N_SEG):

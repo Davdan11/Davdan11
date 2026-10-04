@@ -10,7 +10,7 @@ Les pièces imprimées sont conçues pour une **Bambu Lab A1** (plateau 256 mm) 
 |---|---|
 | Envergure / corde | 1800 mm / 220 mm (aile rectangulaire, NACA 4412, calage 2,5°) |
 | Longueur | ≈ 1050 mm |
-| Masse au décollage | ≈ 4,7 kg |
+| Masse au décollage | ≈ 4,8 kg |
 | Propulsion VTOL | 4 × T-Motor MN4014 KV400, hélices P15×5, poussée/poids ≈ 2,2 (≈ 1,8 batterie affaissée) |
 | Croisière | SunnySky X2820 V3 KV570 en pousseur, hélice APC 10×7EP |
 | Batterie | GAONENG 6S3P Molicel P45B (13,5 Ah, 290 Wh, 1,34 kg) |
@@ -23,7 +23,7 @@ Les pièces imprimées sont conçues pour une **Bambu Lab A1** (plateau 256 mm) 
 | Distance de l'intervention | 5 km | 10 km | 15 km | 20 km |
 |---|---|---|---|---|
 | Temps pour arriver | 3 min | 7 min | 10 min | 13 min |
-| Temps sur place | ≈ 69 min | ≈ 53 min | ≈ 36 min | ≈ 20 min |
+| Temps sur place | ≈ 68 min | ≈ 52 min | ≈ 35 min | ≈ 19 min |
 
 Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](docs/bilan.md). La **liste d'achats avec les modèles exacts et les liens** est dans [docs/nomenclature.md](docs/nomenclature.md) : le CAD est percé pour ces modèles.
 
@@ -32,11 +32,11 @@ Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](do
 | | **Huard Mini** (pour apprendre) | **Huard DFR** (la mission) |
 |---|---|---|
 | Envergure | 1,2 m | 1,8 m |
-| Masse au décollage | ≈ 1,8 kg | ≈ 4,7 kg |
+| Masse au décollage | ≈ 1,8 kg | ≈ 4,8 kg |
 | Batterie | LiPo 4S 4000 mAh | Li-ion 6S3P 13,5 Ah |
 | Moteurs | 5 × Emax ECO III 2807 (pièces FPV) | 4 × T-Motor MN4014 + SunnySky X2820 |
 | Caméra / 4G | non (caméra d'action en option) | SIYI A8 mini puis ZT6, Raspberry Pi, modem 4G |
-| Autonomie estimée | ≈ 35 min | ≈ 85 min |
+| Autonomie estimée | ≈ 34 min | ≈ 84 min |
 | Budget de l'avion | **≈ 670 $ CA** | ≈ 3 100 $ CA |
 | Liste d'achats | [docs/nomenclature_mini.md](docs/nomenclature_mini.md) | [docs/nomenclature.md](docs/nomenclature.md) |
 | Bilan | [docs/bilan_mini.md](docs/bilan_mini.md) | [docs/bilan.md](docs/bilan.md) |
@@ -97,7 +97,9 @@ Les STL de `cad/out/stl/` sont déjà dans la bonne orientation et s'impriment s
 
 | Pièces | Filament | Réglages |
 |---|---|---|
-| `aile_segment_*`, `aileron_*`, `stab_segment_*`, `profondeur_*` | PLA Aero | **1 paroi, 0 % de remplissage, 0 couche dessus/dessous**, détection des parois fines activée. Les parois, âmes et fourreaux sont déjà modélisés. Exception : `aile_segment_3_*` avec 2 couches dessus/dessous pour fermer la baie de servo. |
+| `aile_segment_*`, `stab_segment_*` | PLA Aero | **1 paroi, 0 % de remplissage, 0 couche dessus/dessous**, détection des parois fines activée. Les parois, âmes et fourreaux sont déjà modélisés. Exception : le segment qui porte la baie du servo d'aileron (segment 3 du DFR, segment 2 du Mini) avec 2 couches dessus/dessous pour fermer la baie. |
+| `aileron_*`, `profondeur_*` | PLA Aero | **2 parois** (peau de 0,8 mm), 0 % de remplissage, **3 couches dessus/dessous** pour fermer les bouts |
+| `guignol_aileron` (×2), `guignol_profondeur` | PETG | À plat, 100 % de remplissage : petites pièces qui travaillent |
 | `fuselage_avant`, `fuselage_milieu`, `fuselage_queue` | PLA Aero | 1 paroi, 0 % de remplissage, 0 couche dessus/dessous |
 | `fuselage_nez` | PLA Aero | 1 paroi, 0 % de remplissage, **3 couches dessus** (la pointe est fermée) |
 | `saumon_*`, `bloc_queue_*` | PLA Aero | 3 parois, 8 % gyroïde |
@@ -113,11 +115,13 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
 
 ## Assemblage, dans l'ordre
 
-1. **Aile** : coller les segments 1→4 de chaque côté à la CA en les enfilant sur un tube de 12 mm pour l'alignement. Coller le saumon. Poser les ailerons (segments 3 et 4, réunis par un jonc de 2 mm) avec une charnière en ruban sur l'extrados. Loger le servo d'aileron dans la baie du segment 3.
+1. **Aile** : coller les segments de chaque côté à la CA en les enfilant sur le longeron pour l'alignement. Coller le saumon.
+   - **Ailerons** : enfiler les deux morceaux d'aileron sur le jonc carbone de 2 mm, glisser le **guignol PETG** par-dessous dans sa fente (le jonc passe dans son trou), puis coller le tout à la CA. Poser l'aileron avec une charnière en ruban sur l'extrados.
+   - **Servo d'aileron** : il se loge couché dans la baie ouverte sous l'aile, palonnier vers le bas. Son fil passe par le trou vers l'emplanture et suit les alvéoles de l'aile jusqu'au fuselage. La tringle de 1,5 mm relie le palonnier au trou du bas du guignol. Coupe à travers l'aile : [DFR](docs/images/coupe_servo_aileron_dfr.png), [Mini](docs/images/coupe_servo_aileron_mini.png).
 2. **Longerons** : le tube de 8 mm × 500 mm est collé à l'époxy dans les segments 2 à 4. Le tube de 12 mm et la goupille de 6 mm restent démontables.
 3. **Pylônes** : les coller à l'époxy sous le segment 2, centrés à 330 mm de l'axe. Le trou de câble du pylône doit tomber sur celui de l'aile. Percer la poutre au même endroit (Ø 8 mm) pour passer les fils.
 4. **Poutres** : enfiler dans l'ordre la patte avant, le support moteur avant, le pylône, la patte arrière, le support moteur arrière, puis coller le bloc de queue au bout. Distances depuis le bout avant du tube : moteur avant 22 mm, moteur arrière 752 mm.
-5. **Empennage** : coller les 3 segments de stab sur le tube de 6 mm et le jonc de 3 mm, puis les insérer dans les deux blocs de queue. Coller les 3 profondeurs sur le jonc de 2 mm et les poser avec une charnière en ruban. Le servo de profondeur va dans la baie du bloc droit et ses fils passent dans la poutre.
+5. **Empennage** : coller les 3 segments de stab sur le tube de 6 mm et le jonc de 3 mm, puis les insérer dans les deux blocs de queue. Enfiler les profondeurs sur leur jonc carbone, glisser le **guignol de profondeur** par le dessus dans sa fente (côté droit, près du bloc de queue), coller, et poser avec une charnière en ruban. Le servo de profondeur va dans la baie du bloc droit (palonnier côté intérieur) et ses fils passent dans la poutre.
 6. **Fuselage** : coller la cloison moteur en PETG à l'époxy au bout de la queue. Glisser le plateau électronique dans l'avant et le plateau compagnon dans le milieu, puis coller avant, milieu et queue (lèvres d'emboîtement). Le nez reste amovible, tenu par du ruban ou deux aimants. Le tube de Pitot sort par la pointe du nez.
 7. **Nacelle** : coller la selle sous l'avant du fuselage, puis la visser avec 2 vis M3 × 35 qui traversent le fond et les plots du plateau de batterie (têtes plates sous la batterie). La nacelle se visse sous la selle : 4 × M2.5 pour l'A8 mini, 4 × M3 pour la ZT6. Les câbles passent par l'ouverture centrale.
 8. **Électronique** : TBS Lucid H7 Wing sur les entretoises 30,5 mm du plateau compagnon, Raspberry Pi sur les entretoises 58 × 49 mm, modem 4G collé à côté. GPS Micro M10 et antennes LTE sur le dessus du fuselage milieu, loin des câbles de puissance. Les ESC Tekko32 sont fixés sur les poutres près des moteurs, à l'air, avec leur condensateur.

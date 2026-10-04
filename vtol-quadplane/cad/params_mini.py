@@ -41,6 +41,9 @@ FOURREAU = 1.2
 AILERON_X = 0.75
 AILERON_JEU = 1.0
 AILERON_DEBUT = 300.0
+AILERON_JONC = (0.80, 2.0)   # jonc carbone dans l'aileron (fraction de corde, Ø)
+PEAU_GOUVERNE = 0.8        # peau des ailerons et profondeurs (2 lignes)
+GUIGNOL_HAUT = 0.065        # hauteur de la patte du guignol, en fraction de corde
 AILERON_FIN = 596.0
 
 # --- Poutres et propulsion VTOL -----------------------------------------------
@@ -94,7 +97,7 @@ NACELLE_X = None          # pas de nacelle : caméra d'action collée sur le des
 NACELLE_Z = None
 NACELLE_TROUS = []
 BATTERIE = (150.0, 53.0, 30.0)   # CNHL G+Plus 4S 4000 mAh : 147 x 51 x 28 mm + jeu
-X_BATTERIE = -140.0       # centre de la batterie pour le centrage (voir docs/bilan_mini.md)
+X_BATTERIE = -146.0       # centre de la batterie pour le centrage (voir docs/bilan_mini.md)
 
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 90.0
@@ -104,7 +107,7 @@ STAB_Z = POUTRE_Z + 17.0
 STAB_DEMI_ENV = POUTRE_Y - (POUTRE_D / 2 + 7)
 STAB_N_SEG = 2
 PROFONDEUR_X = 0.70
-PROFONDEUR_JONC = (0.72, 1.5)
+PROFONDEUR_JONC = (0.73, 1.5)
 STAB_LONGERON_D = 5.0     # tube 5x3 mm
 STAB_LONGERON_X = 0.25
 STAB_JONC_D = 2.0
