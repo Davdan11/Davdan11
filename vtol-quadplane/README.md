@@ -126,8 +126,8 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
      4. Visser la **trappe** par-dessous avec **2 vis M2 × 6** (autotaraudeuses, dans les avant-trous du cadre). Elle tient le servo prisonnier.
      5. Remettre le palonnier à travers la fente de la trappe, et relier son trou à celui du bas du guignol par une tringle de 1,5 mm (Z d'un côté, chape de l'autre pour régler).
      Pour changer un servo : 2 vis, la trappe s'enlève, le servo sort.
-2. **Longerons** : le tube de 8 mm × 500 mm est collé à l'époxy dans les segments 2 à 4. Le tube de 12 mm et la goupille de 6 mm restent démontables.
-3. **Pylônes** : les coller à l'époxy sous le segment 2, centrés à 330 mm de l'axe. Le trou de câble du pylône doit tomber sur celui de l'aile. Percer la poutre au même endroit (Ø 8 mm) pour passer les fils.
+2. **Longerons** : le longeron extérieur (DFR : tube 8 mm × 500 mm ; Mini : 6 mm × 310 mm) est collé à l'époxy dans les segments extérieurs. Le longeron principal (12 mm ; Mini 10 mm) et la goupille (6 mm ; Mini 4 mm) traversent le fuselage et restent démontables.
+3. **Pylônes** : les coller à l'époxy sous l'aile, centrés à **360 mm** de l'axe du fuselage (Mini : **210 mm**), sous le segment qui porte le trou de câble. Le trou de câble du pylône doit tomber sur celui de l'aile. Percer la poutre au même endroit (Ø 8 mm) pour passer les fils.
 4. **Poutres et moteurs VTOL** (vue éclatée : [DFR](docs/images/support_moteur_dfr.png), [Mini](docs/images/support_moteur_mini.png)) :
    1. **Moteur sur sa platine, à l'établi** : poser la platine sous le moteur et visser les 4 vis M3 du moteur par-dessous. Longueur = 4 mm de platine + la profondeur filetée du moteur − 0,5 mm (en général M3 × 6 ou × 8). Une vis trop longue touche le bobinage et le détruit. Les têtes de ces vis se logeront dans les creux de la bride.
    2. **Enfiler sur la poutre**, dans l'ordre : patte avant, support moteur avant, pylône, patte arrière, support moteur arrière. Coller ensuite le bloc de queue au bout.
