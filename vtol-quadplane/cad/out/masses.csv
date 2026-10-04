@@ -22,15 +22,15 @@ fuselage_queue,1,PLA Aero,108x103x106,19.4,19.4,301
 cloison_moteur,1,PETG,50x52x5,12.6,12.6,357
 plateau_electronique,1,PETG,233x80x17,48.8,48.8,-74
 plateau_compagnon,1,PETG,128x70x8,22.6,22.6,162
-support_nacelle,1,PETG,83x61x15,36.4,36.4,-147
-support_moteur,4,PETG,48x48x34,24.3,97.1,62
+support_moteur,4,PETG,49x49x34,24.5,97.9,62
 patte_atterrissage,4,TPU 95A,44x26x234,44.3,177.4,62
-bloc_queue_droit,1,PLA Aero,180x30x182,66.2,66.2,699
-bloc_queue_gauche,1,PLA Aero,180x30x182,66.2,66.2,699
+bloc_queue_droit,1,PLA Aero,180x30x182,66.2,66.2,698
+bloc_queue_gauche,1,PLA Aero,180x30x182,66.2,66.2,698
+support_nacelle,1,PETG,83x61x15,36.4,36.4,-147
 stab_segment_1,1,PLA Aero,77x10x230,24.4,24.4,679
 profondeur_1,1,PLA Aero,33x6x229,6.8,6.8,729
 stab_segment_2,1,PLA Aero,77x10x230,24.4,24.4,679
 profondeur_2,1,PLA Aero,33x6x229,6.8,6.8,729
 stab_segment_3,1,PLA Aero,77x10x230,24.4,24.4,679
 profondeur_3,1,PLA Aero,33x6x229,6.8,6.8,729
-TOTAL pièces imprimées,,,,,1430,171
+TOTAL pièces imprimées,,,,,1431,170

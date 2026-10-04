@@ -21,11 +21,11 @@ import trimesh
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pieces as P  # noqa: E402
+from params import VERSION  # noqa: E402
 from params import *  # noqa: E402,F403
 
 ICI = os.path.dirname(os.path.abspath(__file__))
-X_BATTERIE = -116.0  # position du centre de la batterie (voir docs/bilan.md pour le centrage)
-OUT = os.path.join(ICI, "out")
+OUT = os.path.join(ICI, "out" if VERSION == "dfr" else f"out_{VERSION}")
 
 COULEURS = {
     "PLA Aero": (235, 235, 228),
@@ -91,10 +91,11 @@ def materiel():
         y = s * POUTRE_Y
         cyl(POUTRE_D / 2, (POUTRE_DEBUT, y, zb), (POUTRE_DEBUT + POUTRE_LONG, y, zb), "carbone")
         for xm in (P.X_MOT_AV, P.X_MOT_AR):
-            zm = zb + 13
-            cyl(MOTEUR_VTOL_DIAM / 2, (xm, y, zm), (xm, y, zm + 35), "moteur")
-            cyl(2.5, (xm, y, zm + 35), (xm, y, zm + 45), "carbone", 12)
-            cyl(HELICE_VTOL / 2, (xm, y, zm + 44), (xm, y, zm + 45), "helice", 48)
+            zm = zb + (POUTRE_D + JEU_TUBE) / 2 + 4.8   # dessus de la platine moteur
+            hm = MOTEUR_VTOL_HAUT
+            cyl(MOTEUR_VTOL_DIAM / 2, (xm, y, zm), (xm, y, zm + hm), "moteur")
+            cyl(2.5, (xm, y, zm + hm), (xm, y, zm + hm + 10), "carbone", 12)
+            cyl(HELICE_VTOL / 2, (xm, y, zm + hm + 9), (xm, y, zm + hm + 10), "helice", 48)
         # longerons d'aile extérieurs
         x, z = P.position_tube(PROFIL_AILE, CORDE, LONGERON_EXT_X, CALAGE_AILE)
         cyl(LONGERON_EXT_D / 2, (x, s * LONGERON_EXT_DEBUT, z), (x, s * LONGERON_EXT_FIN, z), "carbone")
@@ -104,25 +105,29 @@ def materiel():
     cyl(STAB_LONGERON_D / 2, (xs, -POUTRE_Y - 10, STAB_Z), (xs, POUTRE_Y + 10, STAB_Z), "carbone")
     # propulseur
     xm = SECTIONS_FUS[-1][0]
-    cyl(17.5, (xm, 0, POUSSEUR_Z), (xm + 34, 0, POUSSEUR_Z), "moteur")
-    cyl(HELICE_POUSSEUR / 2, (xm + 44, 0, POUSSEUR_Z), (xm + 45, 0, POUSSEUR_Z), "helice", 48)
-    # batterie 4S2P 21700 et contrôleur de vol
+    dp, lp = POUSSEUR_DIMS
+    cyl(dp / 2, (xm, 0, POUSSEUR_Z), (xm + lp, 0, POUSSEUR_Z), "moteur")
+    cyl(HELICE_POUSSEUR / 2, (xm + lp + 10, 0, POUSSEUR_Z), (xm + lp + 11, 0, POUSSEUR_Z), "helice", 48)
+    # batterie et électronique
     lb, wb, hb = BATTERIE
     bat = trimesh.creation.box(extents=(lb, wb, hb))
     bat.apply_translation((X_BATTERIE, 0, PLATEAU_Z + 2 + hb / 2))
     objs.append((bat, "batterie"))
-    for ext, pos in (((36, 36, 8), (122, 0, -50)),       # contrôleur de vol
-                     ((85, 56, 20), (190, 0, -48))):     # Raspberry Pi + modem 4G
+    x0c, x1c = COMPAGNON_X
+    blocs = [(FC_DIMS, (x0c + FC_DIMS[0] / 2 - 5, 0, COMPAGNON_Z + 8 + FC_DIMS[2] / 2))]
+    if PI5:
+        blocs.append(((85, 56, 20), (x1c - 38, 0, COMPAGNON_Z + 17)))   # Raspberry Pi + modem 4G
+    for ext, pos in blocs:
         b = trimesh.creation.box(extents=ext)
         b.apply_translation(pos)
         objs.append((b, "electronique"))
-    # nacelle caméra (boîtier + boule)
-    n = trimesh.creation.box(extents=(70, 70, 30))      # SIYI ZT6 : 73,5 x 75 x 131,5 mm
-    n.apply_translation((NACELLE_X, 0, NACELLE_Z - 15))
-    objs.append((n, "electronique"))
-    boule = trimesh.creation.icosphere(subdivisions=2, radius=37)
-    boule.apply_translation((NACELLE_X, 0, NACELLE_Z - 131.5 + 37))
-    objs.append((boule, "TPU 95A"))
+    if NACELLE_X is not None:  # nacelle caméra (boîtier + boule), SIYI ZT6 : 73,5 x 75 x 131,5 mm
+        n = trimesh.creation.box(extents=(70, 70, 30))
+        n.apply_translation((NACELLE_X, 0, NACELLE_Z - 15))
+        objs.append((n, "electronique"))
+        boule = trimesh.creation.icosphere(subdivisions=2, radius=37)
+        boule.apply_translation((NACELLE_X, 0, NACELLE_Z - 131.5 + 37))
+        objs.append((boule, "TPU 95A"))
     return objs
 
 
@@ -234,7 +239,7 @@ def main():
 
     if not rapide:
         r = os.path.join(OUT, "rendus")
-        rendu(scene, os.path.join(r, "vue_3-4.png"), 25, -130, "Huard DFR — vue 3/4", zoom=1.25)
+        rendu(scene, os.path.join(r, "vue_3-4.png"), 25, -130, f"Huard {VERSION.upper()} — vue 3/4", zoom=1.25)
         rendu(scene, os.path.join(r, "vue_dessus.png"), 90, -90, "Vue de dessus", zoom=1.0)
         rendu(scene, os.path.join(r, "vue_cote.png"), 0, -90, "Vue de côté")
         rendu(scene, os.path.join(r, "vue_face.png"), 5, 180, "Vue de face", zoom=1.0)
