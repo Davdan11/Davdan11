@@ -4,6 +4,7 @@ Chaque fonction renvoie un solide CadQuery placé dans le repère global de
 l'avion (voir params.py). build.py se charge de les orienter pour
 l'impression et de les exporter.
 """
+import functools
 import math
 
 import cadquery as cq
@@ -440,6 +441,7 @@ def _lamelle(x, ep, retrait_ext, retrait_int):
     return s
 
 
+@functools.lru_cache(maxsize=None)
 def fuselage_complet():
     ext = _loft_fus(SECTIONS_FUS)
     inte = _loft_fus(SECTIONS_FUS[1:], PAROI_FUS)  # pointe du nez pleine
@@ -478,7 +480,43 @@ def fuselage_complet():
     fus = fus.cut(cq.Workplane("YZ", origin=(SECTIONS_FUS[0][0] - 5, 0, SECTIONS_FUS[0][3]))
                   .circle(2.1).extrude(40))
 
+    # trappe d'accès sur le dessus du fuselage : feuillure (rebord d'appui) + ouverture
+    a, b = TRAPPE_ACCES_X
+    hw, zt = TRAPPE_ACCES_DEMI_LARG, TRAPPE_ACCES_Z
+    l16 = _loft_fus(SECTIONS_FUS[1:], 1.6)
+    l31 = _loft_fus(SECTIONS_FUS[1:], 3.1)
+    def boite(x0, x1, y, z0):
+        return cq.Workplane().box(x1 - x0, 2 * y, 200 - z0, centered=(False, True, False)).translate((x0, 0, z0))
+    bande = boite(a - 3, b + 3, hw + 3, zt - 4).cut(boite(a + 4, b - 4, hw - 4, zt - 10))
+    fus = fus.union(bande.intersect(inte.cut(l31)))
+    for xv in _vis_trappe_acces():  # bossages des 2 vis M2 de la trappe
+        w, h, zc = _section_a(xv)
+        z_haut = zc + h / 2 - 2.5
+        bos = cq.Workplane("XY", origin=(xv, 0, z_haut - 7)).circle(3.5).extrude(7)
+        fus = fus.union(bos.intersect(inte))
+    # (les avant-trous Ø1,6 des vis se percent à la main en se servant de la trappe comme gabarit)
+    fus = fus.cut(boite(a, b, hw, zt).intersect(ext.cut(l16)))
+
     return fus, ext
+
+
+def _vis_trappe_acces():
+    a, b = TRAPPE_ACCES_X
+    return (a + 2.0, b - 2.0)
+
+
+def trappe_acces():
+    """Trappe PETG sur le dessus du fuselage : accès au contrôleur de vol (USB, carte SD,
+    câblage) sans démonter l'avion. Elle repose sur une feuillure et tient par 2 vis M2."""
+    a, b = TRAPPE_ACCES_X
+    hw, zt = TRAPPE_ACCES_DEMI_LARG, TRAPPE_ACCES_Z
+    ext = _loft_fus(SECTIONS_FUS)
+    l16 = _loft_fus(SECTIONS_FUS[1:], 1.6)
+    t = (cq.Workplane().box(b - a - 0.6, 2 * hw - 0.6, 200 - zt, centered=(False, True, False))
+         .translate((a + 0.3, 0, zt)).intersect(ext.cut(l16)))
+    for xv in _vis_trappe_acces():
+        t = t.cut(cq.Workplane("XY", origin=(xv, 0, zt - 5)).circle(1.2).extrude(60))
+    return t
 
 
 def cloison_moteur():
@@ -492,6 +530,7 @@ def cloison_moteur():
     return cloison.cut(perc)
 
 
+@functools.lru_cache(maxsize=None)
 def fuselage_pieces():
     fus, _ = fuselage_complet()
     c = COUPES_FUS
@@ -561,15 +600,22 @@ def plateau_compagnon():
     for sx in (-1, 1):  # entretoises du contrôleur de vol
         for sy in (-1, 1):
             pos = (xf + sx * FC_TROUS[0] / 2, sy * FC_TROUS[1] / 2)
-            p = p.union(cq.Workplane("XY", origin=(0, 0, z0 + ep)).center(*pos).circle(3.2).extrude(6))
+            p = p.union(cq.Workplane("XY", origin=(0, 0, z0 + ep)).center(*pos).circle(4.0).extrude(6))
             p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(*pos).circle(1.35).extrude(ep + 8))
+            # logement d'insert laiton M3 (Ø4 x 5,7) posé au fer à souder
+            p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 + ep + 0.2)).center(*pos).circle(2.0).extrude(6))
+    # flèche « avant » : la flèche du contrôleur de vol doit pointer dans le même sens
+    fl = [(xf - FC_DIMS[0] / 2 - 2, 0), (xf - FC_DIMS[0] / 2 + 6, -4), (xf - FC_DIMS[0] / 2 + 6, 4)]
+    p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 + ep - 0.6)).polyline(fl).close().extrude(1))
     if PI5:
         cx = x1 - 38
         for sx in (-1, 1):  # trous de fixation Raspberry Pi : 58 x 49 mm
             for sy in (-1, 1):
                 pos = (cx + sx * 29, sy * 24.5)
-                p = p.union(cq.Workplane("XY", origin=(0, 0, z0 + ep)).center(*pos).circle(3.2).extrude(5))
+                p = p.union(cq.Workplane("XY", origin=(0, 0, z0 + ep)).center(*pos).circle(3.5).extrude(5))
                 p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(*pos).circle(1.1).extrude(ep + 7))
+                # logement d'insert laiton M2.5 (Ø3,5 x 4)
+                p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 + ep + 1)).center(*pos).circle(1.75).extrude(5))
         p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(cx, 0).rect(30, 20).extrude(ep + 2)
                   .edges("|Z").fillet(4))
     return p
@@ -764,6 +810,7 @@ def inventaire():
         ("patte_atterrissage", lambda: patte(X_PATTE_AV), 4, "TPU 95A", "Z", 1.6, 0.25, False),
         ("bloc_queue", bloc_queue, 1, "PLA Aero", "Z", 1.2, 0.08, True),
     ]
+    inv.append(("trappe_acces", trappe_acces, 1, "PETG", "Zinv", 1.6, 1.0, False))
     inv.append(("guignol_aileron", guignol_aileron, 2, "PETG", "Y", 2.0, 1.0, False))
     inv.append(("cadre_servo_aile", cadre_servo_aile, 1, "PETG", "Zcal", 1.2, 0.30, True))
     inv.append(("trappe_servo_aile", trappe_servo_aile, 1, "PETG", "Zcal", 1.2, 1.0, True))

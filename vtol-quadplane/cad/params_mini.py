@@ -85,6 +85,9 @@ COMPAGNON_Z = -50.0
 COMPAGNON_LARG = 52.0
 FC_TROUS = (30.0, 24.0)    # AtomRC F405 NAVI : 50 x 30 x 12 mm, trous Ø3 en 30 x 24 mm
 FC_DIMS = (50.0, 30.0, 12.0)
+TRAPPE_ACCES_X = (52.0, 150.0)   # trappe sur le dessus du fuselage, au-dessus du contrôleur
+TRAPPE_ACCES_DEMI_LARG = 24.0
+TRAPPE_ACCES_Z = 15.5
 PI5 = False
 POUSSEUR_Z = -4.0
 # 5e moteur Emax ECO III 2807 1300KV (le même que les moteurs VTOL), hélice Gemfan 7x6E
@@ -97,7 +100,7 @@ NACELLE_X = None          # pas de nacelle : caméra d'action collée sur le des
 NACELLE_Z = None
 NACELLE_TROUS = []
 BATTERIE = (150.0, 53.0, 30.0)   # CNHL G+Plus 4S 4000 mAh : 147 x 51 x 28 mm + jeu
-X_BATTERIE = -146.0       # centre de la batterie pour le centrage (voir docs/bilan_mini.md)
+X_BATTERIE = -147.0       # centre de la batterie pour le centrage (voir docs/bilan_mini.md)
 
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 90.0

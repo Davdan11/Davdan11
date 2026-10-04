@@ -108,6 +108,7 @@ Les STL de `cad/out/stl/` sont déjà dans la bonne orientation et s'impriment s
 | `support_moteur` (×4) | PETG | 4 parois, 40 % gyroïde |
 | `cloison_moteur`, `support_nacelle` | PETG | 4 parois, 50 % |
 | `plateau_electronique`, `plateau_compagnon` | PETG | 3 parois, 30 % |
+| `trappe_acces` | PETG | Posée sur sa face intérieure (déjà orientée), 3 parois, 30 % |
 | `patte_atterrissage` (×4) | TPU 95A | 3 parois, 25 %, vitesse lente |
 
 Conseils pour la A1 : son plateau bouge d'avant en arrière, donc place les pièces hautes et minces (segments d'aile) avec la corde dans l'axe avant-arrière. Ajoute une bordure (brim) de 5 mm et ralentis les parois extérieures à environ 150 mm/s. Imprime d'abord **un seul segment d'aile** pour valider le profil PLA Aero (température, moussage, masse ≈ 60 g).
@@ -137,7 +138,12 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
 5. **Empennage** : coller les 3 segments de stab sur le tube de 6 mm et le jonc de 3 mm, puis les insérer dans les deux blocs de queue. Enfiler les profondeurs sur leur jonc carbone, glisser le **guignol de profondeur** par le dessus dans sa fente (côté droit, près du bloc de queue), coller, et poser avec une charnière en ruban. Le servo de profondeur s'enfonce dans la baie du bloc droit par la face intérieure, jusqu'à ce que ses oreilles touchent la face du bloc : on les **visse avec les 2 vis fournies avec le servo**, dans les avant-trous déjà percés. Son fil descend dans la poutre par le trou au fond de la baie.
 6. **Fuselage** : coller la cloison moteur en PETG à l'époxy au bout de la queue. Glisser le plateau électronique dans l'avant et le plateau compagnon dans le milieu, puis coller avant, milieu et queue (lèvres d'emboîtement). Le nez reste amovible, tenu par du ruban ou deux aimants. Le tube de Pitot sort par la pointe du nez.
 7. **Nacelle** : coller la selle sous l'avant du fuselage, puis la visser avec 2 vis M3 × 35 qui traversent le fond et les plots du plateau de batterie (têtes plates sous la batterie). La nacelle se visse sous la selle : 4 × M2.5 pour l'A8 mini, 4 × M3 pour la ZT6. Les câbles passent par l'ouverture centrale.
-8. **Électronique** : TBS Lucid H7 Wing sur les entretoises 30,5 mm du plateau compagnon, Raspberry Pi sur les entretoises 58 × 49 mm, modem 4G collé à côté. GPS Micro M10 et antennes LTE sur le dessus du fuselage milieu, loin des câbles de puissance. Les ESC Tekko32 sont fixés sur les poutres près des moteurs, à l'air, avec leur condensateur.
+8. **Contrôleur de vol** (vue : [DFR](docs/images/trappe_acces_dfr.png), [Mini](docs/images/trappe_acces_mini.png)) :
+   1. **Inserts laiton** : avant de coller le plateau compagnon, poser au fer à souder (≈ 220 °C) un insert M3 dans chacune des 4 entretoises du contrôleur, et un insert M2.5 dans chacune des entretoises du Raspberry Pi (DFR). Un filetage en métal ne s'use pas, contrairement à une vis dans du plastique.
+   2. **Plateau compagnon** : le glisser dans le tronçon milieu avant d'assembler le fuselage, puis le coller à l'époxy contre les flancs.
+   3. **Contrôleur** : le poser avec les **œillets caoutchouc fournis** (ils filtrent les vibrations), la **flèche de la carte dans le sens de la flèche gravée** sur le plateau, vers le nez. Le fixer avec 4 vis M3 × 10 en nylon dans les inserts, serrées à la main : il faut écraser les œillets à peine.
+   4. **Trappe d'accès** sur le dessus du fuselage, au-dessus du contrôleur : elle repose sur une feuillure et tient par **2 vis M2 × 6**. Au premier montage, percer les avant-trous Ø1,6 mm dans les bossages en se servant des trous de la trappe comme gabarit. Par la trappe, on branche le câble USB pour la configuration, on change la carte SD et on vérifie le câblage sans rien démonter.
+   5. **GPS** collé à plat sous la trappe ou sur le dessus du tronçon queue, loin des câbles de puissance, avec assez de fil pour ouvrir la trappe. Raspberry Pi, modem et antennes LTE (DFR) sur le même plateau ou contre les flancs. Les ESC VTOL sont fixés sur les poutres (voir l'étape 4).
 
 ### Moteurs et sens de rotation (ordre ArduPilot Quad X)
 

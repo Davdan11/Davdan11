@@ -89,6 +89,9 @@ COMPAGNON_Z = -62.0
 COMPAGNON_LARG = 70.0
 FC_TROUS = (30.5, 30.5)         # entraxe des trous du contrôleur de vol (x, y)
 FC_DIMS = (54.0, 36.0, 13.0)
+TRAPPE_ACCES_X = (70.0, 215.0)   # trappe sur le dessus du fuselage, au-dessus du contrôleur
+TRAPPE_ACCES_DEMI_LARG = 33.0
+TRAPPE_ACCES_Z = 20.0           # bas de la découpe (au-dessus des fourreaux de longeron)
 PI5 = True                      # entretoises Raspberry Pi 5 (58 x 49 mm)
 POUSSEUR_Z = -5.0         # axe du moteur propulsif
 # SunnySky X2820 V3 : 4 vis M3 en croix, 19 mm et 25 mm
@@ -102,7 +105,7 @@ NACELLE_Z = -96.0         # face de fixation de la nacelle (dessous du support)
 # perçages de nacelle (entraxe x, entraxe y, Ø) : SIYI A8 mini M2.5 et SIYI ZT6 M3
 NACELLE_TROUS = [(30.0, 25.0, 2.7), (45.0, 40.0, 3.3)]
 BATTERIE = (134.0, 83.0, 67.0)   # GAONENG GNB 6S3P P45B : 130 x 81 x 65 mm + jeu
-X_BATTERIE = -122.0       # centre de la batterie pour le centrage (voir docs/bilan.md)
+X_BATTERIE = -123.0       # centre de la batterie pour le centrage (voir docs/bilan.md)
 
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 110.0

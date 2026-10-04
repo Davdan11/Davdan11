@@ -77,7 +77,8 @@ Les pages Amazon.ca n'ont pas pu être ouvertes (CAPTCHA) : liens trouvés en re
 
 ## 8. Petite quincaillerie
 
-- Vis M2 × 6 autotaraudeuses : 4 pour les trappes de servo d'aileron (les vis fournies avec les servos servent pour la profondeur)
+- Contrôleur de vol : 4 inserts laiton M3 (Ø4 × 5,7) + 4 vis M3 × 10 en nylon ; Raspberry Pi : 4 inserts laiton M2.5 + 4 vis M2.5 × 6
+- Vis M2 × 6 autotaraudeuses : 6 (trappes de servo d'aileron et trappe d'accès) (les vis fournies avec les servos servent pour la profondeur)
 
 - Supports moteurs : 8 vis M3 × 16 + 8 écrous M3 (colliers), 16 vis M3 × 8 (vis de coin des platines), 16 vis M3 pour les moteurs (longueur selon la profondeur filetée du moteur, souvent × 6 ou × 8)
 - Vis M3 : 2 × 35 mm pour la selle de nacelle, 4 × 8 mm pour le contrôleur de vol
