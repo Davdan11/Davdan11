@@ -1,5 +1,6 @@
 # Paramètres de départ ArduPilot Plane (4.5 / 4.6) pour le quadplane Huard DFR (6S)
-# Contrôleur : Matek H743-WING V3. Charger dans Mission Planner :
+# Contrôleur : TBS Lucid H7 Wing (firmware ArduPlane, cible TBS_LUCID_H7_WING).
+# Charger dans Mission Planner :
 #   Config > Full Parameter List > Load from file, puis Write Params et redémarrer.
 # Les noms de paramètres changent parfois d'une version à l'autre : si Mission
 # Planner signale un paramètre inconnu, chercher son nouveau nom dans la doc.
@@ -24,7 +25,9 @@ Q_RTL_MODE,1
 Q_LAND_FINAL_ALT,6
 Q_GUIDED_MODE,1
 
-# --- Sorties (S1 à S4 = moteurs VTOL en DShot, même groupe de timers) --------
+# --- Sorties -----------------------------------------------------------------
+# Groupes de timers du Lucid H7 Wing : 1-2 | 3-4 | 5-6 | 7-10 | 11-12
+# S1 à S4 = moteurs VTOL en DShot (Tekko32 F4 45A)
 # Ordre ArduPilot Quad X : 1 avant droit (CCW), 2 arrière gauche (CCW),
 #                          3 avant gauche (CW),  4 arrière droit (CW)
 SERVO1_FUNCTION,33
@@ -47,8 +50,11 @@ AIRSPEED_CRUISE,25
 AIRSPEED_MAX,30
 TRIM_THROTTLE,50
 
-# --- Batterie 6S3P Li-ion (capteur intégré au H743-WING) ---------------------
+# --- Batterie GAONENG 6S3P Li-ion (capteur intégré au Lucid H7 Wing) ---------
+# Vérifier la tension affichée au multimètre : TBS indique BATT_VOLT_MULT 21,
+# la doc ArduPilot 11. Garder celui qui donne la bonne tension.
 BATT_MONITOR,4
+BATT_AMP_PERVLT,40
 BATT_CAPACITY,13500
 BATT_LOW_VOLT,18.9
 BATT_CRT_VOLT,18.0
@@ -69,15 +75,17 @@ RTL_ALTITUDE,60
 # rayon du cercle (m) ; en mission AUTO, utiliser LOITER_UNLIM sur le point de l'accident
 WP_LOITER_RAD,120
 
-# --- Nacelle caméra (SIYI ou autre, liaison série) ---------------------------
-# Adapter SERIALx au port réellement câblé (voir la page ArduPilot du H743-WING)
+# --- Ports série du Lucid H7 Wing ---------------------------------------------
+# SERIAL2 (UART2) = GPS Holybro Micro M10 (réglage par défaut)
+# SERIAL6 (UART6) = récepteur ExpressLRS RP3 V2 (CRSF, câbler TX6 et RX6)
+SERIAL6_PROTOCOL,23
+# SERIAL4 (UART4) = nacelle SIYI (A8 mini ou ZT6)
+SERIAL4_PROTOCOL,8
+SERIAL4_BAUD,115
 MNT1_TYPE,8
-SERIAL6_PROTOCOL,8
-SERIAL6_BAUD,115
-
-# --- Ordinateur de bord (Raspberry Pi, MAVLink vers la 4G) -------------------
-SERIAL2_PROTOCOL,2
-SERIAL2_BAUD,921
+# SERIAL7 (UART7, avec contrôle de flux) = Raspberry Pi, MAVLink vers la 4G
+SERIAL7_PROTOCOL,2
+SERIAL7_BAUD,921
 
 # --- Divers ------------------------------------------------------------------
 ARMING_CHECK,1

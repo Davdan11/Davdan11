@@ -10,22 +10,22 @@ Les pièces imprimées sont conçues pour une **Bambu Lab A1** (plateau 256 mm) 
 |---|---|
 | Envergure / corde | 1800 mm / 220 mm (aile rectangulaire, NACA 4412, calage 2,5°) |
 | Longueur | ≈ 1050 mm |
-| Masse au décollage | ≈ 4,6 kg |
-| Propulsion VTOL | 4 moteurs 3515 ~400 KV en 6S, hélices 13 po, poussée/poids ≈ 2,1 |
-| Croisière | 1 moteur 2814 ~700 KV en pousseur, hélice 10 × 7 |
-| Batterie | Li-ion 6S3P 21700 (13,5 Ah, 290 Wh) |
+| Masse au décollage | ≈ 4,7 kg |
+| Propulsion VTOL | 4 × T-Motor MN4014 KV400, hélices P15×5, poussée/poids ≈ 2,2 (≈ 1,8 batterie affaissée) |
+| Croisière | SunnySky X2820 V3 KV570 en pousseur, hélice APC 10×7EP |
+| Batterie | GAONENG 6S3P Molicel P45B (13,5 Ah, 290 Wh, 1,34 kg) |
 | Vitesses | transit 90 km/h, vol en cercle au-dessus des lieux ≈ 58 km/h |
-| Charge utile | nacelle stabilisée zoom + thermique, Raspberry Pi 5, modem 4G |
-| Pilote automatique | ArduPilot sur Matek H743-WING V3 |
+| Charge utile | nacelle SIYI A8 mini (puis ZT6 thermique), Raspberry Pi 5, modem 4G Waveshare SIM7600G-H |
+| Pilote automatique | ArduPilot sur TBS Lucid H7 Wing |
 
 **Temps disponible au-dessus des lieux** (estimation, avec 15 % de réserve) :
 
 | Distance de l'intervention | 5 km | 10 km | 15 km | 20 km |
 |---|---|---|---|---|
 | Temps pour arriver | 3 min | 7 min | 10 min | 13 min |
-| Temps sur place | ≈ 70 min | ≈ 53 min | ≈ 37 min | ≈ 20 min |
+| Temps sur place | ≈ 69 min | ≈ 53 min | ≈ 36 min | ≈ 20 min |
 
-Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](docs/bilan.md) et la liste d'achats dans [docs/nomenclature.md](docs/nomenclature.md).
+Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](docs/bilan.md). La **liste d'achats avec les modèles exacts et les liens** est dans [docs/nomenclature.md](docs/nomenclature.md) : le CAD est percé pour ces modèles.
 
 ## Contenu
 
@@ -37,7 +37,7 @@ cad/out/stl/            pièces prêtes à trancher, déjà orientées pour l'im
 cad/out/step/           pièces dans le repère avion, pour modifier dans Fusion ou Onshape
 cad/out/assemblage.glb  avion complet en 3D
 calc/dimensionnement.py bilan de masse, centrage, poussée, autonomie, rayon d'action
-ardupilot/huard_dfr.param  paramètres de départ ArduPilot
+ardupilot/huard_dfr.param  paramètres de départ ArduPilot (TBS Lucid H7 Wing)
 docs/                   concept du système, nomenclature, bilan
 ```
 
@@ -61,11 +61,11 @@ cd .. && python calc/dimensionnement.py
                                        ▼ nacelle caméra sous l'avant du fuselage
 ```
 
-- **Deux poutres carbone** à ±330 mm sous l'aile, tenues par des pylônes collés. Elles portent les 4 moteurs VTOL (±365 mm autour du centre de gravité, hélices de 13 po) et l'empennage en H au bout.
+- **Deux poutres carbone** à ±360 mm sous l'aile, tenues par des pylônes collés. Elles portent les 4 moteurs VTOL (±365 mm autour du centre de gravité, hélices de 15 po) et l'empennage en H au bout.
 - **Le fuselage** est en 4 tronçons. Le nez est amovible pour glisser la batterie sur le plateau avant. Le contrôleur de vol, le Raspberry Pi et le modem 4G sont sur un second plateau dans le tronçon du milieu. Le moteur propulsif est boulonné sur une cloison en PETG au bout de la queue.
 - **La nacelle caméra** est fixée sous l'avant du fuselage, sur une selle en PETG vissée à travers le plateau. Elle voit vers l'avant et vers le bas sans être gênée par les hélices.
 - **L'aile** est en 2 demi-ailes de 4 segments chacune, enfilées sur un longeron de 12 mm qui traverse le fuselage. Un longeron de 8 mm prend le relais vers les bouts d'aile et une goupille de 6 mm fixe l'incidence.
-- **Le centre de gravité** visé est à 62 mm du bord d'attaque (28 % de corde), au milieu des 4 moteurs VTOL. Avec la batterie 6S3P, il tombe en place quand **le centre de la batterie est à 85 mm devant le bord d'attaque**, sans lest (voir docs/bilan.md).
+- **Le centre de gravité** visé est à 62 mm du bord d'attaque (28 % de corde), au milieu des 4 moteurs VTOL. Avec la batterie GAONENG, il tombe en place quand **le centre de la batterie est à 116 mm devant le bord d'attaque**, c'est-à-dire batterie poussée presque au bout du plateau, sans lest (voir docs/bilan.md).
 
 ## Impression (Bambu Studio)
 
@@ -95,8 +95,8 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
 4. **Poutres** : enfiler dans l'ordre la patte avant, le support moteur avant, le pylône, la patte arrière, le support moteur arrière, puis coller le bloc de queue au bout. Distances depuis le bout avant du tube : moteur avant 22 mm, moteur arrière 752 mm.
 5. **Empennage** : coller les 3 segments de stab sur le tube de 6 mm et le jonc de 3 mm, puis les insérer dans les deux blocs de queue. Coller les 3 profondeurs sur le jonc de 2 mm et les poser avec une charnière en ruban. Le servo de profondeur va dans la baie du bloc droit et ses fils passent dans la poutre.
 6. **Fuselage** : coller la cloison moteur en PETG à l'époxy au bout de la queue. Glisser le plateau électronique dans l'avant et le plateau compagnon dans le milieu, puis coller avant, milieu et queue (lèvres d'emboîtement). Le nez reste amovible, tenu par du ruban ou deux aimants. Le tube de Pitot sort par la pointe du nez.
-7. **Nacelle** : coller la selle sous l'avant du fuselage, puis la visser avec 4 vis M3 qui traversent le fond et le plateau électronique (têtes plates sous la batterie). Les câbles passent par l'ouverture du fond.
-8. **Électronique** : contrôleur de vol sur les entretoises 30,5 mm du plateau compagnon, Raspberry Pi sur les entretoises 58 × 49 mm, modem 4G à côté. Antennes 4G et GPS sur le dessus du fuselage milieu, loin des câbles de puissance. Les ESC VTOL sont fixés sur les poutres près des moteurs, à l'air.
+7. **Nacelle** : coller la selle sous l'avant du fuselage, puis la visser avec 2 vis M3 × 35 qui traversent le fond et les plots du plateau de batterie (têtes plates sous la batterie). La nacelle se visse sous la selle : 4 × M2.5 pour l'A8 mini, 4 × M3 pour la ZT6. Les câbles passent par l'ouverture centrale.
+8. **Électronique** : TBS Lucid H7 Wing sur les entretoises 30,5 mm du plateau compagnon, Raspberry Pi sur les entretoises 58 × 49 mm, modem 4G collé à côté. GPS Micro M10 et antennes LTE sur le dessus du fuselage milieu, loin des câbles de puissance. Les ESC Tekko32 sont fixés sur les poutres près des moteurs, à l'air, avec leur condensateur.
 
 ### Moteurs et sens de rotation (ordre ArduPilot Quad X)
 
@@ -112,16 +112,16 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
 
 ## ArduPilot
 
-1. Flasher ArduPlane sur le H743-WING (Mission Planner > Install Firmware).
+1. Flasher ArduPlane sur le Lucid H7 Wing, cible `TBS_LUCID_H7_WING` (Mission Planner > Install Firmware).
 2. Charger `ardupilot/huard_dfr.param`, écrire, puis redémarrer **deux fois** : `Q_ENABLE` fait apparaître les autres paramètres.
 3. Calibrer l'accéléromètre, le compas et la radio, et vérifier le capteur de vitesse.
 4. Dans Mission Planner, ouvrir Motor Test et vérifier l'ordre et le sens de chaque moteur VTOL **sans hélices**.
 5. Vérifier le sens des gouvernes en mode FBWA : quand on penche l'avion à droite, l'aileron droit doit se baisser.
-6. Adapter les numéros de ports série de la nacelle et du Raspberry Pi au câblage réel.
+6. Câbler selon le fichier de paramètres : GPS sur UART2, récepteur sur UART6, nacelle sur UART4, Raspberry Pi sur UART7. Vérifier la tension de batterie au multimètre (`BATT_VOLT_MULT`).
 
 ## Plan d'essais en vol
 
-1. **Sol** : centre de gravité à 62 mm (± 5 mm), failsafe radio testé, batterie chargée. Pour les premiers vols avec la petite batterie 6S2P, ajouter environ 150 g de lest dans le nez.
+1. **Sol** : centre de gravité à 62 mm (± 5 mm), failsafe radio testé, batterie chargée.
 2. **Stationnaire** en QSTABILIZE puis QHOVER, à 2–3 m, par vent calme, dans un grand champ. Ensuite **QAUTOTUNE** axe par axe.
 3. **Première transition** en QLOITER à 40 m ou plus, puis passer en FBWA : le propulseur accélère et les moteurs VTOL s'arrêtent vers 16 m/s. Repasser en QLOITER pour revenir.
 4. **AUTOTUNE** avion, puis réglage de `TRIM_THROTTLE` et de `AIRSPEED_CRUISE`.
@@ -136,7 +136,7 @@ Au-dessus de 250 g, le drone doit être **immatriculé auprès de Transports Can
 
 - Les performances viennent d'un modèle simple (Cd0 estimé à 0,05 avec la nacelle). Seuls les logs des premiers vols donneront la vraie consommation.
 - La masse des pièces imprimées est une estimation à partir du CAD. Pèse-les.
-- Les moteurs VTOL doivent donner **au moins 2,3 kg de poussée chacun** en 6S avec une hélice de 13 po. Vérifie la table de poussée du fabricant avant d'acheter.
+- Avec une batterie Li-ion qui s'affaisse sous charge, la poussée VTOL réelle tombe à environ 80 % de la table T-Motor (poussée/poids ≈ 1,8). C'est suffisant mais sans grande marge : si le stationnaire est juste, passer aux hélices P16×5,4.
 - Le contrôle en lacet en stationnaire vient seulement du couple des moteurs. S'il est mou, incliner les supports moteurs de 3 à 5° (voir la documentation ArduPilot sur l'inclinaison des moteurs de quadplane).
-- Les répartitions de sorties DShot dépendent des groupes de timers du H743-WING. Vérifier dans la documentation ArduPilot de la carte.
+- Le poids du Lucid H7 Wing n'est pas publié (≈ 30 g supposé) et le moteur X2820 KV570 n'a pas de fiche de poussée publiée : à mesurer.
 - C'est un **prototype de démonstration**. Un usage réel par la police demandera des redondances (parachute, double lien de contrôle), des essais documentés et une certification.

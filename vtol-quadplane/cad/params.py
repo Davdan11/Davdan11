@@ -1,5 +1,7 @@
 """Paramètres du quadplane « Huard DFR » (drone premier intervenant).
 
+Les cotes des composants achetés viennent de leurs fiches techniques (docs/nomenclature.md).
+
 Repère global (mm) :
   X vers l'arrière, origine au bord d'attaque de l'aile
   Y vers la droite (envergure)
@@ -44,14 +46,17 @@ AILERON_DEBUT = 480.0     # sur les segments 3 et 4
 AILERON_FIN = 896.0
 
 # --- Poutres (booms) et propulsion VTOL ---------------------------------------
-POUTRE_Y = 330.0          # entraxe des poutres : ±330
+POUTRE_Y = 360.0          # entraxe des poutres : ±360 (garde entre hélices VTOL et propulseur)
 POUTRE_D = 16.0           # tube carbone 16x14 mm, 1000 mm
 POUTRE_Z = -25.0          # axe des poutres
 CG_X = 62.0               # centre de gravité visé (28 % de corde)
 MOTEUR_ECART = 365.0      # moteurs VTOL à CG_X ± 365
 POUTRE_DEBUT = CG_X - MOTEUR_ECART - 22.0   # = -325
 POUTRE_LONG = 1000.0
-HELICE_VTOL = 13 * 25.4   # 13 pouces
+HELICE_VTOL = 15 * 25.4   # 15 pouces (T-Motor P15x5)
+# T-Motor MN4014 KV400 : 4 vis M3 sur un cercle de Ø25 mm
+MOTEUR_VTOL_TROUS_D = 25.0
+MOTEUR_VTOL_DIAM = 44.7
 
 # --- Fuselage -----------------------------------------------------------------
 PAROI_FUS = 1.0
@@ -70,21 +75,26 @@ SECTIONS_FUS = [
 SUPER_ELLIPSE_N = 3.0
 # nez (amovible) | avant | milieu | queue ; chaque tronçon fait au plus 250 mm
 COUPES_FUS = [-285.0, -190.0, 45.0, 255.0, 360.0]
-PLATEAU_X = (-185.0, 45.0)      # plateau électronique (batterie + contrôleur de vol)
+PLATEAU_X = (-188.0, 45.0)      # plateau de batterie
+PLATEAU_Z = -72.0               # dessus du fond du fuselage, sur 4 plots
 POUSSEUR_Z = -5.0         # axe du moteur propulsif
+# SunnySky X2820 V3 : 4 vis M3 en croix, 19 mm et 25 mm
+POUSSEUR_TROUS = (19.0, 25.0)
 HELICE_POUSSEUR = 10 * 25.4
 
 # --- Charge utile -------------------------------------------------------------
-NACELLE_X = -140.0        # centre de la nacelle caméra sous le fuselage
+NACELLE_X = -145.0        # centre de la nacelle caméra sous le fuselage
 NACELLE_Z = -96.0         # face de fixation de la nacelle (dessous du support)
-BATTERIE = (150.0, 70.0, 68.0)   # 6S3P 21700 : longueur, largeur, hauteur avec emballage
+# perçages de nacelle (entraxe x, entraxe y, Ø) : SIYI A8 mini M2.5 et SIYI ZT6 M3
+NACELLE_TROUS = [(30.0, 25.0, 2.7), (45.0, 40.0, 3.3)]
+BATTERIE = (134.0, 83.0, 67.0)   # GAONENG GNB 6S3P P45B : 130 x 81 x 65 mm + jeu
 
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 110.0
-STAB_BA_X = 625.0
+STAB_BA_X = 640.0
 STAB_PROFIL = "0009"
 STAB_Z = -8.0            # au-dessus des poutres, dans le souffle du propulseur
-STAB_DEMI_ENV = 315.0     # entre les deux blocs de queue
+STAB_DEMI_ENV = POUTRE_Y - 15.0   # entre les deux blocs de queue
 STAB_N_SEG = 3
 PROFONDEUR_X = 0.70
 STAB_LONGERON_D = 6.0     # tube 6x4 mm, 700 mm
@@ -94,10 +104,11 @@ STAB_JONC_X = 0.55
 DERIVE_CORDE_PIED = 140.0
 DERIVE_CORDE_SAUMON = 90.0
 DERIVE_HAUTEUR = 130.0
-DERIVE_BA_X = 625.0
+DERIVE_BA_X = 640.0
+BLOC_QUEUE_X0 = 600.0     # le bloc commence avant la dérive pour bien tenir la poutre
 
 # --- Atterrisseur -------------------------------------------------------------
-PATTE_LONG = 180.0        # sol à POUTRE_Z - PATTE_LONG = -205 mm (garde sous la nacelle)
+PATTE_LONG = 222.0        # sol à -247 mm : 20 mm sous la nacelle SIYI ZT6 (131,5 mm de haut)
 
 # --- Densités (g/cm³) pour l'estimation de masse ------------------------------
 DENSITE = {"PLA Aero": 0.65, "PLA": 1.24, "PETG": 1.27, "TPU 95A": 1.21}

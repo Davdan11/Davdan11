@@ -24,7 +24,7 @@ import pieces as P  # noqa: E402
 from params import *  # noqa: E402,F403
 
 ICI = os.path.dirname(os.path.abspath(__file__))
-X_BATTERIE = -85.0  # position du centre de la batterie (voir docs/bilan.md pour le centrage)
+X_BATTERIE = -116.0  # position du centre de la batterie (voir docs/bilan.md pour le centrage)
 OUT = os.path.join(ICI, "out")
 
 COULEURS = {
@@ -92,9 +92,9 @@ def materiel():
         cyl(POUTRE_D / 2, (POUTRE_DEBUT, y, zb), (POUTRE_DEBUT + POUTRE_LONG, y, zb), "carbone")
         for xm in (P.X_MOT_AV, P.X_MOT_AR):
             zm = zb + 13
-            cyl(18.5, (xm, y, zm), (xm, y, zm + 26), "moteur")
-            cyl(2.5, (xm, y, zm + 26), (xm, y, zm + 40), "carbone", 12)
-            cyl(HELICE_VTOL / 2, (xm, y, zm + 36), (xm, y, zm + 37), "helice", 48)
+            cyl(MOTEUR_VTOL_DIAM / 2, (xm, y, zm), (xm, y, zm + 35), "moteur")
+            cyl(2.5, (xm, y, zm + 35), (xm, y, zm + 45), "carbone", 12)
+            cyl(HELICE_VTOL / 2, (xm, y, zm + 44), (xm, y, zm + 45), "helice", 48)
         # longerons d'aile extérieurs
         x, z = P.position_tube(PROFIL_AILE, CORDE, LONGERON_EXT_X, CALAGE_AILE)
         cyl(LONGERON_EXT_D / 2, (x, s * LONGERON_EXT_DEBUT, z), (x, s * LONGERON_EXT_FIN, z), "carbone")
@@ -109,7 +109,7 @@ def materiel():
     # batterie 4S2P 21700 et contrôleur de vol
     lb, wb, hb = BATTERIE
     bat = trimesh.creation.box(extents=(lb, wb, hb))
-    bat.apply_translation((X_BATTERIE, 0, -76 + hb / 2))
+    bat.apply_translation((X_BATTERIE, 0, PLATEAU_Z + 2 + hb / 2))
     objs.append((bat, "batterie"))
     for ext, pos in (((36, 36, 8), (122, 0, -50)),       # contrôleur de vol
                      ((85, 56, 20), (190, 0, -48))):     # Raspberry Pi + modem 4G
@@ -117,11 +117,11 @@ def materiel():
         b.apply_translation(pos)
         objs.append((b, "electronique"))
     # nacelle caméra (boîtier + boule)
-    n = trimesh.creation.box(extents=(56, 56, 20))
-    n.apply_translation((NACELLE_X, 0, NACELLE_Z - 18))
+    n = trimesh.creation.box(extents=(70, 70, 30))      # SIYI ZT6 : 73,5 x 75 x 131,5 mm
+    n.apply_translation((NACELLE_X, 0, NACELLE_Z - 15))
     objs.append((n, "electronique"))
-    boule = trimesh.creation.icosphere(subdivisions=2, radius=30)
-    boule.apply_translation((NACELLE_X, 0, NACELLE_Z - 55))
+    boule = trimesh.creation.icosphere(subdivisions=2, radius=37)
+    boule.apply_translation((NACELLE_X, 0, NACELLE_Z - 131.5 + 37))
     objs.append((boule, "TPU 95A"))
     return objs
 

@@ -26,7 +26,7 @@ Le concept existe déjà aux États-Unis sous le nom de « Drone as First Respon
 
 | Fonction | Choix |
 |---|---|
-| Plateforme | Quadplane imprimé en 3D, 1,8 m, ≈ 4,6 kg |
+| Plateforme | Quadplane imprimé en 3D, 1,8 m, ≈ 4,7 kg |
 | Pilote automatique | ArduPilot : décollage et atterrissage verticaux, missions, retour automatique, failsafes |
 | Caméra | Nacelle stabilisée zoom + thermique, pointée par ArduPilot (mode « ROI » vers les coordonnées de l'appel) |
 | Ordinateur de bord | Raspberry Pi 5 : relaie la vidéo et la télémétrie par 4G |
@@ -66,7 +66,7 @@ Pour une station compacte, une version future pourrait avoir des ailes repliable
 
 ## Couverture d'un territoire
 
-Avec un transit à 90 km/h et environ 37 minutes sur place à 15 km, une station couvre environ 700 km². À titre d'exemple, 3 ou 4 stations couvriraient l'essentiel d'une MRC rurale ; en ville, les distances sont plus courtes et le temps sur place plus long.
+Avec un transit à 90 km/h et environ 36 minutes sur place à 15 km, une station couvre environ 700 km². À titre d'exemple, 3 ou 4 stations couvriraient l'essentiel d'une MRC rurale ; en ville, les distances sont plus courtes et le temps sur place plus long.
 
 ## Réglementation et acceptabilité
 

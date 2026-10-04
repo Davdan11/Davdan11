@@ -327,11 +327,13 @@ def fuselage_complet():
                   .extrude(140))
 
     # ouverture du dessous pour les câbles de la nacelle caméra
-    fus = fus.cut(cq.Workplane("XY", origin=(NACELLE_X, 0, -100)).rect(50, 36).extrude(20)
-                  .edges("|Z").fillet(6))
+    fus = fus.cut(cq.Workplane("XY", origin=(NACELLE_X, 0, -100)).rect(20, 16).extrude(20)
+                  .edges("|Z").fillet(4))
+    for dx in (-32.0, 32.0):  # vis de la selle de nacelle
+        fus = fus.cut(cq.Workplane("XY", origin=(NACELLE_X + dx, 0, -100)).circle(1.7).extrude(20))
 
     # tube de Pitot dans le nez
-    fus = fus.cut(cq.Workplane("YZ", origin=(-230, 0, SECTIONS_FUS[0][3]))
+    fus = fus.cut(cq.Workplane("YZ", origin=(SECTIONS_FUS[0][0] - 5, 0, SECTIONS_FUS[0][3]))
                   .circle(2.1).extrude(40))
 
     return fus, ext
@@ -343,13 +345,11 @@ def cloison_moteur():
     cloison = _lamelle(xm - ep, ep, PAROI_FUS + 0.15, None)
     o = (xm - 10, 0, POUSSEUR_Z)
     perc = cq.Workplane("YZ", origin=o).circle(5).extrude(20)
-    for k in range(8):  # fentes de Ø16 à Ø25 mm, 8 directions
-        a = 45 * k
-        perc = perc.union(cq.Workplane("YZ", origin=o)
-                          .center(10.25 * math.cos(math.radians(a)), 10.25 * math.sin(math.radians(a)))
-                          .slot2D(4.5 + 3.3, 3.3, a).extrude(20))
+    a, b = POUSSEUR_TROUS  # vis M3 en croix
+    for cy, cz in ((a / 2, 0), (-a / 2, 0), (0, b / 2), (0, -b / 2)):
+        perc = perc.union(cq.Workplane("YZ", origin=o).center(cy, cz).circle(1.7).extrude(20))
     for sy in (-1, 1):  # ouïes de refroidissement
-        perc = perc.union(cq.Workplane("YZ", origin=o).center(sy * 18, 0).rect(5, 14).extrude(20))
+        perc = perc.union(cq.Workplane("YZ", origin=o).center(sy * 17, sy * 10).circle(3).extrude(20))
     return cloison.cut(perc)
 
 
@@ -371,43 +371,49 @@ def fuselage_pieces():
 
 
 def plateau_electronique():
-    """Plancher glissé dans le fuselage : batterie (sangles) et vis du support de nacelle."""
-    z0, ep, larg = -78.0, 2.0, 76.0
+    """Plateau de batterie glissé dans le fuselage, posé sur 2 plots vissés à la selle de nacelle."""
+    z0, ep, larg = PLATEAU_Z, 2.0, 80.0
     x0, x1 = PLATEAU_X
     p = (cq.Workplane("XY", origin=(0, 0, z0)).center((x0 + x1) / 2, 0)
          .rect(x1 - x0, larg).extrude(ep).edges("|Z").fillet(6))
     # fentes pour sangles de batterie
     for xs in (x0 + 12, x0 + 122):
-        for ys in (-28.0, 28.0):
+        for ys in (-30.0, 30.0):
             p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(xs, ys)
                       .slot2D(22, 4, 90).extrude(ep + 2))
+    # plots jusqu'au fond du fuselage, traversés par les vis M3 de la selle
+    for dx in (-32.0, 32.0):
+        _, h, zc = _section_a(NACELLE_X + dx)
+        fond = zc - h / 2 + PAROI_FUS + 0.3
+        p = p.union(cq.Workplane("XY", origin=(NACELLE_X + dx, 0, fond)).circle(5).extrude(z0 - fond))
+        p = p.cut(cq.Workplane("XY", origin=(NACELLE_X + dx, 0, fond - 1)).circle(1.7).extrude(z0 - fond + ep + 2))
     return p
 
 
 def support_nacelle():
     """Selle collée et vissée sous le fuselage : face plane pour la nacelle caméra."""
-    x0, lx, ly = NACELLE_X, 76.0, 70.0
+    x0, lx, ly = NACELLE_X, 82.0, 60.0
     bloc = (cq.Workplane("XY", origin=(x0, 0, NACELLE_Z)).rect(lx, ly).extrude(25)
             .edges("|Z").fillet(8))
     _, ext = fuselage_complet()
     selle = bloc.cut(ext)
-    # passage de câbles et vis M3 (mêmes positions que le plateau électronique)
-    selle = selle.cut(cq.Workplane("XY", origin=(x0, 0, NACELLE_Z - 1)).rect(46, 32).extrude(40)
-                      .edges("|Z").fillet(6))
-    for dx in (-28.0, 28.0):
-        for ys in (-18.0, 18.0):
-            selle = selle.cut(cq.Workplane("XY", origin=(x0 + dx, ys, NACELLE_Z - 1))
-                              .circle(1.7).extrude(40))
-    # 4 trous Ø6,5 pour amortisseurs caoutchouc, entraxe 60 x 50 (à adapter à la nacelle)
-    for dx in (-30.0, 30.0):
-        for dy in (-25.0, 25.0):
-            selle = selle.cut(cq.Workplane("XY", origin=(x0 + dx, dy, NACELLE_Z - 1))
-                              .circle(3.25).extrude(8))
+    # passage de câbles au centre, vis M3 vers les plots du plateau
+    selle = selle.cut(cq.Workplane("XY", origin=(x0, 0, NACELLE_Z - 1)).rect(20, 16).extrude(40)
+                      .edges("|Z").fillet(4))
+    for dx in (-32.0, 32.0):
+        selle = selle.cut(cq.Workplane("XY", origin=(x0 + dx, 0, NACELLE_Z - 1)).circle(1.7).extrude(40))
+    # perçages de la nacelle (A8 mini et ZT6), taraudés dans le PETG
+    for ex, ey, d in NACELLE_TROUS:
+        for sx in (-1, 1):
+            for sy in (-1, 1):
+                selle = selle.cut(cq.Workplane("XY", origin=(x0 + sx * ex / 2, sy * ey / 2, NACELLE_Z - 1))
+                                  .circle(d / 2 - 0.25).extrude(12))
     return selle
 
 
 def plateau_compagnon():
-    """Plateau du fuselage milieu : contrôleur de vol, ordinateur de bord (Raspberry Pi 5), modem 4G."""
+    """Plateau du fuselage milieu : contrôleur de vol TBS Lucid H7 Wing (30,5 mm, M3),
+    Raspberry Pi 5 (58 x 49 mm, M2.5) ; le modem 4G se colle à côté."""
     z0, ep = -62.0, 2.0
     x0, x1, larg = 100.0, 228.0, 70.0
     p = (cq.Workplane("XY", origin=(0, 0, z0)).center((x0 + x1) / 2, 0)
@@ -422,7 +428,7 @@ def plateau_compagnon():
         for sy in (-1, 1):
             pos = (cx + sx * 29, sy * 24.5)
             p = p.union(cq.Workplane("XY", origin=(0, 0, z0 + ep)).center(*pos).circle(3.2).extrude(5))
-            p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(*pos).circle(1.35).extrude(ep + 7))
+            p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(*pos).circle(1.1).extrude(ep + 7))
     p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(cx, 0).rect(30, 20).extrude(ep + 2)
               .edges("|Z").fillet(4))
     return p
@@ -437,7 +443,7 @@ def support_moteur(x0, y0=POUTRE_Y):
     wp = cq.Workplane("YZ", origin=(x0 - 18, y0, zb))
     corps = wp.circle(r_ext).extrude(36)
     corps = corps.union(cq.Workplane("XY", origin=(x0, y0, zb)).box(36, 20, 9, centered=(True, True, False)))
-    corps = corps.union(cq.Workplane("XY", origin=(x0, y0, zb + 9)).box(42, 42, 4, centered=(True, True, False))
+    corps = corps.union(cq.Workplane("XY", origin=(x0, y0, zb + 9)).box(48, 48, 4, centered=(True, True, False))
                         .edges("|Z").fillet(6))
     corps = corps.union(cq.Workplane("XY", origin=(x0, y0, zb - 21)).box(36, 12, 9, centered=(True, True, False)))
     corps = corps.cut(cq.Workplane("YZ", origin=(x0 - 20, y0, zb)).circle(r_int).extrude(40))
@@ -445,13 +451,13 @@ def support_moteur(x0, y0=POUTRE_Y):
     for dx in (-9.0, 9.0):  # vis de serrage M3
         corps = corps.cut(cq.Workplane("XZ", origin=(0, y0 + 10, 0)).center(x0 + dx, zb - 16.5)
                           .circle(1.65).extrude(20))
-    # perçage universel : fentes de Ø16 à Ø25 sur 8 directions
-    plat = cq.Workplane("XY", origin=(x0, y0, zb + 5))
-    corps = corps.cut(plat.circle(4.5).extrude(10))
-    for k in range(8):
-        a = math.radians(45 * k)
-        corps = corps.cut(plat.center(10.25 * math.cos(a), 10.25 * math.sin(a))
-                          .slot2D(4.5 + 3.3, 3.3, 45 * k).extrude(10))
+    # perçage du moteur : 4 vis M3 sur Ø25 (dégagées sur 12 mm) et logement central
+    plat = cq.Workplane("XY", origin=(x0, y0, zb + 1))
+    corps = corps.cut(cq.Workplane("XY", origin=(x0, y0, zb + 7)).circle(5.5).extrude(10))
+    r = MOTEUR_VTOL_TROUS_D / 2
+    for k in range(4):
+        a = math.radians(90 * k)
+        corps = corps.cut(plat.center(r * math.cos(a), r * math.sin(a)).circle(1.7).extrude(16))
     return corps
 
 
@@ -461,7 +467,7 @@ def patte(x0, y0=POUTRE_Y):
     bague = (cq.Workplane("YZ", origin=(x0 - 9, y0, zb)).circle(12).extrude(18)
              .cut(cq.Workplane("YZ", origin=(x0 - 10, y0, zb)).circle(POUTRE_D / 2 - 0.1).extrude(20)))
     jambe = (cq.Workplane("XY", origin=(x0, y0, zb - PATTE_LONG + 5))
-             .rect(12, 8).workplane(offset=PATTE_LONG - 15).rect(18, 10).loft())
+             .rect(16, 10).workplane(offset=PATTE_LONG - 15).rect(24, 13).loft())
     pied = (cq.Workplane("XY", origin=(x0, y0, zb - PATTE_LONG)).rect(44, 26).extrude(6)
             .edges("|Z").fillet(8))
     return bague.union(jambe).union(pied)
@@ -494,7 +500,7 @@ def bloc_queue():
     """Bloc de queue droit : fourreau de poutre, dérive, prises du stab, baie servo."""
     y0, zb = POUTRE_Y, POUTRE_Z
     fin_tube = POUTRE_DEBUT + POUTRE_LONG
-    x0, x1, z0, z1 = DERIVE_BA_X, DERIVE_BA_X + DERIVE_CORDE_PIED, zb - 13, 14.0
+    x0, x1, z0, z1 = BLOC_QUEUE_X0, DERIVE_BA_X + DERIVE_CORDE_PIED, zb - 13, 14.0
     cote = [(x0 + 6, z0), (x1 - 4, z0), (x1, z0 + 8), (x1, z1), (x0 + 18, z1),
             (x0, z1 - 14), (x0, z0 + 10)]
     bloc = (cq.Workplane("XZ", origin=(0, y0 + 15, 0)).polyline(cote).close().extrude(30))
@@ -507,7 +513,7 @@ def bloc_queue():
     def fil(corde, xba, z):
         pts = naca_points("0009", corde, 50)
         return cq.Wire.makePolygon([cq.Vector(xba + x, y0 + t, z) for x, t in pts], close=True)
-    derive = cq.Solid.makeLoft([fil(DERIVE_CORDE_PIED, x0, z1 - 2),
+    derive = cq.Solid.makeLoft([fil(DERIVE_CORDE_PIED, DERIVE_BA_X, z1 - 2),
                                 fil(DERIVE_CORDE_SAUMON, x1 - DERIVE_CORDE_SAUMON, z1 + DERIVE_HAUTEUR)], True)
     bloc = bloc.union(cq.Workplane().add(derive))
 
