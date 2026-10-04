@@ -75,7 +75,7 @@ SECTIONS_FUS = [
 ]
 SUPER_ELLIPSE_N = 3.0
 # nez allongé : la batterie doit être loin devant pour équilibrer poutres et empennage
-COUPES_FUS = [-300.0, -235.0, -40.0, 160.0, 265.0]
+COUPES_FUS = [-300.0, -245.0, -40.0, 160.0, 265.0]
 NOMS_TRONCONS_FUS = ["nez", "avant", "milieu", "queue"]
 PLATEAU_X = (-230.0, 15.0)
 PLATEAU_Z = -52.0

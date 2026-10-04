@@ -78,9 +78,9 @@ SECTIONS_FUS = [
 ]
 SUPER_ELLIPSE_N = 3.0
 # nez (amovible) | avant | milieu | queue ; chaque tronçon fait au plus 250 mm
-COUPES_FUS = [-285.0, -190.0, 45.0, 255.0, 360.0]
+COUPES_FUS = [-285.0, -205.0, 35.0, 255.0, 360.0]
 NOMS_TRONCONS_FUS = ["nez", "avant", "milieu", "queue"]
-PLATEAU_X = (-193.0, 45.0)      # plateau de batterie
+PLATEAU_X = (-192.0, 45.0)      # plateau de batterie
 PLATEAU_Z = -72.0               # dessus du fond du fuselage, sur 2 plots
 PLATEAU_LARG = 80.0
 # plateau compagnon : contrôleur de vol (TBS Lucid H7 Wing, 30,5 mm M3) + Raspberry Pi 5
@@ -105,7 +105,7 @@ NACELLE_Z = -96.0         # face de fixation de la nacelle (dessous du support)
 # perçages de nacelle (entraxe x, entraxe y, Ø) : SIYI A8 mini M2.5 et SIYI ZT6 M3
 NACELLE_TROUS = [(30.0, 25.0, 2.7), (45.0, 40.0, 3.3)]
 BATTERIE = (134.0, 83.0, 67.0)   # GAONENG GNB 6S3P P45B : 130 x 81 x 65 mm + jeu
-X_BATTERIE = -123.0       # centre de la batterie pour le centrage (voir docs/bilan.md)
+X_BATTERIE = -122.0       # centre de la batterie pour le centrage (voir docs/bilan.md)
 
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 110.0

@@ -549,13 +549,23 @@ def fuselage_pieces():
 
 
 def plateau_electronique():
-    """Plateau de batterie glissé dans le fuselage, posé sur 2 plots vissés à la selle de nacelle."""
+    """Plateau de batterie glissé dans le fuselage (posé sur 2 plots vissés à la selle de
+    nacelle sur le DFR) : butée arrière de centrage, fentes pour 2 sangles."""
     z0, ep, larg = PLATEAU_Z, 2.0, PLATEAU_LARG
     x0, x1 = PLATEAU_X
     p = (cq.Workplane("XY", origin=(0, 0, z0)).center((x0 + x1) / 2, 0)
          .rect(x1 - x0, larg).extrude(ep).edges("|Z").fillet(6))
-    # fentes pour sangles de batterie
-    for xs in (x0 + 12, x0 + 0.53 * (x1 - x0)):
+    # butée arrière : la batterie poussée contre elle est au bon endroit pour le centrage
+    lb, wb, hb = BATTERIE
+    xr = X_BATTERIE + lb / 2
+    poteau = (larg - 18) / 2                  # encoche centrale de 18 mm pour les fils
+    for sy in (-1, 1):
+        p = p.union(cq.Workplane("XY", origin=(xr + 1.5, sy * (9 + poteau / 2), z0 + ep))
+                    .box(3, poteau, 15, centered=(True, True, False)))
+        p = p.union(cq.Workplane("XY", origin=(xr + 6, sy * (9 + poteau / 2), z0 + ep))   # gousset
+                    .box(9, 3, 10, centered=(True, True, False)))
+    # fentes pour 2 sangles, près du nez pour pouvoir les fermer par l'ouverture
+    for xs in (x0 + 12, x0 + 45):
         for ys in (-(larg / 2 - 10), larg / 2 - 10):
             p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(xs, ys)
                       .slot2D(22, 4, 90).extrude(ep + 2))
