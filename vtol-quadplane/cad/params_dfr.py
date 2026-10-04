@@ -84,12 +84,12 @@ PLATEAU_LARG = 80.0
 COMPAGNON_X = (100.0, 228.0)
 COMPAGNON_Z = -62.0
 COMPAGNON_LARG = 70.0
-FC_TROUS = 30.5                 # entraxe carré des trous du contrôleur de vol
+FC_TROUS = (30.5, 30.5)         # entraxe des trous du contrôleur de vol (x, y)
 FC_DIMS = (54.0, 36.0, 13.0)
 PI5 = True                      # entretoises Raspberry Pi 5 (58 x 49 mm)
 POUSSEUR_Z = -5.0         # axe du moteur propulsif
 # SunnySky X2820 V3 : 4 vis M3 en croix, 19 mm et 25 mm
-POUSSEUR_TROUS = (19.0, 25.0)
+POUSSEUR_TROUS = [(9.5, 0.0), (-9.5, 0.0), (0.0, 12.5), (0.0, -12.5)]
 POUSSEUR_DIMS = (35.0, 42.0)   # diamètre, longueur du moteur
 HELICE_POUSSEUR = 10 * 25.4
 

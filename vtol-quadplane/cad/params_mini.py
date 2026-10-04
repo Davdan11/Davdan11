@@ -52,47 +52,49 @@ MOTEUR_ECART = 225.0
 POUTRE_DEBUT = CG_X - MOTEUR_ECART - 18.0
 POUTRE_LONG = 610.0       # coupé dans un tube de 1000 mm
 HELICE_VTOL = 7 * 25.4
-# moteur 2807 : 4 vis M3 en carré de 16 x 16 mm (à confirmer avec le modèle acheté)
-MOTEUR_VTOL_TROUS = [(8.0, 8.0), (-8.0, 8.0), (-8.0, -8.0), (8.0, -8.0)]
-MOTEUR_VTOL_DIAM = 33.0
-MOTEUR_VTOL_HAUT = 25.0
+# Emax ECO III 2807 1300KV : Ø34,8 x 34,9 mm, 4 vis M3 en carré de 19 x 19 mm
+MOTEUR_VTOL_TROUS = [(9.5, 9.5), (-9.5, 9.5), (-9.5, -9.5), (9.5, -9.5)]
+MOTEUR_VTOL_DIAM = 34.8
+MOTEUR_VTOL_HAUT = 35.0
 
 # --- Fuselage -----------------------------------------------------------------
 PAROI_FUS = 1.0
 SECTIONS_FUS = [
-    (-200.0, 10.0, 10.0, -15.0),
-    (-190.0, 30.0, 30.0, -16.0),
-    (-170.0, 58.0, 60.0, -19.0),
-    (-135.0, 74.0, 78.0, -22.0),
-    (-95.0, 80.0, 86.0, -21.0),
-    (165.0, 80.0, 86.0, -21.0),
+    (-300.0, 10.0, 10.0, -15.0),
+    (-290.0, 30.0, 30.0, -16.0),
+    (-270.0, 58.0, 60.0, -19.0),
+    (-235.0, 74.0, 78.0, -22.0),
+    (-195.0, 80.0, 86.0, -21.0),
+    (165.0, 80.0, 86.0, -21.0),      # pleine section sur toute la corde d'emplanture
     (215.0, 66.0, 68.0, -15.0),
     (250.0, 44.0, 42.0, -7.0),
     (265.0, 38.0, 36.0, -4.0),
 ]
 SUPER_ELLIPSE_N = 3.0
-COUPES_FUS = [-200.0, -135.0, 60.0, 265.0]
-NOMS_TRONCONS_FUS = ["nez", "avant", "arriere"]
-PLATEAU_X = (-130.0, 55.0)
+# nez allongé : la batterie doit être loin devant pour équilibrer poutres et empennage
+COUPES_FUS = [-300.0, -235.0, -40.0, 160.0, 265.0]
+NOMS_TRONCONS_FUS = ["nez", "avant", "milieu", "queue"]
+PLATEAU_X = (-230.0, 15.0)
 PLATEAU_Z = -52.0
 PLATEAU_LARG = 54.0
 COMPAGNON_X = (75.0, 150.0)
 COMPAGNON_Z = -50.0
 COMPAGNON_LARG = 52.0
-FC_TROUS = 30.5
-FC_DIMS = (50.0, 36.0, 12.0)
+FC_TROUS = (30.0, 24.0)    # AtomRC F405 NAVI : 50 x 30 x 12 mm, trous Ø3 en 30 x 24 mm
+FC_DIMS = (50.0, 30.0, 12.0)
 PI5 = False
 POUSSEUR_Z = -4.0
-POUSSEUR_TROUS = (16.0, 19.0)  # moteur 22xx : vis M3 en croix 16 et 19 mm (à confirmer)
-POUSSEUR_DIMS = (28.0, 30.0)
-HELICE_POUSSEUR = 8 * 25.4
+# 5e moteur Emax ECO III 2807 1300KV (le même que les moteurs VTOL), hélice Gemfan 7x6E
+POUSSEUR_TROUS = [(9.5, 9.5), (-9.5, 9.5), (-9.5, -9.5), (9.5, -9.5)]
+POUSSEUR_DIMS = (34.8, 35.0)
+HELICE_POUSSEUR = 7 * 25.4
 
 # --- Charge utile -------------------------------------------------------------
 NACELLE_X = None          # pas de nacelle : caméra d'action collée sur le dessus pour les essais
 NACELLE_Z = None
 NACELLE_TROUS = []
-BATTERIE = (150.0, 50.0, 37.0)   # LiPo 4S 5000 mAh typique + jeu
-X_BATTERIE = -40.0
+BATTERIE = (150.0, 53.0, 30.0)   # CNHL G+Plus 4S 4000 mAh : 147 x 51 x 28 mm + jeu
+X_BATTERIE = -140.0       # centre de la batterie pour le centrage (voir docs/bilan_mini.md)
 
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 90.0
@@ -103,7 +105,7 @@ STAB_DEMI_ENV = POUTRE_Y - (POUTRE_D / 2 + 7)
 STAB_N_SEG = 2
 PROFONDEUR_X = 0.70
 PROFONDEUR_JONC = (0.72, 1.5)
-STAB_LONGERON_D = 4.0     # tube 4x2 mm
+STAB_LONGERON_D = 5.0     # tube 5x3 mm
 STAB_LONGERON_X = 0.25
 STAB_JONC_D = 2.0
 STAB_JONC_X = 0.55
@@ -114,7 +116,7 @@ DERIVE_BA_X = 380.0
 BLOC_QUEUE_X0 = 355.0
 
 # --- Atterrisseur -------------------------------------------------------------
-PATTE_LONG = 110.0        # sol à -129 mm, sous l'hélice propulsive de 8 po
+PATTE_LONG = 110.0        # sol à -129 mm, 36 mm sous l'hélice propulsive de 7 po
 PATTE_SECTION = ((11.0, 7.0), (16.0, 9.0))
 PATTE_PIED = (32.0, 18.0)
 PATTE_DECALAGE = 28.0

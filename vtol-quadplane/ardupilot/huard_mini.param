@@ -1,0 +1,77 @@
+# Paramètres de départ ArduPilot Plane (4.5 / 4.6) pour le Huard Mini (4S LiPo)
+# Contrôleur : AtomRC F405 NAVI (firmware ArduPlane, cible AtomRCF405NAVI).
+# Charger dans Mission Planner : Config > Full Parameter List > Load from file,
+# puis Write Params et redémarrer. Si un paramètre est signalé inconnu, chercher
+# son nouveau nom dans la doc de la version installée.
+# Ces valeurs servent à démarrer ; l'accordage (QAUTOTUNE, AUTOTUNE) reste à faire.
+
+# --- Quadplane ---------------------------------------------------------------
+Q_ENABLE,1
+# (redémarrer après Q_ENABLE pour voir les autres paramètres Q_)
+Q_FRAME_CLASS,1
+Q_FRAME_TYPE,1
+Q_M_PWM_TYPE,6
+Q_M_SPIN_ARM,0.08
+Q_M_SPIN_MIN,0.12
+Q_M_THST_HOVER,0.30
+Q_M_BAT_VOLT_MAX,16.8
+Q_M_BAT_VOLT_MIN,13.6
+Q_ANGLE_MAX,3000
+Q_ASSIST_SPEED,13
+Q_TRANSITION_MS,4000
+Q_TRANS_DECEL,2
+Q_RTL_MODE,1
+Q_LAND_FINAL_ALT,4
+
+# --- Sorties de l'AtomRC F405 NAVI (8 sorties) --------------------------------
+# Groupes de timers : 1-2 | 3-4-8 | 5-6-7
+# S1 à S4 = moteurs VTOL en DShot. Ordre Quad X : 1 avant droit (CCW),
+# 2 arrière gauche (CCW), 3 avant gauche (CW), 4 arrière droit (CW)
+SERVO1_FUNCTION,33
+SERVO2_FUNCTION,34
+SERVO3_FUNCTION,35
+SERVO4_FUNCTION,36
+# S5/S6 = ailerons gauche/droit, S7 = profondeur (PWM, groupe 5-6-7)
+SERVO5_FUNCTION,4
+SERVO6_FUNCTION,4
+SERVO7_FUNCTION,19
+# S8 = moteur propulsif, en DShot comme S3-S4 (même groupe de timers)
+SERVO8_FUNCTION,70
+SERVO_BLH_MASK,128
+SERVO_BLH_OTYPE,6
+
+# --- Pas de capteur de vitesse au début : vitesse estimée --------------------
+ARSPD_TYPE,0
+ARSPD_USE,0
+AIRSPEED_MIN,13
+AIRSPEED_CRUISE,16
+AIRSPEED_MAX,22
+TRIM_THROTTLE,45
+
+# --- Batterie LiPo 4S 4000 mAh (capteur intégré) ------------------------------
+# Vérifier la tension et le courant affichés au multimètre / wattmètre.
+BATT_MONITOR,4
+BATT_CAPACITY,4000
+BATT_LOW_VOLT,14.4
+BATT_CRT_VOLT,14.0
+BATT_LOW_MAH,1000
+BATT_CRT_MAH,500
+BATT_FS_LOW_ACT,1
+BATT_FS_CRT_ACT,4
+
+# --- Récepteur ExpressLRS (CRSF) ---------------------------------------------
+# Brancher le RP1 V2 sur un port série libre et mettre ce port en CRSF :
+# SERIALx_PROTOCOL,23 (x = numéro du port, voir la page ArduPilot de la carte).
+RSSI_TYPE,3
+
+# --- Sécurité radio -----------------------------------------------------------
+THR_FAILSAFE,1
+FS_SHORT_ACTN,0
+FS_LONG_ACTN,1
+FS_LONG_TIMEOUT,5
+RTL_ALTITUDE,40
+WP_LOITER_RAD,60
+
+# --- Divers ------------------------------------------------------------------
+ARMING_CHECK,1
+LOG_DISARMED,0

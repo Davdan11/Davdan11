@@ -27,10 +27,31 @@ Les pièces imprimées sont conçues pour une **Bambu Lab A1** (plateau 256 mm) 
 
 Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](docs/bilan.md). La **liste d'achats avec les modèles exacts et les liens** est dans [docs/nomenclature.md](docs/nomenclature.md) : le CAD est percé pour ces modèles.
 
+## Deux versions : commencer petit
+
+| | **Huard Mini** (pour apprendre) | **Huard DFR** (la mission) |
+|---|---|---|
+| Envergure | 1,2 m | 1,8 m |
+| Masse au décollage | ≈ 1,8 kg | ≈ 4,7 kg |
+| Batterie | LiPo 4S 4000 mAh | Li-ion 6S3P 13,5 Ah |
+| Moteurs | 5 × Emax ECO III 2807 (pièces FPV) | 4 × T-Motor MN4014 + SunnySky X2820 |
+| Caméra / 4G | non (caméra d'action en option) | SIYI A8 mini puis ZT6, Raspberry Pi, modem 4G |
+| Autonomie estimée | ≈ 35 min | ≈ 85 min |
+| Budget de l'avion | **≈ 670 $ CA** | ≈ 3 100 $ CA |
+| Liste d'achats | [docs/nomenclature_mini.md](docs/nomenclature_mini.md) | [docs/nomenclature.md](docs/nomenclature.md) |
+| Bilan | [docs/bilan_mini.md](docs/bilan_mini.md) | [docs/bilan.md](docs/bilan.md) |
+| Paramètres ArduPilot | `ardupilot/huard_mini.param` | `ardupilot/huard_dfr.param` |
+| Pièces à imprimer | `cad/out_mini/stl/` | `cad/out/stl/` |
+
+Le Mini a exactement la même architecture : aile segmentée, poutres carbone, empennage en H, propulseur arrière, ArduPilot quadplane. Tout ce qu'on apprend dessus (impression, collage, réglages, transitions, missions automatiques) s'applique au grand. Les réglages d'impression et l'ordre d'assemblage plus bas valent pour les deux.
+
+![Huard Mini](cad/out_mini/rendus/vue_3-4.png)
+
 ## Contenu
 
 ```
-cad/params.py           toutes les cotes (changer une valeur et régénérer)
+cad/params_dfr.py       toutes les cotes du DFR (changer une valeur et régénérer)
+cad/params_mini.py      toutes les cotes du Mini
 cad/pieces.py           géométrie de chaque pièce (CadQuery)
 cad/build.py            génère STL, STEP, masses, centre de gravité et rendus
 cad/out/stl/            pièces prêtes à trancher, déjà orientées pour l'impression
@@ -45,8 +66,11 @@ docs/                   concept du système, nomenclature, bilan
 
 ```bash
 pip install cadquery trimesh shapely matplotlib networkx
-cd cad && python build.py        # environ 40 s
-cd .. && python calc/dimensionnement.py
+cd cad && python build.py                        # Huard DFR  -> cad/out/
+HUARD_VERSION=mini python build.py               # Huard Mini -> cad/out_mini/
+cd .. && python calc/dimensionnement.py          # bilan DFR  -> docs/bilan.md
+HUARD_VERSION=mini python calc/dimensionnement.py  # bilan Mini -> docs/bilan_mini.md
+# Sous Windows (PowerShell) : $env:HUARD_VERSION="mini"; python build.py
 ```
 
 ## Configuration

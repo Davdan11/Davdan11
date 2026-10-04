@@ -353,13 +353,8 @@ def cloison_moteur():
     cloison = _lamelle(xm - ep, ep, PAROI_FUS + 0.15, None)
     o = (xm - 10, 0, POUSSEUR_Z)
     perc = cq.Workplane("YZ", origin=o).circle(5).extrude(20)
-    a, b = POUSSEUR_TROUS  # vis M3 en croix
-    for cy, cz in ((a / 2, 0), (-a / 2, 0), (0, b / 2), (0, -b / 2)):
+    for cy, cz in POUSSEUR_TROUS:  # vis M3 du moteur
         perc = perc.union(cq.Workplane("YZ", origin=o).center(cy, cz).circle(1.7).extrude(20))
-    w, h, _ = _section_a(xm)
-    for sy in (-1, 1):  # ouïes de refroidissement
-        perc = perc.union(cq.Workplane("YZ", origin=o).center(sy * 0.33 * w, sy * 0.2 * h)
-                          .circle(min(3.0, 0.06 * w)).extrude(20))
     return cloison.cut(perc)
 
 
@@ -431,7 +426,7 @@ def plateau_compagnon():
     xf = x0 + FC_DIMS[0] / 2 - 5
     for sx in (-1, 1):  # entretoises du contrôleur de vol
         for sy in (-1, 1):
-            pos = (xf + sx * FC_TROUS / 2, sy * FC_TROUS / 2)
+            pos = (xf + sx * FC_TROUS[0] / 2, sy * FC_TROUS[1] / 2)
             p = p.union(cq.Workplane("XY", origin=(0, 0, z0 + ep)).center(*pos).circle(3.2).extrude(6))
             p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(*pos).circle(1.35).extrude(ep + 8))
     if PI5:

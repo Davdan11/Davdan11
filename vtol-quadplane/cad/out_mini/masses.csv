@@ -13,18 +13,19 @@ saumon_droit,1,PLA Aero,160x21x19,6.3,6.3,64
 saumon_gauche,1,PLA Aero,160x21x19,6.3,6.3,64
 pylone_poutre_droit,1,PETG,25x20x148,30.9,30.9,73
 pylone_poutre_gauche,1,PETG,25x20x148,30.9,30.9,73
-fuselage_nez,1,PLA Aero,79x75x76,11.7,11.7,-161
-fuselage_avant,1,PLA Aero,88x82x205,43.6,43.6,-24
-fuselage_arriere,1,PLA Aero,87x81x206,35.1,35.1,151
+fuselage_nez,1,PLA Aero,79x75x76,11.7,11.7,-261
+fuselage_avant,1,PLA Aero,86x81x205,38.5,38.5,-131
+fuselage_milieu,1,PLA Aero,88x82x211,45.8,45.8,66
+fuselage_queue,1,PLA Aero,87x81x105,15.1,15.1,206
 cloison_moteur,1,PETG,36x38x5,6.6,6.6,263
-plateau_electronique,1,PETG,185x54x2,24.5,24.5,-36
+plateau_electronique,1,PETG,245x54x2,32.7,32.7,-106
 plateau_compagnon,1,PETG,75x52x8,10.6,10.6,111
-support_moteur,4,PETG,37x37x30,16.6,66.3,45
+support_moteur,4,PETG,39x39x30,17.6,70.4,45
 patte_atterrissage,4,TPU 95A,32x20x120,16.6,66.4,45
 bloc_queue_droit,1,PLA Aero,125x26x140,37.5,37.5,420
 bloc_queue_gauche,1,PLA Aero,125x26x140,37.5,37.5,420
-stab_segment_1,1,PLA Aero,63x8x197,16.4,16.4,412
+stab_segment_1,1,PLA Aero,63x8x197,16.6,16.6,412
 profondeur_1,1,PLA Aero,27x5x196,4.2,4.2,453
-stab_segment_2,1,PLA Aero,63x8x197,16.4,16.4,412
+stab_segment_2,1,PLA Aero,63x8x197,16.6,16.6,412
 profondeur_2,1,PLA Aero,27x5x196,4.2,4.2,453
-TOTAL pièces imprimées,,,,,695,119
+TOTAL pièces imprimées,,,,,728,104

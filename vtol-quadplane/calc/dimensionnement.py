@@ -1,6 +1,7 @@
-"""Bilan de masse, centrage et performances du quadplane Huard DFR.
+"""Bilan de masse, centrage et performances du quadplane Huard.
 
-    python calc/dimensionnement.py
+    python calc/dimensionnement.py                       # Huard DFR
+    HUARD_VERSION=mini python calc/dimensionnement.py    # Huard Mini
 
 Lit la masse et le centre de gravité des pièces imprimées dans
 cad/out/masses.csv (générée par cad/build.py) et écrit docs/bilan.md.
@@ -15,65 +16,101 @@ import sys
 ICI = os.path.dirname(os.path.abspath(__file__))
 RACINE = os.path.dirname(ICI)
 sys.path.insert(0, os.path.join(RACINE, "cad"))
-from params import (BATTERIE, CG_X, CORDE, DERIVE_BA_X, ENVERGURE, HELICE_VTOL,  # noqa: E402
-                    NACELLE_X, PLATEAU_X, POUTRE_DEBUT, POUTRE_LONG, SECTIONS_FUS, STAB_BA_X)
+from params import (BATTERIE, CG_X, COMPAGNON_X, CORDE, DERIVE_BA_X,  # noqa: E402
+                    DERIVE_CORDE_PIED, ENVERGURE, HELICE_VTOL, NACELLE_X, PLATEAU_X,
+                    POUTRE_DEBUT, POUTRE_LONG, SECTIONS_FUS, STAB_BA_X, VERSION)
 
 G, RHO = 9.81, 1.225
 
-# (élément, quantité, masse unitaire g, position x du centre en mm)
-COMPOSANTS = [
-    ("Moteur VTOL T-Motor MN4014 KV400", 4, 171, CG_X),
-    ("Hélice VTOL T-Motor P15x5 (2 CW + 2 CCW)", 4, 22, CG_X),
-    ("ESC VTOL Holybro Tekko32 F4 45A + condensateur", 4, 10, CG_X),
-    ("Moteur propulsif SunnySky X2820 V3 KV570", 1, 150, SECTIONS_FUS[-1][0] + 25),
-    ("Hélice propulsive APC 10x7EP", 1, 20, SECTIONS_FUS[-1][0] + 60),
-    ("ESC propulsif Holybro Tekko32 F4 45A", 1, 10, 300),
-    ("Contrôleur de vol TBS Lucid H7 Wing", 1, 30, 122),
-    ("GPS + compas Holybro Micro M10", 1, 16, 230),
-    ("Capteur de vitesse Matek ASPD-4525 + Pitot", 1, 10, SECTIONS_FUS[0][0] + 60),
-    ("Récepteur RadioMaster RP3 V2 (pilote de sécurité)", 1, 5, 122),
-    ("Servo EMAX ES08MD II (ailerons)", 2, 12, 0.55 * CORDE),
-    ("Servo EMAX ES08MD II (profondeur)", 1, 12, DERIVE_BA_X + 86),
-    ("Nacelle SIYI ZT6 avec plaque anti-vibration", 1, 197, NACELLE_X),
-    ("Raspberry Pi 5 4 Go + Active Cooler", 1, 67, 190),
-    ("Modem Waveshare SIM7600G-H (clé USB, sans boîtier) + antennes", 1, 60, 200),
-    ("BEC Holybro UBEC 5A (Pi et modem)", 2, 7, 150),
-    ("Tube carbone 16x14x1000 (poutres)", 2, 73, POUTRE_DEBUT + POUTRE_LONG / 2),
-    ("Tube carbone 12x10x1000 (longeron principal)", 1, 54, 55),
-    ("Tube carbone 8x6x1000 (longerons extérieurs, coupé en 2)", 1, 34, 88),
-    ("Jonc carbone 6 mm x 300 (goupille d'aile)", 1, 13, 143),
-    ("Tube carbone 6x4 x 720 (longeron du stab)", 1, 18, STAB_BA_X + 27),
-    ("Joncs carbone 3 mm et 2 mm (stab, gouvernes)", 1, 15, 600),
-    ("Câblage, connecteurs", 1, 170, 40),
-    ("Visserie, guignols, colle, ruban", 1, 70, 100),
-]
+X_SERVO_PROF = DERIVE_BA_X + DERIVE_CORDE_PIED - 22
+X_POUSSEUR = SECTIONS_FUS[-1][0]
 
-# nom : (masse g, énergie Wh, tension nominale)
-BATTERIES = {
-    "GAONENG GNB 6S3P P45B 13,5 Ah": (1337, 21.6 * 13.5, 21.6),
-}
+# Hypothèses communes
+OSWALD = 0.80
+CL_MAX = 1.30
+FM = 0.60             # figure de mérite des hélices VTOL
+ETA_MOTEUR = 0.80
+UTILISABLE = 0.85     # fraction de l'énergie batterie utilisée (le reste = réserve)
+MARGE_DECROCHAGE = 1.35  # vitesse mini de vol en cercle = 1,35 x Vs
+T_VTOL_S = 120        # temps total de vol stationnaire (décollage + atterrissage)
+
+if VERSION == "dfr":
+    TITRE = "Huard DFR"
+    # (élément, quantité, masse unitaire g, position x du centre en mm)
+    COMPOSANTS = [
+        ("Moteur VTOL T-Motor MN4014 KV400", 4, 171, CG_X),
+        ("Hélice VTOL T-Motor P15x5 (2 CW + 2 CCW)", 4, 22, CG_X),
+        ("ESC VTOL Holybro Tekko32 F4 45A + condensateur", 4, 10, CG_X),
+        ("Moteur propulsif SunnySky X2820 V3 KV570", 1, 150, X_POUSSEUR + 25),
+        ("Hélice propulsive APC 10x7EP", 1, 20, X_POUSSEUR + 60),
+        ("ESC propulsif Holybro Tekko32 F4 45A", 1, 10, 300),
+        ("Contrôleur de vol TBS Lucid H7 Wing", 1, 30, 122),
+        ("GPS + compas Holybro Micro M10", 1, 16, 230),
+        ("Capteur de vitesse Matek ASPD-4525 + Pitot", 1, 10, SECTIONS_FUS[0][0] + 60),
+        ("Récepteur RadioMaster RP3 V2 (pilote de sécurité)", 1, 5, 122),
+        ("Servo EMAX ES08MD II (ailerons)", 2, 12, 0.55 * CORDE),
+        ("Servo EMAX ES08MD II (profondeur)", 1, 12, X_SERVO_PROF),
+        ("Nacelle SIYI ZT6 avec plaque anti-vibration", 1, 197, NACELLE_X),
+        ("Raspberry Pi 5 4 Go + Active Cooler", 1, 67, 190),
+        ("Modem Waveshare SIM7600G-H (clé USB, sans boîtier) + antennes", 1, 60, 200),
+        ("BEC Holybro UBEC 5A (Pi et modem)", 2, 7, 150),
+        ("Tube carbone 16x14x1000 (poutres)", 2, 73, POUTRE_DEBUT + POUTRE_LONG / 2),
+        ("Tube carbone 12x10x1000 (longeron principal)", 1, 54, 55),
+        ("Tube carbone 8x6x1000 (longerons extérieurs, coupé en 2)", 1, 34, 88),
+        ("Jonc carbone 6 mm x 300 (goupille d'aile)", 1, 13, 143),
+        ("Tube carbone 6x4 x 720 (longeron du stab)", 1, 18, STAB_BA_X + 27),
+        ("Joncs carbone 3 mm et 2 mm (stab, gouvernes)", 1, 15, 600),
+        ("Câblage, connecteurs", 1, 170, 40),
+        ("Visserie, guignols, colle, ruban", 1, 70, 100),
+    ]
+    # nom : (masse g, énergie Wh, tension nominale)
+    BATTERIES = {"GAONENG GNB 6S3P P45B 13,5 Ah": (1337, 21.6 * 13.5, 21.6)}
+    CD0 = 0.050           # traînée parasite (poutres, moteurs VTOL arrêtés, nacelle caméra)
+    ETA_CROISIERE = 0.55  # hélice x moteur x ESC
+    P_BORD = 15.0         # W : avionique + ordinateur de bord + modem + nacelle
+    V_TRANSIT = 25.0      # m/s (90 km/h) pour l'aller et le retour
+    POUSSEE_MAX_MOTEUR = 2.62  # kg, MN4014 KV400 + P15x5 à 22,2 V (table T-Motor)
+    AFFAISSEMENT = 0.80   # poussée réelle sous la tension affaissée d'un pack Li-ion
+    RAYONS_KM = (5, 10, 15, 20)
+else:
+    TITRE = "Huard Mini"
+    COMPOSANTS = [
+        ("Moteur VTOL Emax ECO III 2807 1300KV", 4, 56, CG_X),
+        ("Hélice VTOL HQProp Cine7 7x4x3", 4, 10, CG_X),
+        ("ESC Skystars Talon32 40A AM32 (VTOL)", 4, 7, CG_X),
+        ("Moteur propulsif Emax ECO III 2807 1300KV", 1, 56, X_POUSSEUR + 18),
+        ("Hélice propulsive Gemfan 7x6E", 1, 12, X_POUSSEUR + 45),
+        ("ESC propulsif Skystars Talon32 40A", 1, 7, 200),
+        ("Contrôleur de vol AtomRC F405 NAVI", 1, 21, COMPAGNON_X[0] + 20),
+        ("GPS + compas MicoAir M10G-5883", 1, 7, 150),
+        ("Récepteur RadioMaster RP1 V2", 1, 3, COMPAGNON_X[0] + 50),
+        ("Servo JX PDI-1109MG (ailerons)", 2, 10, 0.55 * CORDE),
+        ("Servo JX PDI-1109MG (profondeur)", 1, 10, X_SERVO_PROF),
+        ("Tubes carbone 12x10 x 610 (poutres)", 2, 33, POUTRE_DEBUT + POUTRE_LONG / 2),
+        ("Tube carbone 10x8 x 720 (longeron principal)", 1, 32, 40),
+        ("Tube carbone 6x4 x 310 (longerons extérieurs)", 2, 8, 64),
+        ("Jonc carbone 4 mm x 200 (goupille d'aile)", 1, 4, 104),
+        ("Tube carbone 5x3 x 420 (longeron du stab)", 1, 8, STAB_BA_X + 22),
+        ("Joncs carbone 2 mm et 1,5 mm (stab, gouvernes)", 1, 8, 300),
+        ("Câblage, connecteurs, condensateurs", 1, 60, 30),
+        ("Visserie, guignols, colle, ruban", 1, 25, 80),
+    ]
+    BATTERIES = {"CNHL G+Plus 4S 4000 mAh 70C (LiPo)": (416, 14.8 * 4.0, 14.8)}
+    CD0 = 0.055           # petit avion : poutres et moteurs pèsent plus dans la traînée
+    ETA_CROISIERE = 0.45  # moteur 2807 et hélice 7x6 : efficaces mais pas optimisés pour la croisière
+    P_BORD = 3.0
+    V_TRANSIT = 20.0
+    POUSSEE_MAX_MOTEUR = 1.2  # kg, estimation (2807 1300KV + 7x4 en 4S, à mesurer)
+    AFFAISSEMENT = 0.90   # une LiPo s'affaisse moins qu'une Li-ion
+    RAYONS_KM = (1, 2, 3, 5)
+
 # la batterie se glisse sur le plateau : son centre doit rester dans cette plage
 X_BATTERIE_MIN = PLATEAU_X[0] + BATTERIE[0] / 2
 X_BATTERIE_MAX = PLATEAU_X[1] - 5 - BATTERIE[0] / 2
 
-# Hypothèses aérodynamiques et propulsives
-CD0 = 0.050           # traînée parasite (poutres, moteurs VTOL arrêtés, nacelle caméra)
-OSWALD = 0.80
-CL_MAX = 1.30
-ETA_CROISIERE = 0.55  # hélice x moteur x ESC
-FM = 0.60             # figure de mérite des hélices VTOL
-ETA_MOTEUR = 0.80
-P_BORD = 15.0         # W : avionique + ordinateur de bord + modem + nacelle
-UTILISABLE = 0.85     # fraction de l'énergie batterie utilisée (le reste = réserve)
-MARGE_DECROCHAGE = 1.35  # vitesse mini de vol en cercle = 1,35 x Vs
-V_TRANSIT = 25.0      # m/s (90 km/h) pour l'aller et le retour
-T_VTOL_S = 120        # temps total de vol stationnaire (décollage + atterrissage)
-POUSSEE_MAX_MOTEUR = 2.62  # kg, MN4014 KV400 + P15x5 à 22,2 V (table T-Motor)
-AFFAISSEMENT_LIION = 0.80  # poussée réelle sous la tension affaissée d'un pack Li-ion
-
 
 def imprime():
-    f = os.path.join(RACINE, "cad", "out", "masses.csv")
+    f = os.path.join(RACINE, "cad", "out" if VERSION == "dfr" else f"out_{VERSION}", "masses.csv")
     with open(f) as fh:
         for ligne in csv.reader(fh):
             if ligne and ligne[0].startswith("TOTAL"):
@@ -102,7 +139,7 @@ def analyse(m_kg):
         "v_loiter": v_loiter, "p_loiter": puissance(w, v_loiter, s, k),
         "p_transit": puissance(w, V_TRANSIT, s, k),
         "p_stat": p_stat, "T/W": 4 * POUSSEE_MAX_MOTEUR / m_kg,
-        "T/W_reel": 4 * POUSSEE_MAX_MOTEUR * AFFAISSEMENT_LIION / m_kg,
+        "T/W_reel": 4 * POUSSEE_MAX_MOTEUR * AFFAISSEMENT / m_kg,
     }
 
 
@@ -120,7 +157,7 @@ def main():
     mx_comp = sum(q * m * x for _, q, m, x in COMPOSANTS)
     out = []
     p = out.append
-    p("# Bilan de masse, centrage et performances — Huard DFR\n")
+    p(f"# Bilan de masse, centrage et performances — {TITRE}\n")
     p("Généré par `calc/dimensionnement.py`. Les chiffres aérodynamiques sont des "
       "estimations, à recaler avec les logs des premiers vols.\n")
     p("## Masse et position (x depuis le bord d'attaque, vers l'arrière)\n")
@@ -167,7 +204,7 @@ def main():
             "Vol en cercle au-dessus des lieux": f"{r['v_loiter'] * 3.6:.0f} km/h, {r['p_loiter'][0]:.0f} W",
             "Autonomie en cercle seulement": f"**{mission(r, e_wh, 0):.0f} min**",
         }
-        for rayon in (5, 10, 15, 20):
+        for rayon in RAYONS_KM:
             t = mission(r, e_wh, rayon)
             val[f"Temps sur les lieux, intervention à {rayon} km"] = (
                 f"**{t:.0f} min** (aller {rayon * 1000 / V_TRANSIT / 60:.0f} min)" if t > 0
@@ -183,9 +220,11 @@ def main():
       f"figure de mérite VTOL {FM}, {P_BORD:.0f} W pour l'électronique de bord, "
       f"{UTILISABLE:.0%} de la batterie utilisée (le reste est la réserve), "
       f"{T_VTOL_S // 60} min de vol stationnaire par mission, "
-      f"{POUSSEE_MAX_MOTEUR} kg de poussée max par moteur VTOL à 22,2 V.\n")
+      f"{POUSSEE_MAX_MOTEUR} kg de poussée max par moteur VTOL "
+      f"(× {AFFAISSEMENT} batterie affaissée).\n")
     texte = "\n".join(out)
-    with open(os.path.join(RACINE, "docs", "bilan.md"), "w") as f:
+    nom = "bilan.md" if VERSION == "dfr" else f"bilan_{VERSION}.md"
+    with open(os.path.join(RACINE, "docs", nom), "w") as f:
         f.write(texte)
     print(texte)
 
