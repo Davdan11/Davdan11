@@ -174,6 +174,76 @@ def _tubes_aile(ya, yb):
     return tubes
 
 
+def _servo_aile():
+    """Position du servo d'aileron, couché dans l'aile (repère de corde, avant calage).
+
+    Servo : longueur L le long de la corde, épaisseur W verticale, hauteur H le long de
+    l'envergure, fond du boîtier côté emplanture et axe côté saumon. Le palonnier sort
+    sous l'aile, en face du guignol.
+    """
+    L, W, H = SERVO["L"], SERVO["W"], SERVO["H"]
+    demi = SERVO["oreilles"] / 2 + 2.2           # demi-largeur du cadre (le long de la corde)
+    # place libre entre le fourreau du longeron extérieur et la charnière d'aileron
+    xmin = LONGERON_EXT_X * CORDE + LONGERON_EXT_D / 2 + FOURREAU + 1.0
+    xmax = AILERON_X * CORDE - AILERON_JEU / 2 - 1.0
+    if xmax - xmin < 2 * demi:
+        raise ValueError("cadre de servo trop large pour la place entre longeron et aileron")
+    def hauteur(xc):
+        zs = [naca_surfaces(PROFIL_AILE, CORDE, (xc + d) / CORDE) for d in (-demi, -demi / 2, 0, demi / 2, demi)]
+        z_trappe = max(z[1] for z in zs)            # dessous de la trappe, au ras de l'intrados
+        z0 = z_trappe + SERVO_TRAPPE_EP             # dessus de la trappe = dessous du servo
+        return min(z[0] for z in zs) - PEAU - z0, z_trappe, z0
+    # position la plus épaisse dans la place libre
+    xcs = [xmin + demi + 0.5 * k for k in range(int((xmax - xmin - 2 * demi) / 0.5) + 1)]
+    xc = max(xcs, key=lambda x: hauteur(x)[0])
+    haut_dispo, z_trappe, z0 = hauteur(xc)
+    if haut_dispo < W + 0.4:
+        raise ValueError(f"aile trop mince pour le servo : {haut_dispo:.1f} mm < {W + 0.4:.1f} mm")
+    yb = Y_GUIGNOL_AILERON - H - 3.0               # fond du boîtier (palonnier en face du guignol)
+    y0, y1 = yb - 3.0, yb + H + 6.0                # étendue du cadre
+    profil = Polygon(naca_points(PROFIL_AILE, CORDE))
+    sous_peau = profil.intersection(translate(profil, 0, -PEAU))   # garde la peau d'extrados
+    baie = sous_peau.intersection(box(xc - demi, -100, xc + demi, 100))
+    xs = xc + L / 2 - SERVO["axe"]                 # axe du servo, côté bord de fuite
+    vis = [(xc - demi + 2.0, y0 + 2.5), (xc + demi - 2.0, y1 - 2.5)]
+    return dict(xc=xc, demi=demi, z0=z0, z_trappe=z_trappe, yb=yb, y0=y0, y1=y1,
+                baie=baie, sous_peau=sous_peau, xs=xs, vis=vis)
+
+
+def cadre_servo_aile():
+    """Cadre PETG collé dans l'aile : le servo s'y emboîte, oreilles dans leurs encoches."""
+    g = _servo_aile()
+    L, W, H = SERVO["L"], SERVO["W"], SERVO["H"]
+    bloc = extrude_xz(g["sous_peau"].intersection(
+        box(g["xc"] - g["demi"], g["z0"], g["xc"] + g["demi"], 100)), g["y0"], g["y1"])
+    def boite(x0, x1, y0, y1, z0, z1):
+        return cq.Workplane("XY").box(x1 - x0, y1 - y0, z1 - z0, centered=False).translate((x0, y0, z0))
+    xc, z0, yb = g["xc"], g["z0"], g["yb"]
+    # logement du boîtier, ouvert aux deux bouts (fil côté emplanture, palonnier côté saumon)
+    bloc = bloc.cut(boite(xc - L / 2 - 0.3, xc + L / 2 + 0.3, g["y0"] - 1, g["y1"] + 1, z0 - 1, z0 + W + 0.4))
+    # encoches des oreilles : bloquent le servo le long de l'envergure
+    ty = yb + SERVO["oreille_y"]
+    o = SERVO["oreilles"] / 2 + 0.3
+    bloc = bloc.cut(boite(xc - o, xc + o, ty - 0.2, ty + SERVO["oreille_ep"] + 0.3, z0 - 1, z0 + W + 0.4))
+    for x, y in g["vis"]:  # avant-trous des vis M2 de la trappe
+        bloc = bloc.cut(cq.Workplane("XY", origin=(x, y, z0 - 1)).circle(0.8).extrude(9))
+    return caler(bloc, CALAGE_AILE)
+
+
+def trappe_servo_aile():
+    """Trappe PETG vissée sous le cadre (2 vis M2) : tient le servo, laisse passer le palonnier."""
+    g = _servo_aile()
+    H = SERVO["H"]
+    t = (cq.Workplane("XY").box(2 * g["demi"] - 0.4, g["y1"] - g["y0"] - 0.4, SERVO_TRAPPE_EP, centered=False)
+         .translate((g["xc"] - g["demi"] + 0.2, g["y0"] + 0.2, g["z_trappe"])))
+    fente = (cq.Workplane("XY").box(16, 6, 10).translate((g["xs"], g["yb"] + H + 3.0, g["z_trappe"]))
+             .edges("|Z").fillet(2))
+    t = t.cut(fente)
+    for x, y in g["vis"]:
+        t = t.cut(cq.Workplane("XY", origin=(x, y, g["z_trappe"] - 1)).circle(1.1).extrude(5))
+    return caler(t, CALAGE_AILE)
+
+
 def segment_aile(i):
     """Segment i (0 = emplanture) de la demi-aile droite, sans aileron."""
     ya, yb = bornes_segments()[i]
@@ -194,17 +264,12 @@ def segment_aile(i):
         if a1 < yb:
             seg = seg.union(extrude_xz(pleine, a1, yb))
 
-    if i == segments_aileron()[0]:  # baie de servo d'aileron (servo 9 g couché, palonnier sous l'aile)
-        profil = Polygon(naca_points(PROFIL_AILE, CORDE))
-        bloc = profil.intersection(box(0.45 * CORDE, -50, 0.64 * CORDE, 50))
-        z_bas = min(naca_surfaces(PROFIL_AILE, CORDE, f)[1] for f in (0.47, 0.545, 0.62))
-        poche = bloc.intersection(box(0.47 * CORDE, -50, 0.62 * CORDE, z_bas + 13.5))
-        yc = Y_GUIGNOL_AILERON
-        seg = seg.union(extrude_xz(bloc, yc - 22, yc + 22))
-        seg = seg.cut(extrude_xz(poche, yc - 15, yc + 15))
+    if i == segments_aileron()[0]:  # baie du cadre de servo d'aileron, ouverte par-dessous
+        g = _servo_aile()
+        seg = seg.cut(extrude_xz(g["baie"], g["y0"] - 0.3, g["y1"] + 0.3))
         # passage du fil du servo vers l'emplanture (il suit ensuite les alvéoles de l'aile)
-        fil = Point(0.52 * CORDE, z_bas + 6.5).buffer(3.0)
-        seg = seg.cut(extrude_xz(fil, yc - 30, yc - 14))
+        fil = Point(g["xc"], g["z0"] + SERVO["W"] / 2).buffer(3.0)
+        seg = seg.cut(extrude_xz(fil, g["y0"] - 16, g["y0"] + 1))
 
     if ya < POUTRE_Y < yb:  # passage des câbles vers la poutre
         trou = (cq.Workplane("XY").workplane(offset=-30)
@@ -611,11 +676,17 @@ def bloc_queue():
         bloc = bloc.cut(cq.Workplane("XZ", origin=(0, y0, 0))
                         .center(STAB_BA_X + xc * STAB_CORDE, STAB_Z)
                         .circle((d + JEU_TUBE) / 2).extrude(-20))
-    # baie de servo de profondeur, ouverte côté intérieur
-    prof = min(25.5, 2 * dl - 2.5)
+    # baie de servo de profondeur, ouverte côté intérieur : le boîtier s'enfonce jusqu'aux
+    # oreilles, qui s'appuient sur la face du bloc et s'y vissent (vis M2 fournies avec le servo)
+    L, W = SERVO["L"], SERVO["W"]
+    prof = SERVO["oreille_y"] + 0.5
     xs = x1 - 22
+    zc = STAB_Z + 6 + (W + 0.4) / 2
     bloc = bloc.cut(cq.Workplane("XY", origin=(0, 0, STAB_Z + 6)).center(xs, y0 - dl + prof / 2)
-                    .rect(33, prof).extrude(13))
+                    .rect(L + 0.6, prof).extrude(W + 0.4))
+    for sx in (-1, 1):
+        bloc = bloc.cut(cq.Workplane("XZ", origin=(0, y0 - dl - 1, 0)).center(xs + sx * SERVO["entraxe"] / 2, zc)
+                        .circle(0.75).extrude(-9))
     # passage de câble poutre -> servo
     bloc = bloc.cut(cq.Workplane("XY", origin=(0, 0, zb)).center(xs - 6, y0).circle(min(3.0, POUTRE_D / 2 - 1.5))
                     .extrude(STAB_Z + 7 - zb))
@@ -637,7 +708,7 @@ def inventaire():
 
     orientation : 'Y' = l'envergure devient verticale (emplanture sur le plateau),
                   'X' = l'axe X devient vertical (nez en bas), 'Xinv' = nez en haut,
-                  'Z' = tel quel, 'Zinv' = retourné.
+                  'Z' = tel quel, 'Zinv' = retourné, 'Zcal' = calage d'aile annulé (à plat).
     miroir : True -> on exporte aussi la version gauche.
     """
     inv = []
@@ -662,6 +733,8 @@ def inventaire():
         ("bloc_queue", bloc_queue, 1, "PLA Aero", "Z", 1.2, 0.08, True),
     ]
     inv.append(("guignol_aileron", guignol_aileron, 2, "PETG", "Y", 2.0, 1.0, False))
+    inv.append(("cadre_servo_aile", cadre_servo_aile, 1, "PETG", "Zcal", 1.2, 0.30, True))
+    inv.append(("trappe_servo_aile", trappe_servo_aile, 1, "PETG", "Zcal", 1.2, 1.0, True))
     inv.append(("guignol_profondeur", guignol_profondeur, 1, "PETG", "Y", 2.0, 1.0, False))
     if NACELLE_X is not None:
         inv.append(("support_nacelle", support_nacelle, 1, "PETG", "Z", 1.6, 0.30, False))

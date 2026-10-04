@@ -102,7 +102,7 @@ NACELLE_Z = -96.0         # face de fixation de la nacelle (dessous du support)
 # perçages de nacelle (entraxe x, entraxe y, Ø) : SIYI A8 mini M2.5 et SIYI ZT6 M3
 NACELLE_TROUS = [(30.0, 25.0, 2.7), (45.0, 40.0, 3.3)]
 BATTERIE = (134.0, 83.0, 67.0)   # GAONENG GNB 6S3P P45B : 130 x 81 x 65 mm + jeu
-X_BATTERIE = -123.0       # centre de la batterie pour le centrage (voir docs/bilan.md)
+X_BATTERIE = -121.0       # centre de la batterie pour le centrage (voir docs/bilan.md)
 
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 110.0
@@ -128,6 +128,19 @@ PATTE_LONG = 222.0        # sol à -247 mm : 20 mm sous la nacelle SIYI ZT6 (131
 PATTE_SECTION = ((16.0, 10.0), (24.0, 13.0))   # jambe : bas, haut (x, y)
 PATTE_PIED = (44.0, 26.0)
 PATTE_DECALAGE = 38.0     # distance patte - moteur le long de la poutre
+
+# --- Servos 9-12 g (cotes courantes : à vérifier au pied à coulisse sur tes servos) ---
+SERVO = dict(
+    L=23.2,           # longueur du boîtier
+    W=12.0,           # épaisseur
+    H=24.8,           # hauteur du boîtier (fond -> dessus, sans l'axe)
+    oreilles=32.5,    # longueur totale d'une oreille à l'autre
+    oreille_ep=2.5,   # épaisseur des oreilles
+    oreille_y=16.0,   # distance du fond du boîtier au dessous des oreilles
+    entraxe=27.8,     # entraxe des trous des oreilles (vis M2)
+    axe=5.9,          # distance de l'axe au bout du boîtier
+)
+SERVO_TRAPPE_EP = 1.6
 
 # --- Densités (g/cm³) pour l'estimation de masse ------------------------------
 DENSITE = {"PLA Aero": 0.65, "PLA": 1.24, "PETG": 1.27, "TPU 95A": 1.21}

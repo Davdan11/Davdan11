@@ -77,6 +77,8 @@ Les pages Amazon.ca n'ont pas pu être ouvertes (CAPTCHA) : liens trouvés en re
 
 ## 8. Petite quincaillerie
 
+- Vis M2 × 6 autotaraudeuses : 4 pour les trappes de servo d'aileron (les vis fournies avec les servos servent pour la profondeur)
+
 - Vis M3 : 8 × 20 mm pour les colliers des supports moteurs, 2 × 35 mm pour la selle de nacelle, 4 × 8 mm pour le contrôleur de vol
 - Vis M2.5 : 4 × 8 mm (Raspberry Pi, A8 mini) ; vis M3 × 8 mm pour la ZT6
 - 3 guignols, 3 tringles de 1,5 mm avec chapes

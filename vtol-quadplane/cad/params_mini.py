@@ -28,7 +28,7 @@ LONGERON_PRINC_D = 10.0   # tube 10x8 mm, 720 mm, traverse le fuselage
 LONGERON_PRINC_X = 0.25
 LONGERON_PRINC_FIN = 360.0
 LONGERON_EXT_D = 6.0      # tube 6x4 mm, 310 mm par côté
-LONGERON_EXT_X = 0.40
+LONGERON_EXT_X = 0.33      # avancé pour laisser la place au servo d'aileron
 LONGERON_EXT_DEBUT = 280.0
 LONGERON_EXT_FIN = 590.0
 GOUPILLE_D = 4.0          # jonc 4 mm, 200 mm
@@ -97,7 +97,7 @@ NACELLE_X = None          # pas de nacelle : caméra d'action collée sur le des
 NACELLE_Z = None
 NACELLE_TROUS = []
 BATTERIE = (150.0, 53.0, 30.0)   # CNHL G+Plus 4S 4000 mAh : 147 x 51 x 28 mm + jeu
-X_BATTERIE = -146.0       # centre de la batterie pour le centrage (voir docs/bilan_mini.md)
+X_BATTERIE = -145.0       # centre de la batterie pour le centrage (voir docs/bilan_mini.md)
 
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 90.0
@@ -123,6 +123,19 @@ PATTE_LONG = 110.0        # sol à -129 mm, 36 mm sous l'hélice propulsive de 7
 PATTE_SECTION = ((11.0, 7.0), (16.0, 9.0))
 PATTE_PIED = (32.0, 18.0)
 PATTE_DECALAGE = 28.0
+
+# --- Servos 9-12 g (cotes courantes : à vérifier au pied à coulisse sur tes servos) ---
+SERVO = dict(
+    L=23.2,           # longueur du boîtier
+    W=12.0,           # épaisseur
+    H=24.8,           # hauteur du boîtier (fond -> dessus, sans l'axe)
+    oreilles=32.5,    # longueur totale d'une oreille à l'autre
+    oreille_ep=2.5,   # épaisseur des oreilles
+    oreille_y=16.0,   # distance du fond du boîtier au dessous des oreilles
+    entraxe=27.8,     # entraxe des trous des oreilles (vis M2)
+    axe=5.9,          # distance de l'axe au bout du boîtier
+)
+SERVO_TRAPPE_EP = 1.6
 
 # --- Densités (g/cm³) ---------------------------------------------------------
 DENSITE = {"PLA Aero": 0.65, "PLA": 1.24, "PETG": 1.27, "TPU 95A": 1.21}

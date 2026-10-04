@@ -3,8 +3,8 @@ aile_segment_1_droit,1,PLA Aero,220x28x211,61.4,61.4,103
 aile_segment_1_gauche,1,PLA Aero,220x28x211,61.4,61.4,103
 aile_segment_2_droit,1,PLA Aero,220x28x211,62.4,62.4,98
 aile_segment_2_gauche,1,PLA Aero,220x28x211,62.4,62.4,98
-aile_segment_3_droit,1,PLA Aero,220x28x211,69.4,69.4,90
-aile_segment_3_gauche,1,PLA Aero,220x28x211,69.4,69.4,90
+aile_segment_3_droit,1,PLA Aero,220x28x211,52.8,52.8,80
+aile_segment_3_gauche,1,PLA Aero,220x28x211,52.8,52.8,80
 aile_segment_4_droit,1,PLA Aero,220x28x211,45.8,45.8,86
 aile_segment_4_gauche,1,PLA Aero,220x28x211,45.8,45.8,86
 aileron_1_droit,1,PLA Aero,54x15x208,16.8,16.8,187
@@ -24,9 +24,13 @@ plateau_electronique,1,PETG,238x80x17,49.8,49.8,-76
 plateau_compagnon,1,PETG,128x70x8,22.6,22.6,162
 support_moteur,4,PETG,49x49x34,24.5,97.9,62
 patte_atterrissage,4,TPU 95A,44x26x234,44.3,177.4,62
-bloc_queue_droit,1,PLA Aero,180x30x182,66.2,66.2,698
-bloc_queue_gauche,1,PLA Aero,180x30x182,66.2,66.2,698
+bloc_queue_droit,1,PLA Aero,180x30x182,65.8,65.8,699
+bloc_queue_gauche,1,PLA Aero,180x30x182,65.8,65.8,699
 guignol_aileron,2,PETG,23x28x2,1.4,2.7,177
+cadre_servo_aile_droit,1,PETG,37x34x21,11.7,11.7,112
+cadre_servo_aile_gauche,1,PETG,37x34x21,11.7,11.7,112
+trappe_servo_aile_droit,1,PETG,37x33x2,2.3,2.3,112
+trappe_servo_aile_gauche,1,PETG,37x33x2,2.3,2.3,112
 guignol_profondeur,1,PETG,11x19x2,0.5,0.5,724
 support_nacelle,1,PETG,83x61x15,36.4,36.4,-147
 stab_segment_1,1,PLA Aero,77x10x230,24.5,24.5,679
@@ -35,4 +39,4 @@ stab_segment_2,1,PLA Aero,77x10x230,24.5,24.5,679
 profondeur_2,1,PLA Aero,33x6x229,9.4,9.4,729
 stab_segment_3,1,PLA Aero,77x10x230,24.5,24.5,679
 profondeur_3,1,PLA Aero,33x6x229,9.3,9.3,729
-TOTAL pièces imprimées,,,,,1481,173
+TOTAL pièces imprimées,,,,,1475,172

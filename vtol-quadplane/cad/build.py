@@ -51,6 +51,8 @@ def orienter(wp, mode, gauche=False):
         wp = wp.rotate((0, 0, 0), (0, 1, 0), -90)
     elif mode == "Xinv":
         wp = wp.rotate((0, 0, 0), (0, 1, 0), 90)
+    elif mode == "Zcal":  # pièce calée avec l'aile : on annule le calage pour la poser à plat
+        wp = wp.rotate((0, 0, 0), (0, 1, 0), -CALAGE_AILE)
     elif mode == "Zinv":
         wp = wp.rotate((0, 0, 0), (1, 0, 0), 180)
     bb = wp.val().BoundingBox()
