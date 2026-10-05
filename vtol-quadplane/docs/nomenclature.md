@@ -57,8 +57,7 @@ T-Motor offre la livraison gratuite au-delà de 200 US$.
 
 | Qté | Pièce | Lien | Prix | Usage |
 |---:|---|---|---:|---|
-| 2 | Tube 16 × 14 × 1000 mm | [Amazon.ca](https://www.amazon.ca/High-Strength-Glossy-Carbon-Fiber-16x14x1000mm/dp/B0F3CNHP25) · [Rock West 46705 (2 m, à couper)](https://www.rockwestcomposites.com/46705.html) | ≈ 69 CA$ · 102,99 US$ | Poutres VTOL |
-| 1 | Tube 12 × 10 × 1000 mm | [Amazon.ca](https://www.amazon.ca/Abesterxox-Carbon-Length-Airplane-12x10x1000mm/dp/B0CP3XSFQG) · [Rock West 46704](https://www.rockwestcomposites.com/46704.html) | — · 88,99 US$ | Longeron principal |
+| 3 | Tube 16 × 14 × 1000 mm | [Amazon.ca](https://www.amazon.ca/High-Strength-Glossy-Carbon-Fiber-16x14x1000mm/dp/B0F3CNHP25) · [Rock West 46705 (2 m, à couper ; 2 tubes donnent les 3 longueurs)](https://www.rockwestcomposites.com/46705.html) | ≈ 69 CA$ · 102,99 US$ | 2 poutres VTOL + le longeron principal (un 12 mm serait trop faible : voir docs/essais_virtuels.md) |
 | 1 | Tube 8 × 6 × 1000 mm | [Amazon.ca](https://www.amazon.ca/Abesterxox-Carbon-Length-Airplane-8x6x1000mm/dp/B0CP3SSSSK) · [Rock West T-RND-314-L39](https://www.rockwestcomposites.com/t-rnd-314-l39.html) | — · 23,99 US$ | Longerons extérieurs (2 × 500 mm) |
 | 1 | Tube 6 × 4 × 1000 mm | [Amazon.ca (WHABEST)](https://amazon.ca/WHABEST-Carbon-1000mm-Composite-Material/dp/B08DNNVPZP) | — | Longeron du stab (couper à 720 mm) |
 | 1 | Jonc plein 6 mm × 2 m | [Rock West R-RND-236](https://www.rockwestcomposites.com/r-rnd-236.html) | 41,99 US$ | Goupille d'aile (300 mm) |

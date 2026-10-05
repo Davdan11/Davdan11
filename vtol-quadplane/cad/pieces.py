@@ -290,11 +290,17 @@ def trappe_servo_aile():
     return caler(t, CALAGE_AILE)
 
 
+def ames_segment(i):
+    """Nombre de diagonales du zigzag du segment i : plus serré près de l'emplanture, où la
+    flexion comprime le plus la peau (panneaux plus étroits = la peau n'ondule pas)."""
+    return globals().get("N_AMES_SEGMENTS", [N_AMES] * N_SEGMENTS)[i]
+
+
 def segment_aile(i):
     """Segment i (0 = emplanture) de la demi-aile droite, sans aileron."""
     ya, yb = bornes_segments()[i]
     tubes = _tubes_aile(ya, yb)
-    pleine = section_coque(PROFIL_AILE, CORDE, tubes=tubes, ames=N_AMES, conduit=CONDUIT)
+    pleine = section_coque(PROFIL_AILE, CORDE, tubes=tubes, ames=ames_segment(i), conduit=CONDUIT)
 
     a0 = max(ya, AILERON_DEBUT) if yb > AILERON_DEBUT else None
     if i == 0:  # l'emplanture déborde dans le fuselage, puis est découpée à sa forme
@@ -305,7 +311,7 @@ def segment_aile(i):
         a1 = min(yb, AILERON_FIN)
         fixe, _, _ = charniere(PROFIL_AILE, CORDE, AILERON_X)
         avant = section_coque(PROFIL_AILE, CORDE, clip=fixe, tubes=tubes,
-                              ames=N_AMES - 2, conduit=CONDUIT)
+                              ames=ames_segment(i) - 2, conduit=CONDUIT)
         seg = extrude_xz(avant, a0, a1)
         if a0 > ya:
             seg = seg.union(extrude_xz(pleine, ya, a0))

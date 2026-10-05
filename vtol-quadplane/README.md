@@ -23,7 +23,7 @@ Les pièces imprimées sont conçues pour une **Bambu Lab A1** (plateau 256 mm) 
 | Distance de l'intervention | 5 km | 10 km | 15 km | 20 km |
 |---|---|---|---|---|
 | Temps pour arriver | 3 min | 7 min | 10 min | 13 min |
-| Temps sur place | ≈ 68 min | ≈ 52 min | ≈ 35 min | ≈ 19 min |
+| Temps sur place | ≈ 65 min | ≈ 49 min | ≈ 34 min | ≈ 18 min |
 
 Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](docs/bilan.md). La **vérification d'intégration** (l'avion monté en 3D avec toutes les pièces achetées : collisions, débattements, hélices, garde au sol, chemins de câbles et de tubes) est dans [docs/verification.md](docs/verification.md) et [docs/verification_mini.md](docs/verification_mini.md). La **liste d'achats avec les modèles exacts et les liens** est dans [docs/nomenclature.md](docs/nomenclature.md) : le CAD est percé pour ces modèles.
 
@@ -32,11 +32,11 @@ Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](do
 | | **Huard Mini** (pour apprendre) | **Huard DFR** (la mission) |
 |---|---|---|
 | Envergure | 1,2 m | 1,8 m |
-| Masse au décollage | ≈ 1,8 kg | ≈ 4,8 kg |
+| Masse au décollage | ≈ 1,9 kg | ≈ 4,9 kg |
 | Batterie | LiPo 4S 4000 mAh | Li-ion 6S3P 13,5 Ah |
 | Moteurs | 5 × Emax ECO III 2807 (pièces FPV) | 4 × T-Motor MN4014 + SunnySky X2820 |
 | Caméra / 4G | non (caméra d'action en option) | SIYI A8 mini puis ZT6, Raspberry Pi, modem 4G |
-| Autonomie estimée | ≈ 34 min | ≈ 84 min |
+| Autonomie estimée | ≈ 33 min | ≈ 81 min |
 | Budget de l'avion | **≈ 670 $ CA** | ≈ 3 100 $ CA |
 | Liste d'achats | [docs/nomenclature_mini.md](docs/nomenclature_mini.md) | [docs/nomenclature.md](docs/nomenclature.md) |
 | Bilan | [docs/bilan_mini.md](docs/bilan_mini.md) | [docs/bilan.md](docs/bilan.md) |
@@ -89,7 +89,7 @@ HUARD_VERSION=mini python calc/dimensionnement.py  # bilan Mini -> docs/bilan_mi
 - **Deux poutres carbone** à ±360 mm sous l'aile, tenues par des pylônes collés. Elles portent les 4 moteurs VTOL (±365 mm autour du centre de gravité, hélices de 15 po) et l'empennage en H au bout.
 - **Le fuselage** est en 4 tronçons. Le nez est amovible pour glisser la batterie sur le plateau avant. Le contrôleur de vol, le Raspberry Pi et le modem 4G sont sur un second plateau dans le tronçon du milieu. Le moteur propulsif est boulonné sur une cloison en PETG au bout de la queue.
 - **La nacelle caméra** est fixée sous l'avant du fuselage, sur une selle en PETG vissée à travers le plateau. Elle voit vers l'avant et vers le bas sans être gênée par les hélices.
-- **L'aile** est en 2 demi-ailes de 4 segments chacune, enfilées sur un longeron de 12 mm qui traverse le fuselage. Un longeron de 8 mm prend le relais vers les bouts d'aile et une goupille de 6 mm fixe l'incidence.
+- **L'aile** est en 2 demi-ailes de 4 segments chacune, enfilées sur un longeron de 16 mm qui traverse le fuselage. Un longeron de 8 mm prend le relais vers les bouts d'aile et une goupille de 6 mm fixe l'incidence.
 - **Le centre de gravité** visé est à 62 mm du bord d'attaque (28 % de corde), au milieu des 4 moteurs VTOL. Avec la batterie GAONENG, il tombe en place quand **le centre de la batterie est à 116 mm devant le bord d'attaque**, c'est-à-dire batterie poussée presque au bout du plateau, sans lest (voir docs/bilan.md).
 
 ## Vérification d'intégration
@@ -112,6 +112,22 @@ cd cad && python verification.py && HUARD_VERSION=mini python verification.py
 ```
 
 Ordre de montage conseillé pour valider avant de tout imprimer : un segment d'aile, un support moteur avec sa platine, un cadre de servo avec sa trappe. On vérifie l'ajustement sur les vraies pièces achetées, et seulement ensuite on lance le reste.
+
+## Essais virtuels : pression, charges de vol, résistance, stabilité
+
+`calc/essais_virtuels.py` fait les calculs d'ingénieur d'un avion léger sur les cotes réelles du modèle :
+pression de l'air sur le profil (méthode des panneaux), facteurs de charge en manœuvre et en rafale,
+flexion et torsion de l'aile, peau entre les âmes, stabilité (point neutre, marge statique), braquage de
+profondeur pour équilibrer, couple des servos, poutres plein gaz, vibrations, atterrissage dur.
+Rapports : [DFR](docs/essais_virtuels.md), [Mini](docs/essais_virtuels_mini.md).
+
+Ce que ces essais ont fait corriger :
+- **DFR : le longeron principal passe de 12 à 16 mm.** Le 12 mm aurait travaillé au-delà de sa résistance à la charge extrême (6,4 g).
+- **Peau de l'aile : plus d'âmes près de l'emplanture** (DFR 20/14/10/6 diagonales du centre vers le bout, Mini 12/8/5). Avant, la peau du dessus, trop large entre deux âmes, aurait ondulé dès un virage serré.
+
+```bash
+python calc/essais_virtuels.py && HUARD_VERSION=mini python calc/essais_virtuels.py
+```
 
 ## Avant d'imprimer l'avion : le kit d'essai (≈ 15 g de PLA Aero, ≈ 50 g de PETG)
 
@@ -162,9 +178,9 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
      2. Centrer le servo (palonnier enlevé) avec la radio, puis l'emboîter dans le cadre, couché, axe vers le saumon : ses **oreilles s'engagent dans les encoches** du cadre, ce qui l'empêche de glisser. Pas de colle sur le servo.
      3. Brancher une **rallonge de servo** (50 cm DFR, 30 cm Mini) et la passer dans le **conduit de câbles** : un tunnel continu dans l'aile, du servo jusqu'au trou du flanc du fuselage. Le plus simple est d'enfiler un fil de fer avant de coller les segments, puis de tirer les câbles avec.
      4. Visser la **trappe** par-dessous avec **2 vis M2 × 6** (autotaraudeuses, dans les avant-trous du cadre). Elle tient le servo prisonnier.
-     5. Remettre le palonnier à travers la fente de la trappe, et relier son trou à celui du bas du guignol par une tringle de 1,5 mm (Z d'un côté, chape de l'autre pour régler).
+     5. Remettre le palonnier à travers la fente de la trappe, et relier son trou **à 10 mm de l'axe (DFR) ou 8 mm (Mini)** au trou intérieur du guignol par une tringle de 1,5 mm (Z d'un côté, chape de l'autre pour régler). Régler ensuite les fins de course dans ArduPilot (SERVOx_MIN / MAX) pour **±20°** d'aileron, mesurés au rapporteur.
      Pour changer un servo : 2 vis, la trappe s'enlève, le servo sort.
-2. **Longerons et fixation des ailes** : le longeron extérieur (DFR : tube 8 mm × 500 mm ; Mini : 6 mm × 310 mm) est collé à l'époxy dans les segments extérieurs. Le longeron principal (12 mm ; Mini 10 mm) et la goupille (6 mm ; Mini 4 mm) traversent le fuselage et restent démontables. L'emplanture de l'aile épouse le flanc du fuselage. Pour **retenir chaque aile**, une **vis nylon M3** traverse l'aile de haut en bas, près de l'emplanture, et le longeron : au premier montage, percer le longeron à Ø3,2 mm à travers le trou de l'aile, aile en place. Pour démonter : 1 vis par aile.
+2. **Longerons et fixation des ailes** : le longeron extérieur (DFR : tube 8 mm × 500 mm ; Mini : 6 mm × 310 mm) est collé à l'époxy dans les segments extérieurs. Le longeron principal (16 mm ; Mini 10 mm) et la goupille (6 mm ; Mini 4 mm) traversent le fuselage et restent démontables. L'emplanture de l'aile épouse le flanc du fuselage. Pour **retenir chaque aile**, une **vis nylon M3** traverse l'aile de haut en bas, près de l'emplanture, et le longeron : au premier montage, percer le longeron à Ø3,2 mm à travers le trou de l'aile, aile en place. Pour démonter : 1 vis par aile.
 3. **Pylônes** : les coller à l'époxy sous l'aile, centrés à **360 mm** de l'axe du fuselage (Mini : **210 mm**), sous le segment qui porte le trou de câble. Le trou de câble du pylône doit tomber sur celui de l'aile, qui débouche dans le conduit. Percer la poutre au même endroit (Ø 8 mm) : les fils des moteurs, des ESC et du servo de profondeur passent dans la poutre, remontent par le pylône et filent dans le conduit de l'aile jusqu'au fuselage.
 4. **Poutres et moteurs VTOL** (vue éclatée : [DFR](docs/images/support_moteur_dfr.png), [Mini](docs/images/support_moteur_mini.png)) :
    1. **Moteur sur sa platine, à l'établi** : poser la platine sous le moteur et visser les 4 vis M3 du moteur par-dessous. Longueur = 4 mm de platine + la profondeur filetée du moteur − 0,5 mm (en général M3 × 6 ou × 8). Une vis trop longue touche le bobinage et le détruit. Les têtes de ces vis se logeront dans les creux de la bride.
@@ -173,7 +189,7 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
    4. **Poser le moteur** : la platine se pose sur la bride et se fixe par **4 vis de coin M3 × 8 passées par-dessous**, à côté du collier. Elles s'atteignent au tournevis même sur la poutre : pour changer un moteur, 4 vis, sans toucher au réglage du collier.
    5. **ESC** : collés ou attachés (collier de serrage + gaine thermo) sur le flanc intérieur de la poutre, entre la patte et le pylône (ou le support arrière), à l'air. Leurs fils de puissance (14 AWG DFR, 18 AWG Mini) et leur fil de signal (rallonge de servo) passent dans la poutre jusqu'au pylône.
    6. **Pattes TPU** : enfilées serrées sur la poutre. Une goutte de CA si elles tournent.
-5. **Empennage** : coller les 3 segments de stab sur le tube de 6 mm et le jonc de 3 mm, puis les insérer dans les deux blocs de queue. Enfiler les profondeurs sur leur jonc carbone, glisser le **guignol de profondeur** par le dessus dans sa fente (côté droit, près du bloc de queue), coller, et poser avec une **charnière en ruban sur le dessus** (V ouvert dessous). Le servo de profondeur s'enfonce dans la baie du bloc droit par la face intérieure, jusqu'à ce que ses oreilles touchent la face du bloc : on les **visse avec les 2 vis fournies avec le servo**, dans les avant-trous déjà percés. Son palonnier, vers le haut, est juste devant la charnière, au-dessus du stab : une tringle courte le relie au guignol. Son fil (rallonge 80 cm DFR, 30 cm Mini) descend dans la poutre par le trou au fond de la baie.
+5. **Empennage** : coller les 3 segments de stab sur le tube de 6 mm et le jonc de 3 mm, puis les insérer dans les deux blocs de queue. Enfiler les profondeurs sur leur jonc carbone, glisser le **guignol de profondeur** par le dessus dans sa fente (côté droit, près du bloc de queue), coller, et poser avec une **charnière en ruban sur le dessus** (V ouvert dessous). Le servo de profondeur s'enfonce dans la baie du bloc droit par la face intérieure, jusqu'à ce que ses oreilles touchent la face du bloc : on les **visse avec les 2 vis fournies avec le servo**, dans les avant-trous déjà percés. Son palonnier, vers le haut, est juste devant la charnière, au-dessus du stab : une tringle courte relie son trou **à 7 mm de l'axe (DFR) ou 5 mm (Mini)** au trou intérieur du guignol, pour ±20° de profondeur. Son fil (rallonge 80 cm DFR, 30 cm Mini) descend dans la poutre par le trou au fond de la baie.
 6. **Fuselage** : glisser le plateau électronique dans l'avant et le plateau compagnon dans le milieu, puis coller avant, milieu et queue (lèvres d'emboîtement). Le nez reste amovible, tenu par du ruban ou deux aimants. Le tube de Pitot sort par la pointe du nez.
    - **Moteur propulsif** : le boulonner sur la **cloison** à l'établi (vis par l'avant de la cloison). Glisser la cloison par l'arrière dans le bout du fuselage jusqu'à l'**anneau d'appui**, et la fixer par **3 vis M2 × 6 radiales** à travers la peau. La poussée appuie la cloison contre l'anneau ; les vis la retiennent. Pour changer le moteur : 3 vis. L'ESC du propulseur se colle debout contre le flanc droit, à côté du contrôleur de vol.
 7. **Batterie** (coupe de côté : [DFR](docs/images/batterie_dfr.png), [Mini](docs/images/batterie_mini.png)) :

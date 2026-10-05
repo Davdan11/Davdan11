@@ -56,7 +56,7 @@ if VERSION == "dfr":
         ("Modem Waveshare SIM7600G-H (clé USB, sans boîtier) + antennes", 1, 60, -100),
         ("BEC Holybro UBEC 5A (Pi et modem)", 2, 7, 150),
         ("Tube carbone 16x14x1000 (poutres)", 2, 73, POUTRE_DEBUT + POUTRE_LONG / 2),
-        ("Tube carbone 12x10x1000 (longeron principal)", 1, 54, 55),
+        ("Tube carbone 16x14x1000 (longeron principal)", 1, 73, 55),
         ("Tube carbone 8x6x1000 (longerons extérieurs, coupé en 2)", 1, 34, 88),
         ("Jonc carbone 6 mm x 300 (goupille d'aile)", 1, 13, 143),
         ("Tube carbone 6x4 x 720 (longeron du stab)", 1, 18, STAB_BA_X + 27),

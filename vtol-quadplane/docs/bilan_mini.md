@@ -6,7 +6,7 @@ Généré par `calc/dimensionnement.py`. Les chiffres aérodynamiques sont des e
 
 | Élément | Qté | Masse unitaire (g) | Total (g) | x (mm) |
 |---|---:|---:|---:|---:|
-| Pièces imprimées (cad/out/masses.csv) | 1 | 794 | 794 | 103 |
+| Pièces imprimées (cad/out/masses.csv) | 1 | 802 | 802 | 103 |
 | Moteur VTOL Emax ECO III 2807 1300KV | 4 | 56 | 224 | 45 |
 | Hélice VTOL HQProp Cine7 7x4x3 | 4 | 10 | 40 | 45 |
 | ESC Skystars Talon32 40A AM32 (VTOL) | 4 | 7 | 28 | 45 |
@@ -26,7 +26,7 @@ Généré par `calc/dimensionnement.py`. Les chiffres aérodynamiques sont des e
 | Joncs carbone 2 mm et 1,5 mm (stab, gouvernes) | 1 | 8 | 8 | 300 |
 | Câblage, connecteurs, condensateurs | 1 | 60 | 60 | 30 |
 | Visserie, guignols, colle, ruban | 1 | 25 | 25 | 80 |
-| **Sans batterie** | | | **1441** | 100 |
+| **Sans batterie** | | | **1449** | 100 |
 
 ## Centrage
 
@@ -34,7 +34,7 @@ Le centre de gravité doit tomber à **x = 45 mm** (28 % de corde), au milieu de
 
 | Batterie | Centre de la batterie requis | Plage possible | Lest |
 |---|---:|---:|---|
-| CNHL G+Plus 4S 4000 mAh 70C (LiPo) | x = -145 mm | -155 à -65 mm | aucun |
+| CNHL G+Plus 4S 4000 mAh 70C (LiPo) | x = -146 mm | -155 à -65 mm | aucun |
 
 ## Performances estimées
 
@@ -43,12 +43,12 @@ Le centre de gravité doit tomber à **x = 45 mm** (28 % de corde), au milieu de
 | Masse au décollage | 1.86 kg |
 | Charge alaire | 9.7 kg/m² |
 | Vitesse de décrochage | 10.9 m/s (39 km/h) |
-| Rapport poussée/poids VTOL | 2.58 (≈ 2.33 batterie affaissée) |
-| Puissance en stationnaire | 331 W (22 A) |
+| Rapport poussée/poids VTOL | 2.57 (≈ 2.32 batterie affaissée) |
+| Puissance en stationnaire | 334 W (23 A) |
 | Transit à 72 km/h | 135 W |
 | Vol en cercle au-dessus des lieux | 53 km/h, 72 W |
 | Autonomie en cercle seulement | **33 min** |
-| Temps sur les lieux, intervention à 1 km | **30 min** (aller 1 min) |
+| Temps sur les lieux, intervention à 1 km | **29 min** (aller 1 min) |
 | Temps sur les lieux, intervention à 2 km | **26 min** (aller 2 min) |
 | Temps sur les lieux, intervention à 3 km | **23 min** (aller 2 min) |
 | Temps sur les lieux, intervention à 5 km | **17 min** (aller 4 min) |

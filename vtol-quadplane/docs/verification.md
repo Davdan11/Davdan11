@@ -25,7 +25,7 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 
 ✅ conduit de câbles de l'aile (Ø9 mm) libre du flanc du fuselage jusqu'au servo d'aileron, en passant au-dessus du pylône
 ✅ la poutre de 16 mm passe dans les supports moteurs, le pylône et le bloc de queue
-✅ longeron principal Ø12 mm : passage libre de Y = -500 à 500 mm
+✅ longeron principal Ø16 mm : passage libre de Y = -500 à 500 mm
 ✅ goupille d'aile Ø6 mm : passage libre de Y = -150 à 150 mm
 ✅ longeron extérieur Ø8 mm : passage libre de Y = 380 à 880 mm
 ✅ trou de la vis nylon de retenue d'aile (Y = 70 mm) dégagé à travers l'aile
@@ -36,7 +36,7 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 | Usage | Tube (mm) | Qté | Longueur à couper | Tube acheté |
 |---|---|---:|---:|---:|
 | poutres | 16 x 14 | 2 | 1000 mm | 1000 mm |
-| longeron principal | 12 x 10 | 1 | 1000 mm | 1000 mm |
+| longeron principal | 16 x 14 | 1 | 1000 mm | 1000 mm |
 | longerons extérieurs | 8 x 6 | 2 | 500 mm | 1000 mm |
 | goupille d'aile | jonc 6 | 1 | 300 mm | 1000 mm |
 | longeron de stab | 6 x 4 | 1 | 714 mm | 1000 mm |
@@ -54,7 +54,7 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 |---|---:|
 | fuselage_nez | 2171 |
 | bloc_queue | 2114 |
-| fuselage_milieu | 1766 |
+| fuselage_milieu | 2064 |
 | cadre_servo_aile | 836 |
 | fuselage_queue | 831 |
 | support_moteur | 791 |

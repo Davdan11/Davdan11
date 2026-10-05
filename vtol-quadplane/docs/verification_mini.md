@@ -65,13 +65,13 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 | Pièce | Pire porte-à-faux (mm) | Hauteur (mm) |
 |---|---:|---:|
 | fuselage_milieu | 4.2 | 138 |
+| aile_segment_1 | 4.1 | 22 |
 | aileron_1 | 3.5 | 43 |
+| aile_segment_2 | 3.3 | 73 |
 | profondeur_2 | 1.6 | 188 |
 | bloc_queue | 1.5 | 17 |
 | patte_atterrissage | 1.5 | 116 |
-| aile_segment_1 | 1.4 | 22 |
 | fuselage_nez | 1.4 | 10 |
-| support_moteur | 1.3 | 21 |
 
 ## Ce que ce contrôle ne peut pas garantir
 

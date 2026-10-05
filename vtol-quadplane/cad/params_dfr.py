@@ -24,9 +24,12 @@ N_SEGMENTS = 4            # segments par demi-aile
 PEAU = 0.6                # épaisseur du revêtement (1 ligne de PLA Aero)
 AME = 0.5                 # épaisseur des âmes internes en zigzag
 N_AMES = 6                # nombre de diagonales du zigzag
+N_AMES_SEGMENTS = [20, 14, 10, 6]   # plus serré vers l'emplanture : la peau n'ondule pas avant 5 g
+                                    # (calc/essais_virtuels.py)
 
 # Longerons (tubes carbone)
-LONGERON_PRINC_D = 12.0   # tube 12x10 mm, 1000 mm, traverse le fuselage
+LONGERON_PRINC_D = 16.0   # tube 16x14 mm, 1000 mm (le même que les poutres), traverse le fuselage ;
+                          # un 12 mm casserait à la charge extrême (calc/essais_virtuels.py)
 LONGERON_PRINC_X = 0.25   # position en fraction de corde
 LONGERON_PRINC_FIN = 500.0  # le tube va de Y = -500 à +500
 LONGERON_EXT_D = 8.0      # tube 8x6 mm, 500 mm par côté

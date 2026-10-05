@@ -22,6 +22,7 @@ N_SEGMENTS = 3
 PEAU = 0.6
 AME = 0.5
 N_AMES = 5
+N_AMES_SEGMENTS = [12, 8, 5]   # plus serré vers l'emplanture : la peau n'ondule pas avant 5 g
 
 # Longerons (tubes carbone)
 LONGERON_PRINC_D = 10.0   # tube 10x8 mm, 720 mm, traverse le fuselage

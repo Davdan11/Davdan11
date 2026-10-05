@@ -6,7 +6,7 @@ Généré par `calc/dimensionnement.py`. Les chiffres aérodynamiques sont des e
 
 | Élément | Qté | Masse unitaire (g) | Total (g) | x (mm) |
 |---|---:|---:|---:|---:|
-| Pièces imprimées (cad/out/masses.csv) | 1 | 1530 | 1530 | 168 |
+| Pièces imprimées (cad/out/masses.csv) | 1 | 1585 | 1585 | 165 |
 | Moteur VTOL T-Motor MN4014 KV400 | 4 | 171 | 684 | 62 |
 | Hélice VTOL T-Motor P15x5 (2 CW + 2 CCW) | 4 | 22 | 88 | 62 |
 | ESC VTOL Holybro Tekko32 F4 45A + condensateur | 4 | 10 | 40 | 62 |
@@ -24,14 +24,14 @@ Généré par `calc/dimensionnement.py`. Les chiffres aérodynamiques sont des e
 | Modem Waveshare SIM7600G-H (clé USB, sans boîtier) + antennes | 1 | 60 | 60 | -100 |
 | BEC Holybro UBEC 5A (Pi et modem) | 2 | 7 | 14 | 150 |
 | Tube carbone 16x14x1000 (poutres) | 2 | 73 | 146 | 175 |
-| Tube carbone 12x10x1000 (longeron principal) | 1 | 54 | 54 | 55 |
+| Tube carbone 16x14x1000 (longeron principal) | 1 | 73 | 73 | 55 |
 | Tube carbone 8x6x1000 (longerons extérieurs, coupé en 2) | 1 | 34 | 34 | 88 |
 | Jonc carbone 6 mm x 300 (goupille d'aile) | 1 | 13 | 13 | 143 |
 | Tube carbone 6x4 x 720 (longeron du stab) | 1 | 18 | 18 | 667 |
 | Joncs carbone 3 mm et 2 mm (stab, gouvernes) | 1 | 15 | 15 | 600 |
 | Câblage, connecteurs | 1 | 170 | 170 | 40 |
 | Visserie, guignols, colle, ruban | 1 | 70 | 70 | 100 |
-| **Sans batterie** | | | **3477** | 127 |
+| **Sans batterie** | | | **3551** | 126 |
 
 ## Centrage
 
@@ -39,23 +39,23 @@ Le centre de gravité doit tomber à **x = 62 mm** (28 % de corde), au milieu de
 
 | Batterie | Centre de la batterie requis | Plage possible | Lest |
 |---|---:|---:|---|
-| GAONENG GNB 6S3P P45B 13,5 Ah | x = -106 mm | -125 à -27 mm | aucun |
+| GAONENG GNB 6S3P P45B 13,5 Ah | x = -107 mm | -125 à -27 mm | aucun |
 
 ## Performances estimées
 
 | | GAONENG GNB 6S3P P45B 13,5 Ah |
 |---|---:|
-| Masse au décollage | 4.81 kg |
-| Charge alaire | 12.2 kg/m² |
-| Vitesse de décrochage | 12.2 m/s (44 km/h) |
-| Rapport poussée/poids VTOL | 2.18 (≈ 1.74 batterie affaissée) |
-| Puissance en stationnaire | 655 W (30 A) |
-| Transit à 90 km/h | 392 W |
-| Vol en cercle au-dessus des lieux | 60 km/h, 165 W |
-| Autonomie en cercle seulement | **82 min** |
-| Temps sur les lieux, intervention à 5 km | **66 min** (aller 3 min) |
-| Temps sur les lieux, intervention à 10 km | **51 min** (aller 7 min) |
-| Temps sur les lieux, intervention à 15 km | **35 min** (aller 10 min) |
-| Temps sur les lieux, intervention à 20 km | **19 min** (aller 13 min) |
+| Masse au décollage | 4.89 kg |
+| Charge alaire | 12.3 kg/m² |
+| Vitesse de décrochage | 12.3 m/s (44 km/h) |
+| Rapport poussée/poids VTOL | 2.14 (≈ 1.72 batterie affaissée) |
+| Puissance en stationnaire | 669 W (31 A) |
+| Transit à 90 km/h | 393 W |
+| Vol en cercle au-dessus des lieux | 60 km/h, 168 W |
+| Autonomie en cercle seulement | **81 min** |
+| Temps sur les lieux, intervention à 5 km | **65 min** (aller 3 min) |
+| Temps sur les lieux, intervention à 10 km | **49 min** (aller 7 min) |
+| Temps sur les lieux, intervention à 15 km | **34 min** (aller 10 min) |
+| Temps sur les lieux, intervention à 20 km | **18 min** (aller 13 min) |
 
 Surface alaire 0.396 m², allongement 8.2. Hypothèses : Cd0 = 0.05, e = 0.8, rendement de propulsion 0.55, figure de mérite VTOL 0.6, 15 W pour l'électronique de bord, 85% de la batterie utilisée (le reste est la réserve), 2 min de vol stationnaire par mission, 2.62 kg de poussée max par moteur VTOL (× 0.8 batterie affaissée).

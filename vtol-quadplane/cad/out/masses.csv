@@ -1,10 +1,10 @@
 piece,quantite,materiau,dimensions_impression_mm,masse_g,masse_totale_g,x_cg_mm
-aile_segment_1_droit,1,PLA Aero,220x29x223,62.4,62.4,102
-aile_segment_1_gauche,1,PLA Aero,220x29x223,62.4,62.4,102
-aile_segment_2_droit,1,PLA Aero,220x28x211,62.4,62.4,98
-aile_segment_2_gauche,1,PLA Aero,220x28x211,62.4,62.4,98
-aile_segment_3_droit,1,PLA Aero,165x27x211,51.7,51.7,79
-aile_segment_3_gauche,1,PLA Aero,165x27x211,51.7,51.7,79
+aile_segment_1_droit,1,PLA Aero,220x28x223,77.1,77.1,99
+aile_segment_1_gauche,1,PLA Aero,220x28x223,77.1,77.1,99
+aile_segment_2_droit,1,PLA Aero,220x28x211,70.1,70.1,97
+aile_segment_2_gauche,1,PLA Aero,220x28x211,70.1,70.1,97
+aile_segment_3_droit,1,PLA Aero,165x27x211,56.1,56.1,79
+aile_segment_3_gauche,1,PLA Aero,165x27x211,56.1,56.1,79
 aile_segment_4_droit,1,PLA Aero,165x27x211,44.7,44.7,84
 aile_segment_4_gauche,1,PLA Aero,165x27x211,44.7,44.7,84
 aileron_1_droit,1,PLA Aero,54x15x211,15.4,15.4,188
@@ -17,7 +17,7 @@ pylone_poutre_droit,1,PETG,32x24x204,54.7,54.7,100
 pylone_poutre_gauche,1,PETG,32x24x204,54.7,54.7,100
 fuselage_nez,1,PLA Aero,104x100x91,17.5,17.5,-229
 fuselage_avant,1,PLA Aero,120x112x243,63.7,63.7,-78
-fuselage_milieu,1,PLA Aero,120x112x238,68.0,68.0,139
+fuselage_milieu,1,PLA Aero,120x112x238,69.5,69.5,137
 fuselage_queue,1,PLA Aero,108x103x105,21.5,21.5,306
 cloison_moteur,1,PETG,50x52x5,12.5,12.5,357
 plateau_electronique,1,PETG,237x80x17,51.3,51.3,-69
@@ -43,4 +43,4 @@ stab_segment_2,1,PLA Aero,77x10x230,24.3,24.3,679
 profondeur_2,1,PLA Aero,32x6x229,8.2,8.2,731
 stab_segment_3,1,PLA Aero,77x10x230,24.3,24.3,679
 profondeur_3,1,PLA Aero,32x6x229,8.1,8.1,731
-TOTAL pièces imprimées,,,,,1530,168
+TOTAL pièces imprimées,,,,,1585,165
