@@ -65,7 +65,7 @@ Pièces standard, vendues partout. Les liens « Amazon.ca » sont des **recherch
 |---|---|---:|---|
 | Supports moteurs VTOL | Vis M3 × 16 + écrous M3 (colliers) ; vis M3 × 8 (vis de coin) | 8 + 8 ; 16 | [assortiment vis M3](https://www.amazon.ca/s?k=assortiment+vis+M3+acier+inoxydable+tete+cylindrique+hexagonale) |
 | Moteurs (5) | Vis M3 × 6 (moteur → platine ou cloison ; vérifier la profondeur filetée) | 20 | (même assortiment) |
-| Pylônes (vissés sous l'aile) | Vis M3 **tête fraisée** × 20 (avant) et × 16 (arrière) | 2 + 2 | [vis M3 tête fraisée](https://www.amazon.ca/s?k=assortiment+vis+M3+tete+fraisee) |
+| Pylônes (vissés sous l'aile) | Vis M3 **tête fraisée** × 20 (avant) et × 14 (arrière) | 2 + 2 | [vis M3 tête fraisée](https://www.amazon.ca/s?k=assortiment+vis+M3+tete+fraisee) |
 | Pylônes + contrôleur de vol | **Inserts laiton M3** : 4 **courts, longueur 4 mm** (pylônes) et 4 de 5,7 mm (contrôleur). Un assortiment contient les deux | 4 + 4 | [assortiment inserts M3](https://www.amazon.ca/s?k=heat+set+insert+M3+assortiment+laiton) |
 | Contrôleur de vol | Vis M3 × 10 en nylon | 4 | [vis nylon M3](https://www.amazon.ca/s?k=vis+nylon+M3+assortiment) |
 | Ailes | Vis nylon M3 × 30 + écrou nylon (retenue sur le longeron) | 2 + 2 | (même assortiment nylon) |

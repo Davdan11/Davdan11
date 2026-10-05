@@ -55,6 +55,7 @@ cad/params_mini.py      toutes les cotes du Mini
 cad/pieces.py           géométrie de chaque pièce (CadQuery)
 cad/build.py            génère STL, STEP, masses, centre de gravité et rendus
 cad/verification.py     monte l'avion complet en 3D et vérifie que tout rentre et que tout bouge
+cad/audit_stl.py        tranche chaque fichier STL livré dans PrusaSlicer et contrôle le résultat
 cad/out/stl/            pièces prêtes à trancher, déjà orientées pour l'impression
 cad/out/step/           pièces dans le repère avion, pour modifier dans Fusion ou Onshape
 cad/out/assemblage.glb  avion complet en 3D
@@ -113,6 +114,19 @@ HUARD_VERSION=mini python calc/dimensionnement.py  # bilan Mini -> docs/bilan_mi
 cd cad && python verification.py && HUARD_VERSION=mini python verification.py
 ```
 
+### Audit des fichiers STL
+
+`cad/audit_stl.py` contrôle ce que l'imprimante recevra vraiment, indépendamment du modèle 3D :
+- chaque STL est un maillage fermé, d'un seul morceau, posé à plat et assez grand au plateau ;
+- chaque STL est **tranché dans PrusaSlicer** (buse 0,4, couches de 0,2) avec les réglages de la notice ;
+- pour les pièces à parois dessinées, le plastique déposé est comparé, couche par couche, aux parois du modèle : une paroi ou une âme trop fine pour la buse manquerait au dépôt.
+
+**Résultat actuel : aucun défaut** ([DFR](docs/audit_stl.md), [Mini](docs/audit_stl_mini.md)). Il a permis de corriger : deux voiles d'impression qui se touchaient sans fusionner (aile et fuselage), le fuselage réglé à 1 paroi au lieu de 2, les trous des inserts du pylône trop courts pour les vis, les avant-trous de la platine moteur et le rebord du berceau GPS.
+
+```bash
+cd cad && python audit_stl.py && HUARD_VERSION=mini python audit_stl.py   # PrusaSlicer requis
+```
+
 Ordre de montage conseillé pour valider avant de tout imprimer : un segment d'aile, un support moteur avec sa platine, un cadre de servo avec sa trappe. On vérifie l'ajustement sur les vraies pièces achetées, et seulement ensuite on lance le reste.
 
 ## Essais virtuels : pression, charges de vol, résistance, stabilité
@@ -165,15 +179,15 @@ Pour relancer (une fois ArduPilot compilé avec `simulation/sitl_poussee.patch`,
 HUARD_VERSION=mini python simulation/vol_simule.py && python simulation/vol_simule.py
 ```
 
-## Avant d'imprimer l'avion : le kit d'essai (≈ 15 g de PLA Aero, ≈ 50 g de PETG)
+## Avant d'imprimer l'avion : le kit d'essai (≈ 15 g de PLA Aero ou de PLA pour le Mini, ≈ 50 g de PETG)
 
 Fichiers dans `cad/out_mini/essais/` (Mini) et `cad/out/essais/` (DFR), à régénérer avec `python outils_essais.py`. La moitié du kit, ce sont de vraies pièces de l'avion : rien n'est perdu.
 
 | Fichier | Filament | Ce qu'on vérifie | Si ça ne va pas |
 |---|---|---|---|
 | `1_jauge_tubes` | PETG, 3 parois, 15 % | Pour chaque tube carbone : trou « − » (jeu 0,1 mm), trou marqué du diamètre (jeu 0,3 mm, celui du modèle), trou « + » (0,5 mm). Le bon trou laisse glisser le tube **à la main, sans jeu qui ballotte** | Si c'est le « − » ou le « + » qui va, dis-le-moi : je change `JEU_TUBE` et tout se régénère |
-| `2_tranche_aile` | PLA Aero | Peau lisse et fermée, âmes collées aux peaux, tubes qui entrent dans les fourreaux. **Pèse-la** | Peau trouée ou molle : ajuster débit et température du PLA Aero. Plus lourde que prévu : idem (le poids attendu s'affiche quand on lance le script) |
-| `3_jonction_cote_avant` + `3_jonction_cote_milieu` | PLA Aero | Les deux tranches s'emboîtent par la lèvre, **à la main, sans forcer**, sans jeu visible | Trop serré ou trop lâche : je change le jeu de la lèvre |
+| `2_tranche_aile` | PLA Aero (Mini : PLA), réglages des segments d'aile (1 paroi, 0 %) | Peau lisse et fermée, âmes collées aux peaux, tubes qui entrent dans les fourreaux. **Pèse-la** | Peau trouée ou molle : ajuster débit et température du PLA Aero. Plus lourde que prévu : idem (le poids attendu s'affiche quand on lance le script) |
+| `3_jonction_cote_avant` + `3_jonction_cote_milieu` | PLA Aero (Mini : PLA), réglages du fuselage (**2 parois**, 0 %) | Les deux tranches s'emboîtent par la lèvre, **à la main, sans forcer**, sans jeu visible | Trop serré ou trop lâche : je change le jeu de la lèvre |
 | `4_support_moteur` + `4_platine_moteur` | PETG | Le collier serre le tube avec ses 2 vis ; le moteur se visse sur la platine ; les têtes de vis tombent dans les creux de la bride ; les 4 vis de coin s'atteignent par-dessous | Envoie une photo |
 | `5_cadre_servo_aile` + `5_trappe_servo_aile` | PETG | Ton servo s'emboîte, ses oreilles entrent dans les encoches, la trappe se visse et le palonnier passe par la fente | Mesure le servo (longueur, épaisseur, oreilles) et envoie les chiffres |
 | `6_guignol_aileron` | PETG | Plaque nette, trous de 1,6 mm ouverts | — |
@@ -192,8 +206,8 @@ Les STL de `cad/out/stl/` sont déjà dans la bonne orientation et s'impriment s
 | `aileron_*`, `profondeur_*` | PLA Aero | **2 parois** (peau de 0,8 mm), 0 % de remplissage, **3 couches dessus/dessous** pour fermer les bouts |
 | `guignol_aileron` (×2), `guignol_profondeur` | PETG | À plat, 100 % de remplissage : petites pièces qui travaillent |
 | `cadre_servo_aile_*`, `trappe_servo_aile_*` | PETG | Cadre : 3 parois, 30 %. Trappe : 100 %. Les deux reposent à plat sur le plateau |
-| `fuselage_avant`, `fuselage_milieu`, `fuselage_queue` | PLA Aero | 1 paroi, 0 % de remplissage, 0 couche dessus/dessous |
-| `fuselage_nez` | PLA Aero | 1 paroi, 0 % de remplissage, **3 couches dessus** (la pointe est fermée) |
+| `fuselage_avant`, `fuselage_milieu`, `fuselage_queue` | PLA Aero | **2 parois** (la peau du fuselage fait 1 mm : une seule ligne de 0,45 mm la laisserait à moitié vide), 0 % de remplissage, 0 couche dessus/dessous |
+| `fuselage_nez` | PLA Aero | **2 parois**, 0 % de remplissage, **3 couches dessus** (la pointe est fermée) |
 | `saumon_*`, `bloc_queue_*` | PLA Aero | 3 parois, 8 % gyroïde |
 | `support_gps` | PETG | 3 parois, 100 %. Imprimé à l'envers (oreilles sur le plateau), sans supports |
 | `pylone_poutre_*` | PETG | 4 parois (pour les inserts), 15 % gyroïde, bordure de 5 mm |
@@ -224,12 +238,12 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
    1. **Poser les inserts** dans les 2 trous du dessus du pylône : insert sur le trou, pointe du fer à souder à environ 220 °C (ou embout pour inserts), enfoncer doucement et bien droit jusqu'à ce que l'insert affleure. Laisser refroidir sans bouger. S'exercer d'abord sur une chute de PETG.
    2. **Coller la poutre dans le pylône** à l'époxy, au bon endroit sur la poutre (voir l'étape 4). Le pylône, la poutre, les moteurs et l'empennage forment alors un bloc qui se démonte de l'aile avec les 4 vis.
    3. **Repérer l'endroit** : les 2 trous fraisés sur le dessus de l'aile, à **360 mm** de l'axe du fuselage (Mini : **210 mm**). Pylône `droit` sous l'aile droite. La selle ne s'emboîte que dans un sens, le bout droit du pylône au ras du bord d'attaque.
-   4. **Visser** : vis **M3 × 20 à l'avant et M3 × 16 à l'arrière** (DFR : M3 × 25 et M3 × 20), serrées à la main sans forcer, puis 1/8 de tour. Les têtes affleurent le dessus de l'aile. Une goutte de frein filet faible (bleu) si elles se desserrent aux vibrations.
+   4. **Visser** : vis **M3 × 20 à l'avant et M3 × 14 à l'arrière** (DFR : M3 × 25 et M3 × 18 ; une vis plus longue toucherait le fond du trou avant de serrer), serrées à la main sans forcer, puis 1/8 de tour. Les têtes affleurent le dessus de l'aile. Une goutte de frein filet faible (bleu) si elles se desserrent aux vibrations.
    5. **Vérifier** que les deux poutres sont parallèles au fuselage, avec le même écart à l'avant et à l'arrière (720 mm d'axe en axe, Mini : 420 mm). Mesurer au ruban.
    6. **Câbles** : voir **Câblage des moteurs VTOL** ci-dessous. Percer chaque poutre sur le dessus, juste sous le trou de câble du pylône : **Ø 8 mm** (DFR : **Ø 10 mm**).
 4. **Poutres et moteurs VTOL** (vue éclatée : [DFR](docs/images/support_moteur_dfr.png), [Mini](docs/images/support_moteur_mini.png)) :
    1. **Moteur sur sa platine, à l'établi** : poser la platine sous le moteur et visser les 4 vis M3 du moteur par-dessous. Longueur = 4 mm de platine + la profondeur filetée du moteur − 0,5 mm (en général M3 × 6 ou × 8). Une vis trop longue touche le bobinage et le détruit. Les têtes de ces vis se logeront dans les creux de la bride.
-   2. **Enfiler sur la poutre**, dans l'ordre : patte avant, support moteur avant, pylône, patte arrière, support moteur arrière. Coller le pylône sur la poutre à l'endroit où il tombe sous l'aile (poutre en place, pylône vissé à l'aile), puis le bloc de queue au bout.
+   2. **Enfiler sur la poutre par son bout avant**, dans cet ordre : support moteur arrière, patte arrière, pylône, patte avant, support moteur avant (chaque pièce glisse plus loin que la suivante ; de l'avant vers l'arrière, l'avion aura : support avant, patte avant, pylône, patte arrière, support arrière, bloc de queue). Les pattes en TPU sont serrées : un peu d'eau savonneuse sur le tube les aide à glisser. Coller le pylône sur la poutre à l'endroit où il tombe sous l'aile (poutre en place, pylône vissé à l'aile), puis le bloc de queue au bout.
    3. **Placer les supports** : axe du moteur avant à **22 mm** du bout avant du tube et axe du moteur arrière à **752 mm** (DFR) ; **18 mm** et **468 mm** (Mini). Mettre la bride bien à l'horizontale, puis serrer le collier avec ses **2 vis M3 × 16** (écrous logés dans les hexagones). Une goutte de CA entre collier et tube empêche la rotation sous le couple du moteur.
    4. **Poser le moteur** : la platine se pose sur la bride et se fixe par **4 vis de coin M3 × 8 passées par-dessous**, à côté du collier. Elles s'atteignent au tournevis même sur la poutre : pour changer un moteur, 4 vis, sans toucher au réglage du collier.
    5. **ESC** : collés ou attachés (collier de serrage + gaine thermo) sur le flanc intérieur de la poutre, entre la patte et le pylône (ou le support arrière), à l'air pour qu'ils refroidissent.
@@ -241,7 +255,7 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
    - **Poutre → pylône → aile** : tout remonte par le trou du dessus de la poutre et le trou du pylône, puis file dans le **tunnel de l'aile** (Ø 9 mm Mini, Ø 10 mm DFR) jusqu'au trou du flanc du fuselage. On y ajoute la rallonge du servo d'aileron. Le tunnel est rempli à environ 37 %, ce qui laisse de la place pour tirer les fils. Pour tirer : enfiler un fil de fer à travers l'aile, y scotcher le bout du faisceau, et tirer doucement.
    - **Au fuselage** : les connecteurs sont ici, puisque l'aile se démonte. Paire d'alimentation : **connecteurs balles 3,5 mm** (Mini) ou **4 mm** (DFR). Ils sont assez fins pour repasser dans le tunnel quand on démonte le bloc poutre. Rallonges : prises servo. Le tout va au contrôleur de vol et à la distribution de puissance (batterie).
    - **Pour démonter un bloc poutre** (après un crash) : débrancher au fuselage, dévisser les 2 vis du pylône, puis tirer doucement les fils hors de l'aile par le pylône.
-   6. **Pattes TPU** : enfilées serrées sur la poutre. Une goutte de CA si elles tournent.
+   6. **Pattes TPU** (déjà enfilées à l'étape 2) : axe de la patte à **60 mm** et **714 mm** du bout avant du tube (Mini : **49 mm** et **437 mm**), pied vers le bas. Une goutte de CA si elles tournent.
 5. **Empennage** : coller les 3 segments de stab sur le tube de 6 mm et le jonc de 3 mm, puis les insérer dans les deux blocs de queue. Enfiler les profondeurs sur leur jonc carbone, glisser le **guignol de profondeur** par le dessus dans sa fente (côté droit, près du bloc de queue), coller, et poser avec une **charnière en ruban sur le dessus** (V ouvert dessous). Le servo de profondeur s'enfonce dans la baie du bloc droit par la face intérieure, jusqu'à ce que ses oreilles touchent la face du bloc : on les **visse avec les 2 vis fournies avec le servo**, dans les avant-trous déjà percés. Son palonnier, vers le haut, est juste devant la charnière, au-dessus du stab : une tringle courte relie son trou **à 7 mm de l'axe (DFR) ou 5 mm (Mini)** au trou intérieur du guignol, pour ±20° de profondeur. Son fil (rallonge 80 cm DFR, 60 cm Mini) descend dans la poutre par le trou au fond de la baie.
 6. **Fuselage** : glisser le plateau électronique dans l'avant et le plateau compagnon dans le milieu, puis coller avant, milieu et queue (lèvres d'emboîtement). Le nez reste amovible, tenu par du ruban ou deux aimants. DFR : le tube de Pitot sort par la pointe du nez (le nez du Mini n'a pas de trou, faute de capteur de vitesse).
    - **Moteur propulsif** : le boulonner sur la **cloison** à l'établi (vis par l'avant de la cloison). Glisser la cloison par l'arrière dans le bout du fuselage jusqu'à l'**anneau d'appui**, et la fixer par **3 vis M2 × 6 radiales** à travers la peau. La poussée appuie la cloison contre l'anneau ; les vis la retiennent. Pour changer le moteur : 3 vis. L'ESC du propulseur se colle debout contre le flanc droit, à côté du contrôleur de vol.

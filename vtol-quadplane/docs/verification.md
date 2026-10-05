@@ -59,7 +59,7 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 | fuselage_queue | 831 |
 | support_moteur | 791 |
 | fuselage_avant | 585 |
-| support_gps | 356 |
+| patte_atterrissage | 312 |
 ✅ aucune couche ne part dans le vide : pièces à 1 paroi (aile, fuselage) ≤ 6 mm du bord soutenu (pont ≤ 12 mm) ; pièces pleines ≤ 12.5 mm (pont ≤ 25 mm, comme le plafond de la baie du servo de profondeur)
 
 | Pièce | Pire porte-à-faux (mm) | Hauteur (mm) |
@@ -69,9 +69,9 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 | fuselage_milieu | 4.2 | 108 |
 | trappe_acces | 3.0 | 102 |
 | support_gps | 2.9 | 13 |
-| aile_segment_2 | 2.8 | 90 |
 | profondeur_3 | 2.0 | 221 |
 | patte_atterrissage | 1.7 | 230 |
+| pylone_poutre | 1.5 | 109 |
 
 ## Ce que ce contrôle ne peut pas garantir
 

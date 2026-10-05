@@ -294,7 +294,8 @@ def trappe_servo_aile():
 # laiton M3 posés au fer dans le pylône (PETG). Le PLA Aero mince de l'aile ne tient pas un insert :
 # l'aile est seulement serrée entre la tête de vis et le pylône, par des piliers pleins.
 VIS_PYLONE_X = (0.12, 0.72)   # fractions de corde : devant le longeron, derrière le conduit de câbles
-INSERT_PYLONE = (4.0, 5.0)    # perçage de l'insert M3 (Ø, profondeur)
+INSERT_PYLONE = (4.0, (6.0, 5.0))   # perçage de l'insert M3 : Ø, profondeur (vis avant, vis arrière) ;
+                                   # le fond laisse de la place au plastique repoussé et au bout de la vis
 PILIER_PYLONE = 4.5           # demi-diagonale du pilier en losange
 
 
@@ -317,10 +318,10 @@ def _piliers_pylone(i, y0, y1):
         pil = (cq.Workplane("XY", origin=(0, 0, zl - 1))
                .polyline([(x - a, y), (x, y - a), (x + a, y), (x, y + a)]).close().extrude(zh - zl + 2))
         # voiles à 45° accrochés aux deux peaux : le pilier s'imprime sans pont dans le vide
-        ya, h, zm = y + bas * a, zh - zl, (zh + zl) / 2
+        ya, h, zm = y + bas * (a - 1.5), zh - zl, (zh + zl) / 2   # voiles enfoncés de 1,5 mm dans le pilier
         for zp in (zl - 1, zh + 1):
             v = (cq.Workplane("YZ", origin=(x - 0.6, 0, 0))
-                 .polyline([(ya, zp), (ya, zm), (ya + bas * (h / 2 + 1), zp)]).close().extrude(1.2))
+                 .polyline([(ya, zp), (ya, zm), (ya + bas * (h / 2 + 2.5), zp)]).close().extrude(1.2))
             pil = pil.union(v)
         plein = pil if plein is None else plein.union(pil)
         t = cq.Workplane("XY", origin=(x, y, zl - 5)).circle(1.7).extrude(h + 10)
@@ -502,8 +503,8 @@ def pylone():
     cable = (cq.Workplane("XY", origin=(xcd, POUTRE_Y, POUTRE_Z))
              .circle(min(5.0, POUTRE_D / 2 - 1)).extrude(40))
     # 2 perçages pour inserts laiton M3, depuis le dessus du pylône (contre l'aile)
-    d, p = INSERT_PYLONE
-    for x, zl, zh in vis_pylone():
+    d, prof = INSERT_PYLONE
+    for (x, zl, zh), p in zip(vis_pylone(), prof):
         ins = cq.Workplane("XY", origin=(x, POUTRE_Y, zl - p)).circle(d / 2).extrude(p + 2)
         corps = corps.cut(caler(ins, CALAGE_AILE))
     return corps.cut(alesage).cut(cable)
@@ -582,7 +583,7 @@ def fuselage_complet():
         # largeur (sinon la pointe ferait un pont d'une paroi à l'autre dans le vide)
         xa, Y = x - R * math.sqrt(2) + 0.5, DEMI_LARGEUR_FUS + 5
         voile = (cq.Workplane("XY", origin=(0, 0, z - 0.8))
-                 .polyline([(xa, 0), (xa, Y), (xa - Y, Y)]).close().extrude(1.6))
+                 .polyline([(xa, -1.0), (xa, Y), (xa - Y - 1.0, Y)]).close().extrude(1.6))   # chevauche au centre
         voile = voile.union(voile.mirror("XZ")).intersect(ext)
         for c in COUPES_FUS[1:-1]:   # le voile s'arrête au joint, hors de la lèvre de l'autre tronçon
             if xa - Y < c < xa:
@@ -688,7 +689,12 @@ def support_gps():
     cuve = (cq.Workplane("XY", origin=(g["xg"], 0, z0 - d - 1.6)).rect(g["lo"], g["wo"]).extrude(d + 1.6)
             .edges("|Z").fillet(1.5))
     cuve = cuve.cut(cq.Workplane("XY", origin=(g["xg"], 0, z0 - d)).rect(g["li"], g["wi"]).extrude(d + 1))
-    cuve = cuve.cut(cq.Workplane("XY", origin=(g["xg"], 0, z0 - d - 3)).rect(g["li"] - 6, g["wi"] - 6).extrude(5))
+    # fenêtre du fond : rebord d'appui de 0,5 mm, puis pente à 45° vers l'extérieur (le berceau
+    # s'imprime à l'envers : le rebord monte en pente au lieu de pendre dans le vide)
+    k, za, zb = 1.5 / 1.6, z0 - d - 2.2, z0 - d + 0.1
+    cuve = cuve.cut(cq.Workplane("XY", origin=(g["xg"], 0, za))
+                    .rect(g["li"] - 1 - 2 * k * (zb - za), g["wi"] - 1 - 2 * k * (zb - za))
+                    .workplane(offset=zb - za).rect(g["li"] - 1, g["wi"] - 1).loft())
     cuve = cuve.cut(cq.Workplane("XY", origin=(g["xg"] + g["lo"] / 2, 0, z0 - d)).rect(4, 8).extrude(d + 1))
     for x, y in g["vis"]:   # oreilles au niveau du rebord
         o = cq.Workplane("XY", origin=(x, y, z0 - 2.0)).rect(10, 9).extrude(2.0).edges("|Z").fillet(2)
@@ -931,7 +937,7 @@ def platine_moteur(x0, y0=POUTRE_Y):
         p = p.cut(cq.Workplane("XY", origin=(x0 + dx, y0 + dy, z0 - 1)).circle(1.7).extrude(6))
     for sx in (-1, 1):
         for sy in (-1, 1):  # avant-trous des vis de coin
-            p = p.cut(cq.Workplane("XY", origin=(x0 + sx * s, y0 + sy * s, z0 - 1)).circle(1.3).extrude(4.5))
+            p = p.cut(cq.Workplane("XY", origin=(x0 + sx * s, y0 + sy * s, z0 - 1)).circle(1.3).extrude(6))   # traversants : la vis M3 x 8 ressort à ras
     p = p.cut(cq.Workplane("XY", origin=(x0, y0, z0 - 1)).circle(6.0).extrude(6))
     return p
 
