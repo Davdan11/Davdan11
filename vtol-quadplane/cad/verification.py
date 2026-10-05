@@ -172,6 +172,16 @@ def attendu(a, b):
     return any((x in a and y in b) or (x in b and y in a) for x, y in ATTENDU)
 
 
+LIMITES = """
+## Ce que ce contrôle ne peut pas garantir
+
+- Les cotes des pièces achetées viennent des fiches techniques. Les oreilles des servos (non publiées) et la taille réelle des tubes carbone sont à mesurer au pied à coulisse à la réception ; une différence se corrige dans les paramètres et tout se régénère.
+- Les tolérances d'impression (retrait du PETG, moussage du PLA Aero) : imprimer d'abord un segment d'aile, un support moteur et un cadre de servo pour valider les ajustements.
+- Les câbles sont supposés passer dans les conduits prévus (Ø9 mm DFR, Ø7 mm Mini) : utiliser les sections de fil indiquées dans la nomenclature.
+- Le comportement en vol (réglages, vibrations, autonomie réelle) ne se vérifie qu'en volant, en suivant le plan d'essais du README.
+"""
+
+
 def main():
     rapport, echecs = [], []
     ok = lambda c, txt: (rapport.append(("✅" if c else "❌") + " " + txt), None if c else echecs.append(txt))
@@ -318,7 +328,7 @@ def main():
               "GPS" + (", Raspberry Pi, modem, capteur de vitesse, nacelle" if PI5 else "") + ", tubes carbone), "
               "puis chaque contrôle est fait par calcul.\n",
               f"**Résultat : {'tout est bon' if not echecs else str(len(echecs)) + ' contrôle(s) en échec'}.**\n"]
-    texte = "\n".join(entete + rapport) + "\n"
+    texte = "\n".join(entete + rapport) + "\n" + LIMITES
     racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     nom = "verification.md" if VERSION == "dfr" else f"verification_{VERSION}.md"
     with open(os.path.join(racine, "docs", nom), "w") as f:

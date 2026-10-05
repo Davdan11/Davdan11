@@ -92,6 +92,26 @@ HUARD_VERSION=mini python calc/dimensionnement.py  # bilan Mini -> docs/bilan_mi
 - **L'aile** est en 2 demi-ailes de 4 segments chacune, enfilées sur un longeron de 12 mm qui traverse le fuselage. Un longeron de 8 mm prend le relais vers les bouts d'aile et une goupille de 6 mm fixe l'incidence.
 - **Le centre de gravité** visé est à 62 mm du bord d'attaque (28 % de corde), au milieu des 4 moteurs VTOL. Avec la batterie GAONENG, il tombe en place quand **le centre de la batterie est à 116 mm devant le bord d'attaque**, c'est-à-dire batterie poussée presque au bout du plateau, sans lest (voir docs/bilan.md).
 
+## Vérification d'intégration
+
+`cad/verification.py` monte l'avion complet en 3D, avec chaque pièce imprimée et chaque pièce achetée à ses cotes. Il vérifie ensuite :
+- aucune collision ;
+- ailerons et profondeur braqués à ±25° sans toucher ;
+- hélices libres ;
+- garde au sol ;
+- conduit de câbles continu de l'aile jusqu'au fuselage ;
+- poutres et longerons qui passent dans leurs fourreaux ;
+- tubes à couper dans des tubes de 1 m ;
+- toutes les pièces sur le plateau de la A1.
+
+**Résultat actuel : tout est bon sur les deux versions** ([DFR](docs/verification.md), [Mini](docs/verification_mini.md)). À relancer après toute modification des paramètres :
+
+```bash
+cd cad && python verification.py && HUARD_VERSION=mini python verification.py
+```
+
+Ordre de montage conseillé pour valider avant de tout imprimer : un segment d'aile, un support moteur avec sa platine, un cadre de servo avec sa trappe. On vérifie l'ajustement sur les vraies pièces achetées, et seulement ensuite on lance le reste.
+
 ## Impression (Bambu Studio)
 
 Les STL de `cad/out/stl/` sont déjà dans la bonne orientation et s'impriment sans supports : les segments d'aile et de stab sont debout sur leur face d'emplanture, les tronçons de fuselage debout (le nez pointe en haut) et les pattes debout sur leur pied.
@@ -138,7 +158,7 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
    6. **Pattes TPU** : enfilées serrées sur la poutre. Une goutte de CA si elles tournent.
 5. **Empennage** : coller les 3 segments de stab sur le tube de 6 mm et le jonc de 3 mm, puis les insérer dans les deux blocs de queue. Enfiler les profondeurs sur leur jonc carbone, glisser le **guignol de profondeur** par le dessus dans sa fente (côté droit, près du bloc de queue), coller, et poser avec une **charnière en ruban sur le dessus** (V ouvert dessous). Le servo de profondeur s'enfonce dans la baie du bloc droit par la face intérieure, jusqu'à ce que ses oreilles touchent la face du bloc : on les **visse avec les 2 vis fournies avec le servo**, dans les avant-trous déjà percés. Son palonnier, vers le haut, est juste devant la charnière, au-dessus du stab : une tringle courte le relie au guignol. Son fil (rallonge 80 cm DFR, 30 cm Mini) descend dans la poutre par le trou au fond de la baie.
 6. **Fuselage** : glisser le plateau électronique dans l'avant et le plateau compagnon dans le milieu, puis coller avant, milieu et queue (lèvres d'emboîtement). Le nez reste amovible, tenu par du ruban ou deux aimants. Le tube de Pitot sort par la pointe du nez.
-   - **Moteur propulsif** : le boulonner sur la **cloison** à l'établi (vis par l'avant de la cloison). Glisser la cloison par l'arrière dans le bout du fuselage jusqu'à l'**anneau d'appui**, et la fixer par **3 vis M2 × 6 radiales** à travers la peau. La poussée appuie la cloison contre l'anneau ; les vis la retiennent. Pour changer le moteur : 3 vis. L'ESC du propulseur se colle à plat sur le fond, juste derrière le plateau compagnon.
+   - **Moteur propulsif** : le boulonner sur la **cloison** à l'établi (vis par l'avant de la cloison). Glisser la cloison par l'arrière dans le bout du fuselage jusqu'à l'**anneau d'appui**, et la fixer par **3 vis M2 × 6 radiales** à travers la peau. La poussée appuie la cloison contre l'anneau ; les vis la retiennent. Pour changer le moteur : 3 vis. L'ESC du propulseur se colle debout contre le flanc droit, à côté du contrôleur de vol.
 7. **Batterie** (coupe de côté : [DFR](docs/images/batterie_dfr.png), [Mini](docs/images/batterie_mini.png)) :
    1. **Avant de coller le plateau** : passer 2 sangles de batterie de 20 mm dans les fentes avant du plateau. Coller une bande de velcro adhésif (côté crochets) sur le plateau, et l'autre côté sous la batterie.
    2. **Mettre la batterie** : nez enlevé, glisser la batterie sur le plateau et la **pousser jusqu'à la butée arrière**. La butée est placée pour que le centre de gravité tombe juste ; c'est la seule chose qui change le centrage d'un vol à l'autre. Les fils de la batterie passent par l'encoche au milieu de la butée.

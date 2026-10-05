@@ -2,14 +2,12 @@
 
 Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les pièces imprimées et toutes les pièces achetées à leurs cotes (moteurs, hélices, servos, ESC, batterie, contrôleur de vol, GPS, Raspberry Pi, modem, capteur de vitesse, nacelle, tubes carbone), puis chaque contrôle est fait par calcul.
 
-**Résultat : 1 contrôle(s) en échec.**
+**Résultat : tout est bon.**
 
 
 ## 1. Collisions entre éléments
 
-❌ 88 éléments montés (31 modèles de pièces imprimées + pièces achetées) : 2 collision(s)
-   - fuselage_milieu ↔ modem_4g : 106.9 mm³
-   - goupille ↔ modem_4g : 10.5 mm³
+✅ 88 éléments montés (31 modèles de pièces imprimées + pièces achetées) : aucune collision
 
 ## 2. Débattement des gouvernes (±25°)
 
@@ -50,3 +48,10 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 ## 7. Impression
 
 ✅ toutes les pièces tiennent sur le plateau 256 mm (voir build.py pour l'orientation)
+
+## Ce que ce contrôle ne peut pas garantir
+
+- Les cotes des pièces achetées viennent des fiches techniques. Les oreilles des servos (non publiées) et la taille réelle des tubes carbone sont à mesurer au pied à coulisse à la réception ; une différence se corrige dans les paramètres et tout se régénère.
+- Les tolérances d'impression (retrait du PETG, moussage du PLA Aero) : imprimer d'abord un segment d'aile, un support moteur et un cadre de servo pour valider les ajustements.
+- Les câbles sont supposés passer dans les conduits prévus (Ø9 mm DFR, Ø7 mm Mini) : utiliser les sections de fil indiquées dans la nomenclature.
+- Le comportement en vol (réglages, vibrations, autonomie réelle) ne se vérifie qu'en volant, en suivant le plan d'essais du README.
