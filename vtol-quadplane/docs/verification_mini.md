@@ -7,7 +7,7 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 
 ## 1. Collisions entre éléments
 
-✅ 78 éléments montés (27 modèles de pièces imprimées + pièces achetées) : aucune collision
+✅ 79 éléments montés (28 modèles de pièces imprimées + pièces achetées) : aucune collision
 
 ## 2. Débattement des gouvernes (±25°)
 
@@ -54,7 +54,7 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 |---|---:|
 | bloc_queue | 1473 |
 | fuselage_milieu | 1216 |
-| fuselage_nez | 1136 |
+| fuselage_nez | 1150 |
 | cadre_servo_aile | 836 |
 | fuselage_queue | 729 |
 | support_moteur | 681 |
@@ -67,11 +67,11 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 | fuselage_milieu | 4.2 | 138 |
 | aileron_1 | 3.5 | 43 |
 | aile_segment_2 | 3.3 | 73 |
+| trappe_acces | 2.9 | 71 |
 | aile_segment_1 | 2.8 | 22 |
+| support_gps | 2.2 | 10 |
 | profondeur_2 | 1.6 | 188 |
 | bloc_queue | 1.5 | 17 |
-| patte_atterrissage | 1.5 | 116 |
-| fuselage_nez | 1.4 | 10 |
 
 ## Ce que ce contrôle ne peut pas garantir
 

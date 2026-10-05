@@ -193,6 +193,7 @@ Les STL de `cad/out/stl/` sont déjà dans la bonne orientation et s'impriment s
 | `fuselage_avant`, `fuselage_milieu`, `fuselage_queue` | PLA Aero | 1 paroi, 0 % de remplissage, 0 couche dessus/dessous |
 | `fuselage_nez` | PLA Aero | 1 paroi, 0 % de remplissage, **3 couches dessus** (la pointe est fermée) |
 | `saumon_*`, `bloc_queue_*` | PLA Aero | 3 parois, 8 % gyroïde |
+| `support_gps` | PETG | 3 parois, 100 %. Imprimé à l'envers (oreilles sur le plateau), sans supports |
 | `pylone_poutre_*` | PETG | 4 parois (pour les inserts), 15 % gyroïde, bordure de 5 mm |
 | `support_moteur` (×4) | PETG | 4 parois, 40 % gyroïde |
 | `cloison_moteur`, `support_nacelle` | PETG | 4 parois, 50 % |
@@ -258,7 +259,7 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
    2. **Plateau compagnon** : le glisser dans le tronçon milieu avant d'assembler le fuselage, puis le coller à l'époxy contre les flancs.
    3. **Contrôleur** : le poser avec les **œillets caoutchouc fournis** (ils filtrent les vibrations), la **flèche de la carte dans le sens de la flèche gravée** sur le plateau, vers le nez. Le fixer avec 4 vis M3 × 10 en nylon dans les inserts, serrées à la main : il faut écraser les œillets à peine.
    4. **Trappe d'accès** sur le dessus du fuselage, au-dessus du contrôleur : elle repose sur une feuillure et tient par **2 vis M2 × 6**. Au premier montage, percer les avant-trous Ø1,6 mm dans les bossages en se servant des trous de la trappe comme gabarit. Par la trappe, on branche le câble USB pour la configuration, on change la carte SD et on vérifie le câblage sans rien démonter.
-   5. **GPS** collé à plat sous la trappe avec de la mousse adhésive de 3 mm, environ 2 cm en arrière du milieu de la trappe, flèche vers le nez, avec assez de fil pour ouvrir la trappe (port UART2). La boussole est dans le GPS : faire passer les fils de puissance au fond du fuselage, torsader le + et le − de chaque paire, puis calibrer la boussole et faire la calibration **CompassMot** (moteurs branchés, sans hélices) dans Mission Planner.
+   5. **GPS** (vue de dessous : [DFR](docs/images/gps_dfr.png), [Mini](docs/images/gps_mini.png)) : il se pose dans son **berceau** (`support_gps`, PETG), antenne vers le haut, flèche vers le nez, sur un carré de **mousse adhésive de 1 mm**. Le berceau se visse sous la trappe par **2 vis M2 × 5 autotaraudeuses** dans les 2 plots. Le fil sort par l'encoche arrière ou la fenêtre du fond, avec assez de longueur pour ouvrir la trappe (port UART2). Pour changer le GPS : 2 vis. La boussole est dans le GPS : faire passer les fils de puissance au fond du fuselage, torsader le + et le − de chaque paire, puis calibrer la boussole et faire la calibration **CompassMot** (moteurs branchés, sans hélices) dans Mission Planner.
    6. **DFR** : Raspberry Pi sur ses entretoises (inserts M2.5) à l'arrière du plateau compagnon ; modem 4G (carte sortie de son boîtier) collé à plat au velcro sous le plafond de la partie avant, au-dessus de la batterie (elle glisse dessous) ; antennes LTE souples collées à l'intérieur de la peau ; capteur de vitesse collé au plafond de l'avant, au-dessus de la batterie, relié au Pitot du nez par son tube silicone.
 
 ### Moteurs et sens de rotation (ordre ArduPilot Quad X)

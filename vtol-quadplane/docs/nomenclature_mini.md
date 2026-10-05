@@ -65,7 +65,7 @@ Environ 1 bobine de [PLA Aero](https://ca.store.bambulab.com/products/pla-aero),
 | Puissance | Câble silicone **14 AWG rouge et noir, 2 m de chaque** (une paire par côté : fuselage → aile → poutre, Y vers les 2 ESC) ; **connecteurs balles 3,5 mm** (4 paires) ; 5 condensateurs 220–470 µF 35 V (un par ESC), prises XT60, gaine thermo | — |
 | Signaux | 4 rallonges de servo 50 cm (une par côté pour les 2 ESC, aileron, profondeur) + 2 de 30 cm | 6 |
 | Batterie | 2 sangles de 20 mm, velcro adhésif | — |
-| Divers | Colle CA + activateur, époxy, mousse adhésive 3 mm (GPS), colliers de serrage | — |
+| Divers | Colle CA + activateur, époxy, mousse adhésive 1 mm (sous le GPS dans son berceau) ; 2 vis M2 × 5 autotaraudeuses (berceau du GPS), colliers de serrage | — |
 
 ## Si tu ne les as pas déjà
 

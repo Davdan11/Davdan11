@@ -25,7 +25,8 @@ platine_moteur,4,PETG,39x39x4,6.7,26.7,45
 patte_atterrissage,4,TPU 95A,32x20x120,16.2,64.8,45
 bloc_queue_droit,1,PLA Aero,125x26x140,37.1,37.1,423
 bloc_queue_gauche,1,PLA Aero,125x26x140,37.1,37.1,423
-trappe_acces,1,PETG,6x49x98,8.0,8.0,96
+trappe_acces,1,PETG,6x48x98,8.4,8.4,96
+support_gps,1,PETG,42x24x11,2.7,2.7,110
 guignol_aileron,2,PETG,17x19x2,0.7,1.3,133
 cadre_servo_aile_droit,1,PETG,37x34x15,8.1,8.1,75
 cadre_servo_aile_gauche,1,PETG,37x34x15,8.1,8.1,75
@@ -36,4 +37,4 @@ stab_segment_1,1,PLA Aero,63x8x197,16.6,16.6,412
 profondeur_1,1,PLA Aero,26x5x196,5.3,5.3,454
 stab_segment_2,1,PLA Aero,63x8x197,16.6,16.6,412
 profondeur_2,1,PLA Aero,26x5x196,5.3,5.3,454
-TOTAL pièces imprimées,,,,,803,103
+TOTAL pièces imprimées,,,,,806,103

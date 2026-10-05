@@ -6,7 +6,7 @@ Généré par `calc/dimensionnement.py`. Les chiffres aérodynamiques sont des e
 
 | Élément | Qté | Masse unitaire (g) | Total (g) | x (mm) |
 |---|---:|---:|---:|---:|
-| Pièces imprimées (cad/out/masses.csv) | 1 | 1586 | 1586 | 165 |
+| Pièces imprimées (cad/out/masses.csv) | 1 | 1591 | 1591 | 165 |
 | Moteur VTOL T-Motor MN4014 KV400 | 4 | 171 | 684 | 62 |
 | Hélice VTOL T-Motor P15x5 (2 CW + 2 CCW) | 4 | 22 | 88 | 62 |
 | ESC VTOL Holybro Tekko32 F4 45A + condensateur | 4 | 10 | 40 | 62 |
@@ -31,7 +31,7 @@ Généré par `calc/dimensionnement.py`. Les chiffres aérodynamiques sont des e
 | Joncs carbone 3 mm et 2 mm (stab, gouvernes) | 1 | 15 | 15 | 600 |
 | Câblage, connecteurs | 1 | 170 | 170 | 40 |
 | Visserie, guignols, colle, ruban | 1 | 70 | 70 | 100 |
-| **Sans batterie** | | | **3552** | 126 |
+| **Sans batterie** | | | **3557** | 126 |
 
 ## Centrage
 
@@ -39,17 +39,17 @@ Le centre de gravité doit tomber à **x = 62 mm** (28 % de corde), au milieu de
 
 | Batterie | Centre de la batterie requis | Plage possible | Lest |
 |---|---:|---:|---|
-| GAONENG GNB 6S3P P45B 13,5 Ah | x = -107 mm | -125 à -27 mm | aucun |
+| GAONENG GNB 6S3P P45B 13,5 Ah | x = -108 mm | -125 à -27 mm | aucun |
 
 ## Performances estimées
 
 | | GAONENG GNB 6S3P P45B 13,5 Ah |
 |---|---:|
 | Masse au décollage | 4.89 kg |
-| Charge alaire | 12.3 kg/m² |
+| Charge alaire | 12.4 kg/m² |
 | Vitesse de décrochage | 12.3 m/s (44 km/h) |
 | Rapport poussée/poids VTOL | 2.14 (≈ 1.71 batterie affaissée) |
-| Puissance en stationnaire | 670 W (31 A) |
+| Puissance en stationnaire | 671 W (31 A) |
 | Transit à 79 km/h | 288 W |
 | Vol en cercle au-dessus des lieux | 60 km/h, 168 W |
 | Autonomie en cercle seulement | **65 min** |

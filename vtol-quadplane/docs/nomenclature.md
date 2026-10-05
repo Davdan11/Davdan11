@@ -98,7 +98,7 @@ Les pages Amazon.ca n'ont pas pu être ouvertes (CAPTCHA) : liens trouvés en re
 | Puissance | Câble silicone **12 AWG rouge et noir, 3 m de chaque** (une paire par côté : fuselage → aile → poutre, Y vers les 2 ESC) ; **connecteurs balles 4 mm** (4 paires) | 2 × 3 m |
 | | Câble silicone 16 AWG rouge et noir, 1 m (ESC du propulseur) ; prises XT60, gaine thermo | — |
 | Batterie | 2 sangles de 20 mm, velcro adhésif | — |
-| Divers | Colle CA moyenne + activateur, époxy 30 min, mousse adhésive 3 mm (GPS), colliers de serrage | — |
+| Divers | Colle CA moyenne + activateur, époxy 30 min, mousse adhésive 1 mm (sous le GPS dans son berceau) ; 2 vis M2 × 5 autotaraudeuses (berceau du GPS), colliers de serrage | — |
 
 ## Ce qu'il te faut peut-être déjà
 

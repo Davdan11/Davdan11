@@ -135,9 +135,8 @@ def achete():
     xf = x0c + FC_DIMS[0] / 2 - 5
     out.append(("controleur_de_vol", boite(FC_DIMS, (xf, 0, COMPAGNON_Z + 8 + FC_DIMS[2] / 2 + 0.01))))
     w, h, zc_f = P._section_a((TRAPPE_ACCES_X[0] + TRAPPE_ACCES_X[1]) / 2)
-    gps = (34, 28, 11) if VERSION == "dfr" else (20, 20, 8)
-    xg = (TRAPPE_ACCES_X[0] + TRAPPE_ACCES_X[1]) / 2 + 20
-    out.append(("gps_sous_trappe", boite(gps, (xg, 0, zc_f + h / 2 - 1.6 - 3.0 - gps[2] / 2))))   # mousse adhésive 3 mm
+    g = P.geom_gps()   # dans son berceau : 0,5 mm sous le plan des plots, sur 1 mm de mousse
+    out.append(("gps_sous_trappe", boite(GPS_DIMS, (g["xg"], 0, g["z_plot"] - 0.5 - GPS_DIMS[2] / 2))))
     if PI5:
         out.append(("raspberry_pi", boite((85, 56, 20), (x1c - 38, 0, COMPAGNON_Z + 7 + 10 + 0.01))))
         out.append(("modem_4g", boite((89.5, 45.5, 15), (-100, 0, 10))))   # à plat sous le plafond, au-dessus de la batterie

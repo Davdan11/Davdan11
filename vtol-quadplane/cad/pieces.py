@@ -658,6 +658,44 @@ def _vis_trappe_acces():
     return (a + 2.0, b - 4.5)   # la vis arrière dans la pointe, sur la feuillure
 
 
+def _z_interieur_trappe(x, y):
+    """Hauteur de la face intérieure de la peau du dessus du fuselage (paroi de la trappe 1,6 mm)."""
+    w, h, zc = _section_a(x)
+    a, b = w / 2 - 1.6, h / 2 - 1.6
+    u = min(abs(y) / a, 1.0)
+    return zc + b * (1 - u ** SUPER_ELLIPSE_N) ** (1 / SUPER_ELLIPSE_N)
+
+
+def geom_gps():
+    """Berceau du GPS sous la trappe : centre, plan des plots, cotes de la cuvette, vis."""
+    L, W, H = GPS_DIMS
+    a, b = TRAPPE_ACCES_X
+    xg = (a + b) / 2 + 10.0
+    li, wi = L + 0.6, W + 0.6                 # logement du GPS (jeu 0,3 mm)
+    lo, wo = li + 3.2, wi + 3.2               # cuvette (parois 1,6 mm)
+    vis = [(xg - lo / 2 - 4.0, 0.0), (xg + lo / 2 + 4.0, 0.0)]
+    pts = [(x, y) for x in (xg - lo / 2 - 8, xg, xg + lo / 2 + 8) for y in (-wo / 2, 0.0, wo / 2)]
+    z_plot = min(_z_interieur_trappe(x, y) for x, y in pts) - 2.5   # plan d'appui, sous la peau
+    profondeur = H + 1.5                      # GPS + 1 mm de mousse + 0,5 mm de jeu
+    return dict(xg=xg, li=li, wi=wi, lo=lo, wo=wo, vis=vis, z_plot=z_plot, profondeur=profondeur, H=H)
+
+
+def support_gps():
+    """Berceau PETG vissé sous la trappe (2 vis M2 autotaraudeuses) : le GPS s'y pose antenne
+    vers le haut, sur 1 mm de mousse, retenu par un rebord ; fenêtre et encoche pour le fil."""
+    g = geom_gps()
+    z0, d = g["z_plot"], g["profondeur"]
+    cuve = (cq.Workplane("XY", origin=(g["xg"], 0, z0 - d - 1.6)).rect(g["lo"], g["wo"]).extrude(d + 1.6)
+            .edges("|Z").fillet(1.5))
+    cuve = cuve.cut(cq.Workplane("XY", origin=(g["xg"], 0, z0 - d)).rect(g["li"], g["wi"]).extrude(d + 1))
+    cuve = cuve.cut(cq.Workplane("XY", origin=(g["xg"], 0, z0 - d - 3)).rect(g["li"] - 6, g["wi"] - 6).extrude(5))
+    cuve = cuve.cut(cq.Workplane("XY", origin=(g["xg"] + g["lo"] / 2, 0, z0 - d)).rect(4, 8).extrude(d + 1))
+    for x, y in g["vis"]:   # oreilles au niveau du rebord
+        o = cq.Workplane("XY", origin=(x, y, z0 - 2.0)).rect(10, 9).extrude(2.0).edges("|Z").fillet(2)
+        cuve = cuve.union(o).cut(cq.Workplane("XY", origin=(x, y, z0 - 5)).circle(1.1).extrude(10))
+    return cuve
+
+
 def trappe_acces():
     """Trappe PETG sur le dessus du fuselage : accès au contrôleur de vol (USB, carte SD,
     câblage) sans démonter l'avion. Elle repose sur une feuillure et tient par 2 vis M2."""
@@ -668,6 +706,13 @@ def trappe_acces():
     t = _prisme_xy(_contour_trappe_acces(-0.3), zt, 200).intersect(ext.cut(l16))
     for xv in _vis_trappe_acces():
         t = t.cut(cq.Workplane("XY", origin=(xv, 0, zt - 5)).circle(1.2).extrude(60))
+    # 2 plots sous la peau pour visser le berceau du GPS (avant-trous Ø1,6, sans traverser la peau)
+    g = geom_gps()
+    for x, y in g["vis"]:
+        z_peau = _z_interieur_trappe(x, y)
+        plot = cq.Workplane("XY", origin=(x, y, g["z_plot"])).circle(3.5).extrude(z_peau - g["z_plot"] + 0.8)
+        t = t.union(plot.intersect(ext))
+        t = t.cut(cq.Workplane("XY", origin=(x, y, g["z_plot"] - 1)).circle(0.8).extrude(z_peau - g["z_plot"] + 1.6))
     return t
 
 
@@ -1023,6 +1068,7 @@ def inventaire():
         ("bloc_queue", bloc_queue, 1, "PLA Aero", "Z", 1.2, 0.08, True),
     ]
     inv.append(("trappe_acces", trappe_acces, 1, "PETG", "X", 1.6, 1.0, False))
+    inv.append(("support_gps", support_gps, 1, "PETG", "Zinv", 1.2, 1.0, False))
     inv.append(("guignol_aileron", guignol_aileron, 2, "PETG", "Y", 2.0, 1.0, False))
     inv.append(("cadre_servo_aile", cadre_servo_aile, 1, "PETG", "Zcal", 1.2, 0.30, True))
     inv.append(("trappe_servo_aile", trappe_servo_aile, 1, "PETG", "Zcal", 1.2, 1.0, True))

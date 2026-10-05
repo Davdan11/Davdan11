@@ -93,6 +93,7 @@ TRAPPE_ACCES_DEMI_LARG = 24.0
 TRAPPE_ACCES_Z = 15.5
 PI5 = False
 PITOT = False                 # pas de capteur de vitesse : nez sans trou de Pitot
+GPS_DIMS = (20.0, 20.0, 8.0)   # MicoAir M10G-5883 : longueur, largeur, épaisseur (berceau vissé sous la trappe)
 POUSSEUR_Z = -4.0
 # 5e moteur Emax ECO III 2807 1300KV (le même que les moteurs VTOL), hélice Gemfan 7x6E
 POUSSEUR_TROUS = [(9.5, 9.5), (-9.5, 9.5), (-9.5, -9.5), (9.5, -9.5)]
