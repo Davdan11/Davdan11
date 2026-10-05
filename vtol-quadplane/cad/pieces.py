@@ -647,7 +647,8 @@ def plateau_electronique():
         p = p.union(cq.Workplane("XY", origin=(xr + 6, sy * (9 + poteau / 2), z0 + ep))   # gousset
                     .box(9, 3, 10, centered=(True, True, False)))
     # fentes pour 2 sangles, près du nez pour pouvoir les fermer par l'ouverture
-    for xs in (x0 + 12, x0 + 45):
+    xav = X_BATTERIE - lb / 2              # avant de la batterie
+    for xs in (xav + 10, xav + 42):
         for ys in (-(larg / 2 - 10), larg / 2 - 10):
             p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(xs, ys)
                       .slot2D(22, 4, 90).extrude(ep + 2))

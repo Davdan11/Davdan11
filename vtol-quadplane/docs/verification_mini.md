@@ -2,17 +2,12 @@
 
 Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les pièces imprimées et toutes les pièces achetées à leurs cotes (moteurs, hélices, servos, ESC, batterie, contrôleur de vol, GPS, tubes carbone), puis chaque contrôle est fait par calcul.
 
-**Résultat : 1 contrôle(s) en échec.**
+**Résultat : tout est bon.**
 
 
 ## 1. Collisions entre éléments
 
-❌ 78 éléments montés (27 modèles de pièces imprimées + pièces achetées) : 5 collision(s)
-   - aile_segment_1_d ↔ pylone_poutre_d : 5.1 mm³
-   - aile_segment_1_g ↔ pylone_poutre_g : 5.1 mm³
-   - aile_segment_2_d ↔ cadre_servo_aile_d : 1.6 mm³
-   - aile_segment_2_g ↔ cadre_servo_aile_g : 1.6 mm³
-   - fuselage_queue ↔ esc_propulseur : 188.2 mm³
+✅ 78 éléments montés (27 modèles de pièces imprimées + pièces achetées) : aucune collision
 
 ## 2. Débattement des gouvernes (±25°)
 

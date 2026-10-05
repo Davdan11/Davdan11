@@ -62,7 +62,7 @@ ax.add_patch(MP([R(xc - o, z0), R(xc + o, z0), R(xc + o, z0 + W), R(xc - o, z0 +
                 fc="#2a9a50", ec="k", alpha=0.95, label="servo : oreilles dans leurs encoches"))
 p0, p1 = R(g["xs"], z0 - SERVO_TRAPPE_EP), R(g["xs"], z0 - 12)
 ax.plot([p0[0], p1[0]], [p0[1], p1[1]], color="#c03030", lw=4, label="palonnier (sort par la fente de la trappe)")
-x0g, _ = P._x_guignol(CORDE, AILERON_X + AILERON_JEU / 2 / CORDE)
+x0g, _ = P._x_guignol(PROFIL_AILE, CORDE, AILERON_X)
 zl = min(P.naca_surfaces(PROFIL_AILE, CORDE, x0g / CORDE))
 gq = R(x0g + 3, zl - 0.85 * GUIGNOL_HAUT * CORDE)
 ax.plot([p1[0], gq[0]], [p1[1], gq[1]], color="k", lw=1.8, ls="--", label="tringle 1,5 mm")

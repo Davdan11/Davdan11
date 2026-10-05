@@ -107,7 +107,7 @@ NACELLE_Z = -96.0         # face de fixation de la nacelle (dessous du support)
 # perçages de nacelle (entraxe x, entraxe y, Ø) : SIYI A8 mini M2.5 et SIYI ZT6 M3
 NACELLE_TROUS = [(30.0, 25.0, 2.7), (45.0, 40.0, 3.3)]
 BATTERIE = (134.0, 83.0, 67.0)   # GAONENG GNB 6S3P P45B : 130 x 81 x 65 mm + jeu
-X_BATTERIE = -122.0       # centre de la batterie pour le centrage (voir docs/bilan.md)
+X_BATTERIE = -106.0       # centre de la batterie pour le centrage (voir docs/bilan.md)
 
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 110.0

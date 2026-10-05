@@ -151,7 +151,7 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
    3. **Contrôleur** : le poser avec les **œillets caoutchouc fournis** (ils filtrent les vibrations), la **flèche de la carte dans le sens de la flèche gravée** sur le plateau, vers le nez. Le fixer avec 4 vis M3 × 10 en nylon dans les inserts, serrées à la main : il faut écraser les œillets à peine.
    4. **Trappe d'accès** sur le dessus du fuselage, au-dessus du contrôleur : elle repose sur une feuillure et tient par **2 vis M2 × 6**. Au premier montage, percer les avant-trous Ø1,6 mm dans les bossages en se servant des trous de la trappe comme gabarit. Par la trappe, on branche le câble USB pour la configuration, on change la carte SD et on vérifie le câblage sans rien démonter.
    5. **GPS** collé à plat sous la trappe avec de la mousse adhésive de 3 mm, flèche vers le nez, avec assez de fil pour ouvrir la trappe.
-   6. **DFR** : Raspberry Pi sur ses entretoises (inserts M2.5) à l'arrière du plateau compagnon ; modem 4G collé debout contre le flanc gauche à côté du Pi ; antennes LTE souples collées à l'intérieur de la peau ; capteur de vitesse collé au plafond de l'avant, au-dessus de la batterie, relié au Pitot du nez par son tube silicone.
+   6. **DFR** : Raspberry Pi sur ses entretoises (inserts M2.5) à l'arrière du plateau compagnon ; modem 4G (carte sortie de son boîtier) collé à plat au velcro sous le plafond de la partie avant, au-dessus de la batterie (elle glisse dessous) ; antennes LTE souples collées à l'intérieur de la peau ; capteur de vitesse collé au plafond de l'avant, au-dessus de la batterie, relié au Pitot du nez par son tube silicone.
 
 ### Moteurs et sens de rotation (ordre ArduPilot Quad X)
 

@@ -7,12 +7,9 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 
 ## 1. Collisions entre éléments
 
-❌ 88 éléments montés (31 modèles de pièces imprimées + pièces achetées) : 5 collision(s)
-   - aile_segment_2_d ↔ pylone_poutre_d : 5.3 mm³
-   - aile_segment_2_g ↔ pylone_poutre_g : 5.3 mm³
-   - fuselage_milieu ↔ modem_4g : 18.4 mm³
-   - fuselage_milieu ↔ esc_propulseur : 21.8 mm³
-   - fuselage_queue ↔ esc_propulseur : 183.8 mm³
+❌ 88 éléments montés (31 modèles de pièces imprimées + pièces achetées) : 2 collision(s)
+   - fuselage_milieu ↔ modem_4g : 106.9 mm³
+   - goupille ↔ modem_4g : 10.5 mm³
 
 ## 2. Débattement des gouvernes (±25°)
 

@@ -135,7 +135,7 @@ def achete():
     out.append(("gps_sous_trappe", boite(gps, (xg, 0, zc_f + h / 2 - 1.6 - 3.0 - gps[2] / 2))))   # mousse adhésive 3 mm
     if PI5:
         out.append(("raspberry_pi", boite((85, 56, 20), (x1c - 38, 0, COMPAGNON_Z + 7 + 10 + 0.01))))
-        out.append(("modem_4g", boite((89.5, 15, 45.5), (190, -(DEMI_LARGEUR_FUS - 14), -22.5))))   # debout, flanc gauche
+        out.append(("modem_4g", boite((89.5, 45.5, 15), (-100, 0, 10))))   # à plat sous le plafond, au-dessus de la batterie
         out.append(("capteur_vitesse", boite((20, 20, 8), (SECTIONS_FUS[3][0] + 20, 0, 6))))
     if NACELLE_X is not None:
         out.append(("nacelle_boitier", boite((70, 70, 30), (NACELLE_X, 0, NACELLE_Z - 15.01))))

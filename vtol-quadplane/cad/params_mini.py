@@ -102,7 +102,7 @@ NACELLE_X = None          # pas de nacelle : caméra d'action collée sur le des
 NACELLE_Z = None
 NACELLE_TROUS = []
 BATTERIE = (150.0, 53.0, 30.0)   # CNHL G+Plus 4S 4000 mAh : 147 x 51 x 28 mm + jeu
-X_BATTERIE = -147.0       # centre de la batterie pour le centrage (voir docs/bilan_mini.md)
+X_BATTERIE = -145.0       # centre de la batterie pour le centrage (voir docs/bilan_mini.md)
 
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 90.0
