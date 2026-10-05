@@ -45,7 +45,7 @@ AILERON_DEBUT = 300.0
 AILERON_JONC = (0.80, 2.0)   # jonc carbone dans l'aileron (fraction de corde, Ø)
 PEAU_GOUVERNE = 0.8        # peau des ailerons et profondeurs (2 lignes)
 GUIGNOL_HAUT = 0.065        # hauteur de la patte du guignol, en fraction de corde
-AILERON_FIN = 596.0
+AILERON_FIN = ENVERGURE / 2   # jusqu'au bout : pas de mince bande pleine à imprimer dans le vide
 
 # --- Poutres et propulsion VTOL -----------------------------------------------
 POUTRE_Y = 210.0          # entraxe des poutres : ±210

@@ -10,7 +10,9 @@ Monte l'avion complet en 3D (pièces imprimées + pièces achetées à leurs cot
   4. garde au sol de tout ce qui pend sous l'avion ;
   5. chemins libres : conduit de câbles de l'aile, alésages des poutres, fourreaux des tubes ;
   6. longueurs de tubes carbone à couper, comparées aux tubes achetés ;
-  7. toutes les pièces imprimées tiennent sur le plateau.
+  7. toutes les pièces imprimées tiennent sur le plateau et s'impriment sans supports :
+     surplombs à plus de 45° limités, et aucune couche qui part dans le vide (la pièce est
+     tranchée couche par couche comme dans le trancheur).
 Le script s'arrête avec un code d'erreur si un contrôle échoue.
 """
 import math
@@ -27,6 +29,8 @@ V = cq.Vector
 TOL = 0.5          # mm³ : en dessous, simple contact (surfaces qui se touchent)
 DEBATTEMENT = 25.0  # degrés, gouvernes
 SURPLOMB_MAX = 3000  # mm² de surfaces en surplomb tolérées (ponts de petites cavités)
+PORTE_A_FAUX_MAX = 6.0  # mm : pièces à 1 paroi (aile, fuselage) : tout est périmètre (pont ≤ 12 mm)
+PONT_MAX = 12.5         # mm : pièces pleines avec remplissage : vrais ponts du trancheur (≤ 25 mm)
 
 
 # ---------------------------------------------------------------------------
@@ -339,6 +343,21 @@ def main():
        f"pièces à surplomb trop grand : {mauvais}")
     rapport.append("\n| Pièce | Surplombs > 45° (mm²) |\n|---|---:|")
     rapport += [f"| {n} | {s:.0f} |" for s, n in sorted(lignes, reverse=True)[:8]]
+    # porte-à-faux : couche par couche, comme le trancheur (attrape les fines bandes et les
+    # plafonds imprimés dans le vide, trop petits en surface pour le contrôle précédent)
+    import porte_a_faux as F
+    pires, vide = [], []
+    for nom, fn, qte, mat, orient, paroi, *_ in P.inventaire():
+        d, z = F.pire_porte_a_faux(B.vers_trimesh(B.orienter(fn(), orient), 0.1))
+        pires.append((d, z, nom))
+        if d > (PORTE_A_FAUX_MAX if paroi is None else PONT_MAX):
+            vide.append(f"{nom} ({d:.0f} mm à {z:.0f} mm du plateau)")
+    ok(not vide, f"aucune couche ne part dans le vide : pièces à 1 paroi (aile, fuselage) ≤ {PORTE_A_FAUX_MAX:g} mm "
+       f"du bord soutenu (pont ≤ {2 * PORTE_A_FAUX_MAX:g} mm) ; pièces pleines ≤ {PONT_MAX:g} mm (pont ≤ "
+       f"{2 * PONT_MAX:g} mm, comme le plafond de la baie du servo de profondeur)"
+       if not vide else f"couches imprimées dans le vide : {vide}")
+    rapport.append("\n| Pièce | Pire porte-à-faux (mm) | Hauteur (mm) |\n|---|---:|---:|")
+    rapport += [f"| {n} | {d:.1f} | {z:.0f} |" for d, z, n in sorted(pires, reverse=True)[:8]]
 
     titre = "Huard DFR" if VERSION == "dfr" else "Huard Mini"
     entete = [f"# Vérification d'intégration — {titre}\n",

@@ -43,11 +43,11 @@ FOURREAU = 1.2            # épaisseur des fourreaux autour des tubes
 # Ailerons
 AILERON_X = 0.75          # charnière à 75 % de corde
 AILERON_JEU = 1.0
-AILERON_DEBUT = 480.0     # sur les segments 3 et 4
+AILERON_DEBUT = DEMI_LARGEUR_FUS + (ENVERGURE / 2 - DEMI_LARGEUR_FUS) / 2   # pile au début du segment 3
 AILERON_JONC = (0.80, 2.0)   # jonc carbone dans l'aileron (fraction de corde, Ø)
 PEAU_GOUVERNE = 0.8        # peau des ailerons et profondeurs (2 lignes)
 GUIGNOL_HAUT = 0.065        # hauteur de la patte du guignol, en fraction de corde
-AILERON_FIN = 896.0
+AILERON_FIN = ENVERGURE / 2   # jusqu'au bout : pas de mince bande pleine à imprimer dans le vide
 
 # --- Poutres (booms) et propulsion VTOL ---------------------------------------
 POUTRE_Y = 360.0          # entraxe des poutres : ±360 (garde entre hélices VTOL et propulseur)

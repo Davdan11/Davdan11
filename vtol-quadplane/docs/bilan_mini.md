@@ -6,7 +6,7 @@ Généré par `calc/dimensionnement.py`. Les chiffres aérodynamiques sont des e
 
 | Élément | Qté | Masse unitaire (g) | Total (g) | x (mm) |
 |---|---:|---:|---:|---:|
-| Pièces imprimées (cad/out/masses.csv) | 1 | 796 | 796 | 103 |
+| Pièces imprimées (cad/out/masses.csv) | 1 | 794 | 794 | 103 |
 | Moteur VTOL Emax ECO III 2807 1300KV | 4 | 56 | 224 | 45 |
 | Hélice VTOL HQProp Cine7 7x4x3 | 4 | 10 | 40 | 45 |
 | ESC Skystars Talon32 40A AM32 (VTOL) | 4 | 7 | 28 | 45 |
@@ -26,7 +26,7 @@ Généré par `calc/dimensionnement.py`. Les chiffres aérodynamiques sont des e
 | Joncs carbone 2 mm et 1,5 mm (stab, gouvernes) | 1 | 8 | 8 | 300 |
 | Câblage, connecteurs, condensateurs | 1 | 60 | 60 | 30 |
 | Visserie, guignols, colle, ruban | 1 | 25 | 25 | 80 |
-| **Sans batterie** | | | **1443** | 100 |
+| **Sans batterie** | | | **1441** | 100 |
 
 ## Centrage
 
@@ -43,8 +43,8 @@ Le centre de gravité doit tomber à **x = 45 mm** (28 % de corde), au milieu de
 | Masse au décollage | 1.86 kg |
 | Charge alaire | 9.7 kg/m² |
 | Vitesse de décrochage | 10.9 m/s (39 km/h) |
-| Rapport poussée/poids VTOL | 2.58 (≈ 2.32 batterie affaissée) |
-| Puissance en stationnaire | 332 W (22 A) |
+| Rapport poussée/poids VTOL | 2.58 (≈ 2.33 batterie affaissée) |
+| Puissance en stationnaire | 331 W (22 A) |
 | Transit à 72 km/h | 135 W |
 | Vol en cercle au-dessus des lieux | 53 km/h, 72 W |
 | Autonomie en cercle seulement | **33 min** |

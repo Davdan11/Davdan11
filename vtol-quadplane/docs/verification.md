@@ -41,7 +41,7 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 | goupille d'aile | jonc 6 | 1 | 300 mm | 1000 mm |
 | longeron de stab | 6 x 4 | 1 | 714 mm | 1000 mm |
 | jonc de stab | jonc 3 | 1 | 714 mm | 1000 mm |
-| joncs d'aileron | jonc 2 | 2 | 410 mm | 1000 mm |
+| joncs d'aileron | jonc 2 | 2 | 416 mm | 1000 mm |
 | jonc de profondeur | jonc 2 | 1 | 686 mm | 1000 mm |
 ✅ chaque tube se coupe dans un tube du commerce de 1000 mm
 
@@ -52,14 +52,26 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 
 | Pièce | Surplombs > 45° (mm²) |
 |---|---:|
-| fuselage_milieu | 2463 |
 | fuselage_nez | 2171 |
 | bloc_queue | 2114 |
+| fuselage_milieu | 1766 |
 | cadre_servo_aile | 836 |
 | fuselage_queue | 831 |
 | support_moteur | 791 |
 | fuselage_avant | 585 |
 | patte_atterrissage | 312 |
+✅ aucune couche ne part dans le vide : pièces à 1 paroi (aile, fuselage) ≤ 6 mm du bord soutenu (pont ≤ 12 mm) ; pièces pleines ≤ 12.5 mm (pont ≤ 25 mm, comme le plafond de la baie du servo de profondeur)
+
+| Pièce | Pire porte-à-faux (mm) | Hauteur (mm) |
+|---|---:|---:|
+| bloc_queue | 9.3 | 48 |
+| aileron_1 | 4.9 | 43 |
+| fuselage_milieu | 4.2 | 108 |
+| profondeur_3 | 2.0 | 221 |
+| patte_atterrissage | 1.7 | 230 |
+| pylone_poutre | 1.5 | 109 |
+| fuselage_avant | 1.5 | 70 |
+| fuselage_nez | 1.3 | 10 |
 
 ## Ce que ce contrôle ne peut pas garantir
 

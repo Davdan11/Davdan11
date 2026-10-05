@@ -103,6 +103,7 @@ HUARD_VERSION=mini python calc/dimensionnement.py  # bilan Mini -> docs/bilan_mi
 - poutres et longerons qui passent dans leurs fourreaux ;
 - tubes à couper dans des tubes de 1 m ;
 - toutes les pièces sur le plateau de la A1.
+- toutes les pièces s'impriment sans supports : chaque pièce est tranchée couche par couche, comme dans Bambu Studio, et aucune couche ne doit partir dans le vide (pas de fine bande ni de plafond suspendu).
 
 **Résultat actuel : tout est bon sur les deux versions** ([DFR](docs/verification.md), [Mini](docs/verification_mini.md)). À relancer après toute modification des paramètres :
 
@@ -154,7 +155,7 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
 
 ## Assemblage, dans l'ordre
 
-1. **Aile** : coller les segments de chaque côté à la CA en les enfilant sur le longeron pour l'alignement. Coller le saumon.
+1. **Aile** : coller les segments de chaque côté à la CA en les enfilant sur le longeron pour l'alignement. Coller le saumon au bout du segment extérieur (il couvre la partie fixe ; l’aileron va jusqu’au bout de l’aile, avec 1 mm de jeu contre le saumon).
    - **Ailerons** : enfiler les deux morceaux d'aileron sur le jonc carbone de 2 mm, glisser le **guignol PETG** par-dessous dans sa fente (le jonc passe dans son trou), puis coller le tout à la CA. Poser l'aileron avec une **charnière en ruban sur le dessus** (extrados), en laissant le V ouvert dessous : c'est ce V qui permet à l'aileron de monter de plus de 25°.
    - **Servo d'aileron** (coupe : [DFR](docs/images/coupe_servo_aileron_dfr.png), [Mini](docs/images/coupe_servo_aileron_mini.png)) :
      1. Coller le **cadre de servo** à l'époxy dans la baie ouverte sous l'aile, contre la peau du dessus. Il ne bouge plus.

@@ -241,6 +241,21 @@ def _servo_aile():
                 baie=baie, sous_peau=sous_peau, xs=xs, vis=vis)
 
 
+def _prisme_xy(poly, z0, z1):
+    """Prisme vertical (Z) à partir d'un contour shapely dans le plan XY."""
+    return (cq.Workplane("XY", origin=(0, 0, z0)).polyline(list(poly.exterior.coords)[:-1])
+            .close().extrude(z1 - z0))
+
+
+def _empreinte_servo(g, marge=0.0):
+    """Empreinte de la baie du servo vue de dessous. Le bout côté saumon est en pointe à 45° :
+    le segment s'imprime debout (emplanture en bas), le haut de la baie se referme donc
+    progressivement au lieu de faire un pont de 35 mm dans le vide."""
+    xc, d, y0, y1 = g["xc"], g["demi"], g["y0"], g["y1"]
+    p = Polygon([(xc - d, y0), (xc + d, y0), (xc + d, y1), (xc, y1 + d), (xc - d, y1)])
+    return p.buffer(marge, join_style=2) if marge else p
+
+
 def cadre_servo_aile():
     """Cadre PETG collé dans l'aile : le servo s'y emboîte, oreilles dans leurs encoches."""
     g = _servo_aile()
@@ -265,8 +280,8 @@ def trappe_servo_aile():
     """Trappe PETG vissée sous le cadre (2 vis M2) : tient le servo, laisse passer le palonnier."""
     g = _servo_aile()
     H = SERVO["H"]
-    t = (cq.Workplane("XY").box(2 * g["demi"] - 0.4, g["y1"] - g["y0"] - 0.4, SERVO_TRAPPE_EP, centered=False)
-         .translate((g["xc"] - g["demi"] + 0.2, g["y0"] + 0.2, g["z_trappe"])))
+    # même contour que la baie (pointe comprise) : referme tout le trou de l'intrados
+    t = _prisme_xy(_empreinte_servo(g, -0.2), g["z_trappe"], g["z_trappe"] + SERVO_TRAPPE_EP)
     fente = (cq.Workplane("XY").box(16, 6, 10).translate((g["xs"], g["yb"] + H + 3.0, g["z_trappe"]))
              .edges("|Z").fillet(2))
     t = t.cut(fente)
@@ -299,7 +314,9 @@ def segment_aile(i):
 
     if i == segments_aileron()[0]:  # baie du cadre de servo d'aileron, ouverte par-dessous
         g = _servo_aile()
-        seg = seg.cut(extrude_xz(g["baie"], g["y0"] - 0.3, g["y1"] + 0.3))
+        assert i > 0, "la baie doit être sur un segment imprimé emplanture en bas"
+        seg = seg.cut(extrude_xz(g["baie"], g["y0"] - 0.3, g["y1"] + g["demi"] + 1)
+                      .intersect(_prisme_xy(_empreinte_servo(g, 0.3), -100, 100)))
         # le fil du servo sort du cadre côté emplanture et file dans le conduit jusqu'au fuselage
 
     if i == 0:  # vis nylon M3 de retenue : traverse l'aile et le longeron (percé à travers ce trou)
@@ -333,8 +350,7 @@ def aileron(i):
     segs = segments_aileron()
     if i != segs[0]:
         a0 += AILERON_JEU / 2
-    if i != segs[-1]:
-        a1 -= AILERON_JEU / 2
+    a1 -= AILERON_JEU if i == segs[-1] else AILERON_JEU / 2   # jeu avec le saumon au bout
     _, mobile, _ = charniere(PROFIL_AILE, CORDE, AILERON_X)
     xj, dj = AILERON_JONC
     sect = section_coque(PROFIL_AILE, CORDE, clip=mobile, tubes=[AILERON_JONC], ames=2,
@@ -410,6 +426,8 @@ def saumon():
     w1 = cq.Wire.makePolygon([cq.Vector(cx + (x - cx) * 0.55, y0 + 18, z * 0.45)
                               for x, z in prof], close=True)
     s = cq.Workplane().add(cq.Solid.makeLoft([w0, w1], True))
+    fixe, _, _ = charniere(PROFIL_AILE, CORDE, AILERON_X)   # l'aileron va jusqu'au bout de l'aile
+    s = s.intersect(extrude_xz(fixe, y0 - 1, y0 + 20))
     return caler(s, CALAGE_AILE)
 
 
@@ -486,7 +504,8 @@ def fuselage_complet():
     inte = _loft_fus([pointe] + SECTIONS_FUS[1:], PAROI_FUS)
     fus = ext.cut(inte)
 
-    # fourreaux de longeron et de goupille traversant le fuselage
+    # fourreau du longeron principal traversant le fuselage ; la goupille (anti-rotation) n'a
+    # qu'un bossage court dans chaque paroi (le conduit de câbles passe juste devant)
     for xc, d in ((LONGERON_PRINC_X, LONGERON_PRINC_D), (GOUPILLE_X, GOUPILLE_D)):
         x, z = position_tube(PROFIL_AILE, CORDE, xc, CALAGE_AILE)
         r = (d + JEU_TUBE) / 2
@@ -498,7 +517,24 @@ def fuselage_complet():
         goutte = (cq.Workplane("XZ", origin=(0, DEMI_LARGEUR_FUS, 0))
                   .polyline([(x - k, z + k), (x - R * math.sqrt(2), z), (x - k, z - k), (x, z)])
                   .close().extrude(2 * DEMI_LARGEUR_FUS))
-        fus = fus.union(tube.union(goutte).intersect(ext))
+        if xc == GOUPILLE_X:
+            bossages = ext.cut(_loft_fus(SECTIONS_FUS[1:], PAROI_FUS + 4.0))
+            fus = fus.union(tube.union(goutte).intersect(bossages))
+            fus = fus.cut(cq.Workplane("XZ", origin=(0, DEMI_LARGEUR_FUS + 15, 0)).center(x, z)
+                          .circle(r).extrude(2 * DEMI_LARGEUR_FUS + 30))
+            continue
+        # voile sous la pointe de la goutte : part des parois à 45° et la porte sur toute la
+        # largeur (sinon la pointe ferait un pont d'une paroi à l'autre dans le vide)
+        xa, Y = x - R * math.sqrt(2) + 0.5, DEMI_LARGEUR_FUS + 5
+        voile = (cq.Workplane("XY", origin=(0, 0, z - 0.8))
+                 .polyline([(xa, 0), (xa, Y), (xa - Y, Y)]).close().extrude(1.6))
+        voile = voile.union(voile.mirror("XZ")).intersect(ext)
+        for c in COUPES_FUS[1:-1]:   # le voile s'arrête au joint, hors de la lèvre de l'autre tronçon
+            if xa - Y < c < xa:
+                voile = voile.cut(cq.Workplane().box(400, 400, 400).translate((c - 200, 0, 0)))
+                anneau = ext.cut(_loft_fus(SECTIONS_FUS[1:], PAROI_FUS + 1.75))
+                voile = voile.cut(anneau.intersect(cq.Workplane().box(14, 400, 400).translate((c + 5, 0, 0))))
+        fus = fus.union(tube.union(goutte).union(voile).intersect(ext))
         trou = (cq.Workplane("XZ", origin=(0, DEMI_LARGEUR_FUS + 15, 0)).center(x, z)
                 .circle(r).extrude(2 * DEMI_LARGEUR_FUS + 30))
         fus = fus.cut(trou)
@@ -524,14 +560,18 @@ def fuselage_complet():
     hw, zt = TRAPPE_ACCES_DEMI_LARG, TRAPPE_ACCES_Z
     l16 = _loft_fus(SECTIONS_FUS[1:], 1.6)
     l31 = _loft_fus(SECTIONS_FUS[1:], 3.1)
-    def boite(x0, x1, y, z0):
-        return cq.Workplane().box(x1 - x0, 2 * y, 200 - z0, centered=(False, True, False)).translate((x0, 0, z0))
-    bande = boite(a - 3, b + 3, hw + 3, zt - 4).cut(boite(a + 4, b - 4, hw - 4, zt - 10))
+    bande = (_prisme_xy(_contour_trappe_acces(3.0), zt - 4, 200)
+             .cut(_prisme_xy(_contour_trappe_acces(-4.0), zt - 10, 200)))
     fus = fus.union(bande.intersect(inte.cut(l31)))
     for xv in _vis_trappe_acces():  # bossages des 2 vis M2 de la trappe
         w, h, zc = _section_a(xv)
         z_haut = zc + h / 2 - 2.5
         bos = cq.Workplane("XY", origin=(xv, 0, z_haut - 7)).circle(3.5).extrude(7)
+        # dessous chanfreiné à 45° côté nez : le tronçon s'imprime nez en bas
+        chanfrein = (cq.Workplane("XZ", origin=(0, 10, 0))
+                     .polyline([(xv - 10, z_haut + 5), (xv + 10, z_haut - 15), (xv + 10, z_haut - 30),
+                                (xv - 10, z_haut - 30)]).close().extrude(20))
+        bos = bos.cut(chanfrein)
         fus = fus.union(bos.intersect(inte))
     # anneau d'appui de la cloison moteur (en escalier : s'imprime sans support) et
     # trous des 3 vis radiales M2 qui la retiennent
@@ -542,14 +582,24 @@ def fuselage_complet():
         fus = fus.cut(_vis_radiale(xm - 2.5, ang, 1.1, 20))
 
     # (les avant-trous Ø1,6 des vis se percent à la main en se servant de la trappe comme gabarit)
-    fus = fus.cut(boite(a, b, hw, zt).intersect(ext.cut(l16)))
+    fus = fus.cut(_prisme_xy(_contour_trappe_acces(), zt, 200).intersect(ext.cut(l16)))
 
     return fus, ext
 
 
+def _contour_trappe_acces(marge=0.0):
+    """Contour de la trappe d'accès vu de dessus. L'arrière est en pointe à 45° : le tronçon
+    s'imprime nez en bas, le bout arrière de l'ouverture se referme donc progressivement au
+    lieu de faire un pont de toute la largeur dans le vide."""
+    a, b = TRAPPE_ACCES_X
+    hw = TRAPPE_ACCES_DEMI_LARG
+    p = Polygon([(a, -hw), (b - hw, -hw), (b, 0), (b - hw, hw), (a, hw)])
+    return p.buffer(marge, join_style=2) if marge else p
+
+
 def _vis_trappe_acces():
     a, b = TRAPPE_ACCES_X
-    return (a + 2.0, b - 2.0)
+    return (a + 2.0, b - 4.5)   # la vis arrière dans la pointe, sur la feuillure
 
 
 def trappe_acces():
@@ -559,8 +609,7 @@ def trappe_acces():
     hw, zt = TRAPPE_ACCES_DEMI_LARG, TRAPPE_ACCES_Z
     ext = _loft_fus(SECTIONS_FUS)
     l16 = _loft_fus(SECTIONS_FUS[1:], 1.6)
-    t = (cq.Workplane().box(b - a - 0.6, 2 * hw - 0.6, 200 - zt, centered=(False, True, False))
-         .translate((a + 0.3, 0, zt)).intersect(ext.cut(l16)))
+    t = _prisme_xy(_contour_trappe_acces(-0.3), zt, 200).intersect(ext.cut(l16))
     for xv in _vis_trappe_acces():
         t = t.cut(cq.Workplane("XY", origin=(xv, 0, zt - 5)).circle(1.2).extrude(60))
     return t
