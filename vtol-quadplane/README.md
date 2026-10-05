@@ -129,7 +129,8 @@ Les STL de `cad/out/stl/` sont déjà dans la bonne orientation et s'impriment s
 | `support_moteur` (×4) | PETG | 4 parois, 40 % gyroïde |
 | `cloison_moteur`, `support_nacelle` | PETG | 4 parois, 50 % |
 | `plateau_electronique`, `plateau_compagnon` | PETG | 3 parois, 30 % |
-| `trappe_acces` | PETG | Posée sur sa face intérieure (déjà orientée), 3 parois, 30 % |
+| `trappe_acces` | PETG | Debout sur son bout avant (déjà orientée), **bordure de 5 mm**, 3 parois, 30 % |
+| `entretoise_plateau_*` (DFR) | PETG | 100 %, petites pièces |
 | `patte_atterrissage` (×4) | TPU 95A | 3 parois, 25 %, vitesse lente |
 
 Conseils pour la A1 : son plateau bouge d'avant en arrière, donc place les pièces hautes et minces (segments d'aile) avec la corde dans l'axe avant-arrière. Ajoute une bordure (brim) de 5 mm et ralentis les parois extérieures à environ 150 mm/s. Imprime d'abord **un seul segment d'aile** pour valider le profil PLA Aero (température, moussage, masse ≈ 60 g).
@@ -164,7 +165,7 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
    2. **Mettre la batterie** : nez enlevé, glisser la batterie sur le plateau et la **pousser jusqu'à la butée arrière**. La butée est placée pour que le centre de gravité tombe juste ; c'est la seule chose qui change le centrage d'un vol à l'autre. Les fils de la batterie passent par l'encoche au milieu de la butée.
    3. **Serrer les 2 sangles** : elles sont près de l'ouverture, on les ferme avec les doigts. Remettre le nez.
    4. **Vérifier le centre de gravité** à chaque nouvelle batterie : soulever l'avion du bout des doigts sous l'aile, à 62 mm du bord d'attaque (DFR) ou 45 mm (Mini). Il doit rester à l'horizontale. Avec une autre batterie, caler par une cale de mousse contre la butée plutôt que d'ajouter du lest.
-8. **Nacelle** (DFR) : coller la selle sous l'avant du fuselage, puis la visser avec 2 vis M3 × 35 qui traversent le fond et les plots du plateau de batterie (têtes plates sous la batterie). La nacelle se visse sous la selle : 4 × M2.5 pour l'A8 mini, 4 × M3 pour la ZT6. Les câbles passent par l'ouverture centrale.
+8. **Nacelle** (DFR) : coller la selle sous l'avant du fuselage, puis la visser avec 2 vis M3 × 35 qui traversent le fond, les 2 **entretoises** (posées entre le fond et le plateau de batterie) et le plateau (têtes plates sous la batterie). La nacelle se visse sous la selle : 4 × M2.5 pour l'A8 mini, 4 × M3 pour la ZT6. Les câbles passent par l'ouverture centrale.
 9. **Contrôleur de vol** (vue : [DFR](docs/images/trappe_acces_dfr.png), [Mini](docs/images/trappe_acces_mini.png)) :
    1. **Inserts laiton** : avant de coller le plateau compagnon, poser au fer à souder (≈ 220 °C) un insert M3 dans chacune des 4 entretoises du contrôleur, et un insert M2.5 dans chacune des entretoises du Raspberry Pi (DFR). Un filetage en métal ne s'use pas, contrairement à une vis dans du plastique.
    2. **Plateau compagnon** : le glisser dans le tronçon milieu avant d'assembler le fuselage, puis le coller à l'époxy contre les flancs.

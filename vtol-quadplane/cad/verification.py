@@ -26,6 +26,7 @@ from params import *  # noqa: E402,F403
 V = cq.Vector
 TOL = 0.5          # mm³ : en dessous, simple contact (surfaces qui se touchent)
 DEBATTEMENT = 25.0  # degrés, gouvernes
+SURPLOMB_MAX = 3000  # mm² de surfaces en surplomb tolérées (ponts de petites cavités)
 
 
 # ---------------------------------------------------------------------------
@@ -320,6 +321,24 @@ def main():
         if sorted((bb.xlen, bb.ylen, bb.zlen))[1] > PLATEAU - MARGE_PLATEAU:
             trop.append(nom)
     ok(not trop, f"toutes les pièces tiennent sur le plateau {PLATEAU:.0f} mm (voir build.py pour l'orientation)")
+    # imprimabilité sans supports : surfaces tournées vers le bas (> 45°) hors plateau,
+    # dans l'orientation d'impression choisie par build.py
+    import numpy as np
+    import build as B
+    lignes, mauvais = [], []
+    for nom, fn, qte, mat, orient, *_ in P.inventaire():
+        m = B.vers_trimesh(B.orienter(fn(), orient), 0.1)
+        n, c, a = m.face_normals, m.triangles_center, m.area_faces
+        bas = (n[:, 2] < -0.71) & (c[:, 2] > m.bounds[0, 2] + 0.4)
+        surf = a[bas].sum()
+        lignes.append((surf, nom))
+        if surf > SURPLOMB_MAX:
+            mauvais.append(nom)
+    ok(not mauvais, f"toutes les pièces s'impriment sans supports dans leur orientation (surplombs ≤ {SURPLOMB_MAX} mm² : "
+       "plafonds de petites cavités et trous horizontaux, qui se font en pont)" if not mauvais else
+       f"pièces à surplomb trop grand : {mauvais}")
+    rapport.append("\n| Pièce | Surplombs > 45° (mm²) |\n|---|---:|")
+    rapport += [f"| {n} | {s:.0f} |" for s, n in sorted(lignes, reverse=True)[:8]]
 
     titre = "Huard DFR" if VERSION == "dfr" else "Huard Mini"
     entete = [f"# Vérification d'intégration — {titre}\n",

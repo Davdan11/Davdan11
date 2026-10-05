@@ -481,7 +481,9 @@ def _lamelle(x, ep, retrait_ext, retrait_int):
 @functools.lru_cache(maxsize=None)
 def fuselage_complet():
     ext = _loft_fus(SECTIONS_FUS)
-    inte = _loft_fus(SECTIONS_FUS[1:], PAROI_FUS)  # pointe du nez pleine
+    x0, w0, h0, z0 = SECTIONS_FUS[0]
+    pointe = (x0 + 1.0, w0, h0, z0)     # intérieur conique jusqu'à la pointe : pas de plafond plat
+    inte = _loft_fus([pointe] + SECTIONS_FUS[1:], PAROI_FUS)
     fus = ext.cut(inte)
 
     # fourreaux de longeron et de goupille traversant le fuselage
@@ -603,14 +605,18 @@ def cloison_moteur():
     return cloison.cut(perc)
 
 
-def _levre(x, long=10.0):
-    """Lèvre d'emboîtement qui suit la forme du fuselage (même là où il rétrécit)."""
+def _levre(x, long=10.0, collet=6.0):
+    """Lèvre d'emboîtement qui suit la forme du fuselage (même là où il rétrécit).
+
+    Le collet (côté du tronçon qui la porte) fusionne avec la peau : la lèvre est
+    portée par son tronçon et s'imprime dans le prolongement de la paroi."""
     def fil(xx, r):
         w, h, zc = _section_a(xx)
         return _super_ellipse(xx, w - 2 * r, h - 2 * r, zc)
     ext = cq.Solid.makeLoft([fil(x, PAROI_FUS + 0.25), fil(x + long, PAROI_FUS + 0.25)], True)
-    inte = cq.Solid.makeLoft([fil(x - 1, PAROI_FUS + 1.45), fil(x + long + 1, PAROI_FUS + 1.45)], True)
-    return cq.Workplane().add(ext).cut(cq.Workplane().add(inte))
+    col = cq.Solid.makeLoft([fil(x - collet, PAROI_FUS - 0.3), fil(x + 0.01, PAROI_FUS - 0.3)], True)
+    inte = cq.Solid.makeLoft([fil(x - collet - 1, PAROI_FUS + 1.45), fil(x + long + 1, PAROI_FUS + 1.45)], True)
+    return cq.Workplane().add(ext).union(cq.Workplane().add(col)).cut(cq.Workplane().add(inte))
 
 
 @functools.lru_cache(maxsize=None)
@@ -652,13 +658,19 @@ def plateau_electronique():
         for ys in (-(larg / 2 - 10), larg / 2 - 10):
             p = p.cut(cq.Workplane("XY", origin=(0, 0, z0 - 1)).center(xs, ys)
                       .slot2D(22, 4, 90).extrude(ep + 2))
-    # plots jusqu'au fond du fuselage, traversés par les vis M3 de la selle
+    # trous des vis M3 de la selle de nacelle (entretoises séparées sous le plateau)
     for dx in ((-32.0, 32.0) if NACELLE_X is not None else ()):
-        _, h, zc = _section_a(NACELLE_X + dx)
-        fond = zc - h / 2 + PAROI_FUS + 0.3
-        p = p.union(cq.Workplane("XY", origin=(NACELLE_X + dx, 0, fond)).circle(5).extrude(z0 - fond))
-        p = p.cut(cq.Workplane("XY", origin=(NACELLE_X + dx, 0, fond - 1)).circle(1.7).extrude(z0 - fond + ep + 2))
+        p = p.cut(cq.Workplane("XY", origin=(NACELLE_X + dx, 0, z0 - 1)).circle(1.7).extrude(ep + 2))
     return p
+
+
+def entretoise_plateau(k):
+    """Entretoise PETG entre le fond du fuselage et le plateau de batterie (vis M3 de la selle)."""
+    dx = (-32.0, 32.0)[k]
+    _, h, zc = _section_a(NACELLE_X + dx)
+    fond = zc - h / 2 + PAROI_FUS + 0.3
+    return (cq.Workplane("XY", origin=(NACELLE_X + dx, 0, fond)).circle(5).extrude(PLATEAU_Z - fond)
+            .cut(cq.Workplane("XY", origin=(NACELLE_X + dx, 0, fond - 1)).circle(1.7).extrude(PLATEAU_Z - fond + 2)))
 
 
 def support_nacelle():
@@ -905,13 +917,15 @@ def inventaire():
         ("patte_atterrissage", lambda: patte(X_PATTE_AV), 4, "TPU 95A", "Z", 1.6, 0.25, False),
         ("bloc_queue", bloc_queue, 1, "PLA Aero", "Z", 1.2, 0.08, True),
     ]
-    inv.append(("trappe_acces", trappe_acces, 1, "PETG", "Zinv", 1.6, 1.0, False))
+    inv.append(("trappe_acces", trappe_acces, 1, "PETG", "X", 1.6, 1.0, False))
     inv.append(("guignol_aileron", guignol_aileron, 2, "PETG", "Y", 2.0, 1.0, False))
     inv.append(("cadre_servo_aile", cadre_servo_aile, 1, "PETG", "Zcal", 1.2, 0.30, True))
     inv.append(("trappe_servo_aile", trappe_servo_aile, 1, "PETG", "Zcal", 1.2, 1.0, True))
     inv.append(("guignol_profondeur", guignol_profondeur, 1, "PETG", "Y", 2.0, 1.0, False))
     if NACELLE_X is not None:
         inv.append(("support_nacelle", support_nacelle, 1, "PETG", "Z", 1.6, 0.30, False))
+        inv.append(("entretoise_plateau_avant", lambda: entretoise_plateau(0), 1, "PETG", "Z", 1.6, 1.0, False))
+        inv.append(("entretoise_plateau_arriere", lambda: entretoise_plateau(1), 1, "PETG", "Z", 1.6, 1.0, False))
     for i in range(STAB_N_SEG):
         inv.append((f"stab_segment_{i + 1}", lambda i=i: stab_segment(i), 1, "PLA Aero", "Y", None, 0, False))
         inv.append((f"profondeur_{i + 1}", lambda i=i: profondeur(i), 1, "PLA Aero", "Y", None, 0, False))
