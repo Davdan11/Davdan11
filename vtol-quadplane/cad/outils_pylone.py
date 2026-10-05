@@ -1,4 +1,4 @@
-"""Vue éclatée du collage du pylône sous l'aile : python outils_pylone.py image.png"""
+"""Vue éclatée du pylône vissé sous l'aile : python outils_pylone.py image.png"""
 import sys
 
 import cadquery as cq
@@ -16,8 +16,18 @@ ecart = 45.0
 pyl.apply_translation((0, 0, -ecart))
 tube = trimesh.creation.cylinder(radius=POUTRE_D / 2, segment=[(-60, POUTRE_Y, POUTRE_Z - 2.2 * ecart),
                                                                 (CORDE + 60, POUTRE_Y, POUTRE_Z - 2.2 * ecart)], sections=40)
-xc, zc = P.position_tube(PROFIL_AILE, CORDE, CONDUIT[0], CALAGE_AILE)
-tige = trimesh.creation.cylinder(radius=3.5, segment=[(xc, POUTRE_Y, zc + 25), (xc, POUTRE_Y, POUTRE_Z - 2.2 * ecart - 10)],
-                                 sections=24)
-B.rendu([(aile, "PLA Aero"), (pyl, "PETG"), (tube, "carbone"), (tige, "electronique")], sys.argv[1], -22, -60,
-        f"Pylône sous l'aile — Huard {VERSION.upper()} (vert : tige de centrage dans les trous de câbles)", zoom=1.0)
+import math
+ca, sa = math.cos(math.radians(CALAGE_AILE)), math.sin(math.radians(CALAGE_AILE))
+def cale(x, z):
+    return x * ca + z * sa, -x * sa + z * ca
+objs = [(aile, "PLA Aero"), (pyl, "PETG"), (tube, "carbone")]
+for x, zl, zh in P.vis_pylone():
+    (x0, z0), (x1, z1) = cale(x, zh + 30), cale(x, zl - 4 - ecart)
+    vis = trimesh.creation.cylinder(radius=1.5, segment=[(x0, POUTRE_Y, z0), (x1, POUTRE_Y, z1)], sections=20)
+    xi, zi = cale(x, zl - 2.5)
+    insert = trimesh.creation.cylinder(radius=2.4, segment=[(xi, POUTRE_Y, zi - ecart - 2), (xi, POUTRE_Y, zi - ecart + 2)],
+                                       sections=20)
+    objs += [(vis, "electronique"), (insert, "moteur")]
+B.rendu(objs, sys.argv[1], 28, -60,
+        f"Pylône vissé sous l'aile — Huard {VERSION.upper()} : 2 vis M3 fraisées (vert) dans 2 inserts laiton (rouge)",
+        zoom=1.0)

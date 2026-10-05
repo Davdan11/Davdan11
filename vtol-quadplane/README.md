@@ -88,7 +88,7 @@ HUARD_VERSION=mini python calc/dimensionnement.py  # bilan Mini -> docs/bilan_mi
                                        ▼ nacelle caméra sous l'avant du fuselage
 ```
 
-- **Deux poutres carbone** à ±360 mm sous l'aile, tenues par des pylônes collés. Elles portent les 4 moteurs VTOL (±365 mm autour du centre de gravité, hélices de 15 po) et l'empennage en H au bout.
+- **Deux poutres carbone** à ±360 mm sous l'aile, tenues par des pylônes vissés. Elles portent les 4 moteurs VTOL (±365 mm autour du centre de gravité, hélices de 15 po) et l'empennage en H au bout.
 - **Le fuselage** est en 4 tronçons. Le nez est amovible pour glisser la batterie sur le plateau avant. Le contrôleur de vol, le Raspberry Pi et le modem 4G sont sur un second plateau dans le tronçon du milieu. Le moteur propulsif est boulonné sur une cloison en PETG au bout de la queue.
 - **La nacelle caméra** est fixée sous l'avant du fuselage, sur une selle en PETG vissée à travers le plateau. Elle voit vers l'avant et vers le bas sans être gênée par les hélices.
 - **L'aile** est en 2 demi-ailes de 4 segments chacune, enfilées sur un longeron de 16 mm qui traverse le fuselage. Un longeron de 8 mm prend le relais vers les bouts d'aile et une goupille de 6 mm fixe l'incidence.
@@ -193,7 +193,7 @@ Les STL de `cad/out/stl/` sont déjà dans la bonne orientation et s'impriment s
 | `fuselage_avant`, `fuselage_milieu`, `fuselage_queue` | PLA Aero | 1 paroi, 0 % de remplissage, 0 couche dessus/dessous |
 | `fuselage_nez` | PLA Aero | 1 paroi, 0 % de remplissage, **3 couches dessus** (la pointe est fermée) |
 | `saumon_*`, `bloc_queue_*` | PLA Aero | 3 parois, 8 % gyroïde |
-| `pylone_poutre_*` | PETG | 3 parois, 10 % gyroïde, bordure de 5 mm |
+| `pylone_poutre_*` | PETG | 4 parois (pour les inserts), 15 % gyroïde, bordure de 5 mm |
 | `support_moteur` (×4) | PETG | 4 parois, 40 % gyroïde |
 | `cloison_moteur`, `support_nacelle` | PETG | 4 parois, 50 % |
 | `plateau_electronique`, `plateau_compagnon` | PETG | 3 parois, 30 % |
@@ -217,17 +217,16 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
      5. Remettre le palonnier à travers la fente de la trappe, et relier son trou **à 10 mm de l'axe (DFR) ou 8 mm (Mini)** au trou intérieur du guignol par une tringle de 1,5 mm (Z d'un côté, chape de l'autre pour régler). Régler ensuite les fins de course dans ArduPilot (SERVOx_MIN / MAX) pour **±20°** d'aileron, mesurés au rapporteur.
      Pour changer un servo : 2 vis, la trappe s'enlève, le servo sort.
 2. **Longerons et fixation des ailes** : le longeron extérieur (DFR : tube 8 mm × 500 mm ; Mini : 6 mm × 310 mm) est collé à l'époxy dans les segments extérieurs. Le longeron principal (16 mm ; Mini 10 mm) et la goupille (6 mm ; Mini 4 mm) traversent le fuselage et restent démontables. L'emplanture de l'aile épouse le flanc du fuselage. Pour **retenir chaque aile**, une **vis nylon M3** traverse l'aile de haut en bas, près de l'emplanture, et le longeron : au premier montage, percer le longeron à Ø3,2 mm à travers le trou de l'aile, aile en place. Pour démonter : 1 vis par aile.
-3. **Pylônes** ([vue éclatée : DFR](docs/images/pylone_dfr.png), [Mini](docs/images/pylone_mini.png)) : le dessus de chaque pylône a la forme exacte du dessous de l'aile, comme une selle, et un trou de câble qui tombe sur celui de l'aile.
-   1. **Aile d'abord** : les segments de chaque demi-aile sont déjà collés entre eux, et l'aile est montée sur le fuselage avec son longeron et sa goupille.
-   2. **Repérer l'endroit** : le trou de Ø 10 mm sous l'aile, à **360 mm** de l'axe du fuselage (Mini : **210 mm**), sur le segment d'emplanture (Mini) ou le 2e segment (DFR). Pylône `droit` sous l'aile droite.
-   3. **Essai à sec** : la selle ne s'emboîte que dans un sens, le bout droit du pylône au ras du bord d'attaque. Enfiler une **tige de centrage** dans le trou de l'aile et celui du pylône : un crayon, une cheville ou un foret de 6 à 8 mm. Le pylône est alors exactement en place.
-   4. **Préparer** : poncer légèrement les deux surfaces au papier 180, puis dégraisser à l'alcool isopropylique.
-   5. **Coller à l'époxy 30 minutes** en couche mince. Pas de colle cyanoacrylate : elle prend trop vite pour ajuster. Remettre la tige, tenir au ruban de masquage.
-   6. **Vérifier avant que ça prenne** : glisser les deux poutres dans les pylônes, sans colle. Elles doivent être parallèles au fuselage, avec le même écart à l'avant et à l'arrière (720 mm d'axe en axe, Mini : 420 mm). Mesurer au ruban. Laisser durcir 24 h, puis retirer la tige : le trou est le passage des câbles.
-   7. **Percer chaque poutre** au même endroit (Ø 8 mm) : les fils des moteurs, des ESC et du servo de profondeur passent dans la poutre, remontent par le pylône et filent dans le conduit de l'aile jusqu'au fuselage.
+3. **Pylônes** (vue éclatée : [DFR](docs/images/pylone_dfr.png), [Mini](docs/images/pylone_mini.png)) : chaque pylône est **vissé** sous l'aile par **2 vis M3 à tête fraisée**, passées par le dessus de l'aile. Elles se vissent dans **2 inserts laiton M3 courts** (4 mm) posés dans le pylône. L'aile a deux piliers pleins à cet endroit : la tête de vis serre l'aile contre le pylône. Le pylône se démonte en 2 minutes pour le remplacer après un choc.
+   1. **Poser les inserts** dans les 2 trous du dessus du pylône : insert sur le trou, pointe du fer à souder à environ 220 °C (ou embout pour inserts), enfoncer doucement et bien droit jusqu'à ce que l'insert affleure. Laisser refroidir sans bouger. S'exercer d'abord sur une chute de PETG.
+   2. **Coller la poutre dans le pylône** à l'époxy, au bon endroit sur la poutre (voir l'étape 4). Le pylône, la poutre, les moteurs et l'empennage forment alors un bloc qui se démonte de l'aile avec les 4 vis.
+   3. **Repérer l'endroit** : les 2 trous fraisés sur le dessus de l'aile, à **360 mm** de l'axe du fuselage (Mini : **210 mm**). Pylône `droit` sous l'aile droite. La selle ne s'emboîte que dans un sens, le bout droit du pylône au ras du bord d'attaque.
+   4. **Visser** : vis **M3 × 20 à l'avant et M3 × 16 à l'arrière** (DFR : M3 × 25 et M3 × 20), serrées à la main sans forcer, puis 1/8 de tour. Les têtes affleurent le dessus de l'aile. Une goutte de frein filet faible (bleu) si elles se desserrent aux vibrations.
+   5. **Vérifier** que les deux poutres sont parallèles au fuselage, avec le même écart à l'avant et à l'arrière (720 mm d'axe en axe, Mini : 420 mm). Mesurer au ruban.
+   6. **Câbles** : les trous de câble du pylône et de l'aile tombent l'un sur l'autre. Percer chaque poutre au même endroit (Ø 8 mm) : les fils des moteurs, des ESC et du servo de profondeur passent dans la poutre, remontent par le pylône et filent dans le conduit de l'aile jusqu'au fuselage. Prévoir un connecteur sur ces fils, près du pylône, pour pouvoir démonter le bloc.
 4. **Poutres et moteurs VTOL** (vue éclatée : [DFR](docs/images/support_moteur_dfr.png), [Mini](docs/images/support_moteur_mini.png)) :
    1. **Moteur sur sa platine, à l'établi** : poser la platine sous le moteur et visser les 4 vis M3 du moteur par-dessous. Longueur = 4 mm de platine + la profondeur filetée du moteur − 0,5 mm (en général M3 × 6 ou × 8). Une vis trop longue touche le bobinage et le détruit. Les têtes de ces vis se logeront dans les creux de la bride.
-   2. **Enfiler sur la poutre**, dans l'ordre : patte avant, support moteur avant, pylône, patte arrière, support moteur arrière. Coller ensuite le bloc de queue au bout.
+   2. **Enfiler sur la poutre**, dans l'ordre : patte avant, support moteur avant, pylône, patte arrière, support moteur arrière. Coller le pylône sur la poutre à l'endroit où il tombe sous l'aile (poutre en place, pylône vissé à l'aile), puis le bloc de queue au bout.
    3. **Placer les supports** : axe du moteur avant à **22 mm** du bout avant du tube et axe du moteur arrière à **752 mm** (DFR) ; **18 mm** et **468 mm** (Mini). Mettre la bride bien à l'horizontale, puis serrer le collier avec ses **2 vis M3 × 16** (écrous logés dans les hexagones). Une goutte de CA entre collier et tube empêche la rotation sous le couple du moteur.
    4. **Poser le moteur** : la platine se pose sur la bride et se fixe par **4 vis de coin M3 × 8 passées par-dessous**, à côté du collier. Elles s'atteignent au tournevis même sur la poutre : pour changer un moteur, 4 vis, sans toucher au réglage du collier.
    5. **ESC** : collés ou attachés (collier de serrage + gaine thermo) sur le flanc intérieur de la poutre, entre la patte et le pylône (ou le support arrière), à l'air. Leurs fils de puissance (14 AWG DFR, 18 AWG Mini) et leur fil de signal (rallonge de servo) passent dans la poutre jusqu'au pylône.

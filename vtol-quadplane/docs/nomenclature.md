@@ -84,6 +84,7 @@ Les pages Amazon.ca n'ont pas pu être ouvertes (CAPTCHA) : liens trouvés en re
 | Moteur propulsif | Vis M3 (souvent fournies) pour le fixer sur la cloison | 4 |
 | | Vis M2 × 6 autotaraudeuses (cloison → fuselage, radiales) | 3 |
 | Ailes | Vis nylon M3 × 40 + écrou nylon (retenue de chaque aile sur le longeron) | 2 + 2 |
+| Pylônes (vissés sous l'aile) | Inserts laiton M3 **courts : longueur 4 mm** (Ø ext. 4,5 à 5 mm) ; vis M3 **tête fraisée** × 25 (avant) et × 20 (arrière) | 4 ; 2 + 2 |
 | Servos d'aileron | Vis M2 × 6 autotaraudeuses (trappes) | 4 |
 | Servo de profondeur | Vis fournies avec le servo (oreilles) | 2 |
 | Trappe d'accès | Vis M2 × 6 autotaraudeuses | 2 |

@@ -56,6 +56,7 @@ Environ 1 bobine de [PLA Aero](https://ca.store.bambulab.com/products/pla-aero),
 | Moteurs (5) | Vis M3 × 6 (moteur → platine ou cloison ; vérifier la profondeur filetée) | 20 |
 | Cloison du propulseur | Vis M2 × 6 autotaraudeuses, radiales | 3 |
 | Ailes | Vis nylon M3 × 30 + écrou nylon (retenue sur le longeron) | 2 + 2 |
+| Pylônes (vissés sous l'aile) | Inserts laiton M3 **courts : longueur 4 mm** (Ø ext. 4,5 à 5 mm), dans un assortiment d'inserts M3 ; vis M3 **tête fraisée** × 20 (avant) et × 16 (arrière) | 4 ; 2 + 2 |
 | Servos d'aileron / trappe d'accès | Vis M2 × 6 autotaraudeuses | 4 + 2 |
 | Servo de profondeur | Vis fournies avec le servo | 2 |
 | Contrôleur de vol | Inserts laiton M3 (Ø4 × 5,7) + vis M3 × 10 nylon | 4 + 4 |

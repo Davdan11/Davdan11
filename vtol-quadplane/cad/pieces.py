@@ -290,6 +290,46 @@ def trappe_servo_aile():
     return caler(t, CALAGE_AILE)
 
 
+# --- Pylône vissé sous l'aile : 2 vis M3 tête fraisée par le dessus de l'aile, dans 2 inserts
+# laiton M3 posés au fer dans le pylône (PETG). Le PLA Aero mince de l'aile ne tient pas un insert :
+# l'aile est seulement serrée entre la tête de vis et le pylône, par des piliers pleins.
+VIS_PYLONE_X = (0.12, 0.72)   # fractions de corde : devant le longeron, derrière le conduit de câbles
+INSERT_PYLONE = (4.0, 5.0)    # perçage de l'insert M3 (Ø, profondeur)
+PILIER_PYLONE = 4.5           # demi-diagonale du pilier en losange
+
+
+def vis_pylone():
+    """[(x, z intrados, z extrados)] des 2 vis du pylône, repère de corde (avant calage)."""
+    out = []
+    for f in VIS_PYLONE_X:
+        zh, zl = naca_surfaces(PROFIL_AILE, CORDE, f)
+        out.append((f * CORDE, zl, zh))
+    return out
+
+
+def _piliers_pylone(i, y0, y1):
+    """Piliers pleins des vis du pylône dans le segment i (repère de corde) et perçages."""
+    profil = extrude_xz(Polygon(naca_points(PROFIL_AILE, CORDE)), y0, y1)
+    bas = 1 if i == 0 else -1          # sens du plateau en Y (segment d'emplanture imprimé à l'envers)
+    y, a = POUTRE_Y, PILIER_PYLONE
+    plein, trous = None, None
+    for x, zl, zh in vis_pylone():
+        pil = (cq.Workplane("XY", origin=(0, 0, zl - 1))
+               .polyline([(x - a, y), (x, y - a), (x + a, y), (x, y + a)]).close().extrude(zh - zl + 2))
+        # voiles à 45° accrochés aux deux peaux : le pilier s'imprime sans pont dans le vide
+        ya, h, zm = y + bas * a, zh - zl, (zh + zl) / 2
+        for zp in (zl - 1, zh + 1):
+            v = (cq.Workplane("YZ", origin=(x - 0.6, 0, 0))
+                 .polyline([(ya, zp), (ya, zm), (ya + bas * (h / 2 + 1), zp)]).close().extrude(1.2))
+            pil = pil.union(v)
+        plein = pil if plein is None else plein.union(pil)
+        t = cq.Workplane("XY", origin=(x, y, zl - 5)).circle(1.7).extrude(h + 10)
+        fraise = cq.Workplane().add(cq.Solid.makeCone(1.7, 3.3, 1.6, cq.Vector(x, y, zh - 1.6), cq.Vector(0, 0, 1)))
+        t = t.union(fraise).union(cq.Workplane("XY", origin=(x, y, zh)).circle(3.3).extrude(3))
+        trous = t if trous is None else trous.union(t)
+    return plein.intersect(profil), trous
+
+
 def ames_segment(i):
     """Nombre de diagonales du zigzag du segment i : plus serré près de l'emplanture, où la
     flexion comprime le plus la peau (panneaux plus étroits = la peau n'ondule pas)."""
@@ -328,6 +368,10 @@ def segment_aile(i):
     if i == 0:  # vis nylon M3 de retenue : traverse l'aile et le longeron (percé à travers ce trou)
         xv = LONGERON_PRINC_X * CORDE
         seg = seg.cut(cq.Workplane("XY", origin=(xv, Y_VIS_AILE, -60)).circle(1.65).extrude(120))
+
+    if ya < POUTRE_Y < yb:  # piliers et perçages des 2 vis du pylône
+        plein, trous = _piliers_pylone(i, ya, yb)
+        seg = seg.union(plein).cut(trous)
 
     if ya < POUTRE_Y < yb:  # passage des câbles vers la poutre
         trou = (cq.Workplane("XY").workplane(offset=-30)
@@ -438,7 +482,7 @@ def saumon():
 
 
 def pylone():
-    """Carénage collé sous l'aile : reçoit la poutre."""
+    """Carénage sous l'aile, vissé (2 vis M3 dans des inserts laiton) : reçoit la poutre."""
     l, zb, k = POUTRE_D + 8, POUTRE_Z, CORDE / 220.0
     e = POUTRE_D / 2 + 3
     cote = [(0, zb + 2), (14 * k, zb - e), (180 * k, zb - e), (204 * k, zb - 3), (204 * k, -5),
@@ -457,6 +501,11 @@ def pylone():
     xcd, _ = position_tube(PROFIL_AILE, CORDE, CONDUIT[0], CALAGE_AILE)
     cable = (cq.Workplane("XY", origin=(xcd, POUTRE_Y, POUTRE_Z))
              .circle(min(5.0, POUTRE_D / 2 - 1)).extrude(40))
+    # 2 perçages pour inserts laiton M3, depuis le dessus du pylône (contre l'aile)
+    d, p = INSERT_PYLONE
+    for x, zl, zh in vis_pylone():
+        ins = cq.Workplane("XY", origin=(x, POUTRE_Y, zl - p)).circle(d / 2).extrude(p + 2)
+        corps = corps.cut(caler(ins, CALAGE_AILE))
     return corps.cut(alesage).cut(cable)
 
 
