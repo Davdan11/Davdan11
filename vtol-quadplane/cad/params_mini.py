@@ -92,6 +92,7 @@ TRAPPE_ACCES_X = (52.0, 150.0)   # trappe sur le dessus du fuselage, au-dessus d
 TRAPPE_ACCES_DEMI_LARG = 24.0
 TRAPPE_ACCES_Z = 15.5
 PI5 = False
+PITOT = False                 # pas de capteur de vitesse : nez sans trou de Pitot
 POUSSEUR_Z = -4.0
 # 5e moteur Emax ECO III 2807 1300KV (le même que les moteurs VTOL), hélice Gemfan 7x6E
 POUSSEUR_TROUS = [(9.5, 9.5), (-9.5, 9.5), (-9.5, -9.5), (9.5, -9.5)]

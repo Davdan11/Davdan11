@@ -606,9 +606,10 @@ def fuselage_complet():
         for dx in (-32.0, 32.0):  # vis de la selle de nacelle
             fus = fus.cut(cq.Workplane("XY", origin=(NACELLE_X + dx, 0, -100)).circle(1.7).extrude(20))
 
-    # tube de Pitot dans le nez
-    fus = fus.cut(cq.Workplane("YZ", origin=(SECTIONS_FUS[0][0] - 5, 0, SECTIONS_FUS[0][3]))
-                  .circle(2.1).extrude(40))
+    # tube de Pitot dans le nez (seulement avec un capteur de vitesse)
+    if PITOT:
+        fus = fus.cut(cq.Workplane("YZ", origin=(SECTIONS_FUS[0][0] - 5, 0, SECTIONS_FUS[0][3]))
+                      .circle(2.1).extrude(40))
 
     # trappe d'accès sur le dessus du fuselage : feuillure (rebord d'appui) + ouverture
     a, b = TRAPPE_ACCES_X

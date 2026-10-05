@@ -98,6 +98,7 @@ TRAPPE_ACCES_X = (70.0, 215.0)   # trappe sur le dessus du fuselage, au-dessus d
 TRAPPE_ACCES_DEMI_LARG = 33.0
 TRAPPE_ACCES_Z = 20.0           # bas de la découpe (au-dessus des fourreaux de longeron)
 PI5 = True                      # entretoises Raspberry Pi 5 (58 x 49 mm)
+PITOT = True                 # trou du tube de Pitot (capteur de vitesse) à la pointe du nez
 POUSSEUR_Z = -5.0         # axe du moteur propulsif
 # SunnySky X2820 V3 : 4 vis M3 en croix, 19 mm et 25 mm
 POUSSEUR_TROUS = [(9.5, 0.0), (-9.5, 0.0), (0.0, 12.5), (0.0, -12.5)]
