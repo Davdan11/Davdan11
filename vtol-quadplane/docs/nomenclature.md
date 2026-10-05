@@ -95,7 +95,7 @@ Les pages Amazon.ca n'ont pas pu être ouvertes (CAPTCHA) : liens trouvés en re
 | | Ruban de charnière (Blenderm ou équivalent) | 1 rouleau |
 | Rallonges | **Rallonges de servo 50 cm** (2 servos d'aileron) | 2 |
 | | **Rallonges de servo 80 cm** (servo de profondeur, et signal des 4 ESC VTOL qui passent par la poutre et l'aile) | 5 |
-| Puissance | Câble silicone **14 AWG rouge et noir, 4 m de chaque** (batterie → 4 ESC VTOL par les poutres et les ailes) | 2 × 4 m |
+| Puissance | Câble silicone **12 AWG rouge et noir, 3 m de chaque** (une paire par côté : fuselage → aile → poutre, Y vers les 2 ESC) ; **connecteurs balles 4 mm** (4 paires) | 2 × 3 m |
 | | Câble silicone 16 AWG rouge et noir, 1 m (ESC du propulseur) ; prises XT60, gaine thermo | — |
 | Batterie | 2 sangles de 20 mm, velcro adhésif | — |
 | Divers | Colle CA moyenne + activateur, époxy 30 min, mousse adhésive 3 mm (GPS), colliers de serrage | — |

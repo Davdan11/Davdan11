@@ -62,7 +62,8 @@ Environ 1 bobine de [PLA Aero](https://ca.store.bambulab.com/products/pla-aero),
 | Contrôleur de vol | Inserts laiton M3 (Ø4 × 5,7) + vis M3 × 10 nylon | 4 + 4 |
 | Gouvernes | Tringles acier 1,5 mm + chapes + bagues de serrage ; ruban de charnière | 3 |
 | Rallonges | **Rallonges de servo 30 cm** (2 ailerons, 1 profondeur) et **40 cm** (signal des 4 ESC VTOL) | 3 + 4 |
-| Puissance | Câble silicone **18 AWG rouge et noir, 3 m de chaque** (batterie → ESC VTOL), 5 condensateurs 220–470 µF 35 V (un par ESC), prises XT60, gaine thermo | — |
+| Puissance | Câble silicone **14 AWG rouge et noir, 2 m de chaque** (une paire par côté : fuselage → aile → poutre, Y vers les 2 ESC) ; **connecteurs balles 3,5 mm** (4 paires) ; 5 condensateurs 220–470 µF 35 V (un par ESC), prises XT60, gaine thermo | — |
+| Signaux | 4 rallonges de servo 50 cm (une par côté pour les 2 ESC, aileron, profondeur) + 2 de 30 cm | 6 |
 | Batterie | 2 sangles de 20 mm, velcro adhésif | — |
 | Divers | Colle CA + activateur, époxy, mousse adhésive 3 mm (GPS), colliers de serrage | — |
 

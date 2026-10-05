@@ -40,7 +40,7 @@ GOUPILLE_D = 6.0          # jonc 6 mm, 300 mm : bloque l'incidence
 GOUPILLE_X = 0.65
 GOUPILLE_FIN = 150.0
 JEU_TUBE = 0.3            # jeu diamétral dans les fourreaux imprimés
-CONDUIT = (0.47, 4.5)     # conduit de câbles dans l'aile (fraction de corde, rayon) : continu jusqu'au fuselage
+CONDUIT = (0.47, 5.0)     # conduit de câbles Ø10 (fraction de corde, rayon) : continu jusqu'au fuselage ; remplissage 38 % (README, câblage)
 FOURREAU = 1.2            # épaisseur des fourreaux autour des tubes
 
 # Ailerons

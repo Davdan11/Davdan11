@@ -23,7 +23,7 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 
 ## 5. Chemins libres (câbles et tubes)
 
-✅ conduit de câbles de l'aile (Ø7 mm) libre du flanc du fuselage jusqu'au servo d'aileron, en passant au-dessus du pylône
+✅ conduit de câbles de l'aile (Ø9 mm) libre du flanc du fuselage jusqu'au servo d'aileron, en passant au-dessus du pylône
 ✅ la poutre de 12 mm passe dans les supports moteurs, le pylône et le bloc de queue
 ✅ longeron principal Ø10 mm : passage libre de Y = -360 à 360 mm
 ✅ goupille d'aile Ø4 mm : passage libre de Y = -100 à 100 mm
@@ -53,7 +53,7 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 | Pièce | Surplombs > 45° (mm²) |
 |---|---:|
 | bloc_queue | 1473 |
-| fuselage_milieu | 1213 |
+| fuselage_milieu | 1216 |
 | fuselage_nez | 1136 |
 | cadre_servo_aile | 836 |
 | fuselage_queue | 729 |
@@ -65,9 +65,9 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 | Pièce | Pire porte-à-faux (mm) | Hauteur (mm) |
 |---|---:|---:|
 | fuselage_milieu | 4.2 | 138 |
-| aile_segment_1 | 4.1 | 22 |
 | aileron_1 | 3.5 | 43 |
 | aile_segment_2 | 3.3 | 73 |
+| aile_segment_1 | 2.8 | 22 |
 | profondeur_2 | 1.6 | 188 |
 | bloc_queue | 1.5 | 17 |
 | patte_atterrissage | 1.5 | 116 |
@@ -77,5 +77,5 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 
 - Les cotes des pièces achetées viennent des fiches techniques. Les oreilles des servos (non publiées) et la taille réelle des tubes carbone sont à mesurer au pied à coulisse à la réception ; une différence se corrige dans les paramètres et tout se régénère.
 - Les tolérances d'impression (retrait du PETG, moussage du PLA Aero) : imprimer d'abord un segment d'aile, un support moteur et un cadre de servo pour valider les ajustements.
-- Les câbles sont supposés passer dans les conduits prévus (Ø9 mm DFR, Ø7 mm Mini) : utiliser les sections de fil indiquées dans la nomenclature.
+- Les câbles : le conduit de l'aile (Ø9 mm) est dimensionné pour le câblage du README (une paire d'alimentation par côté, en Y vers les 2 ESC, et des rallonges de servo), rempli à environ 37 %. Avec d'autres fils, refaire le compte.
 - Le comportement en vol (réglages, vibrations, autonomie réelle) ne se vérifie qu'en volant, en suivant le plan d'essais du README.

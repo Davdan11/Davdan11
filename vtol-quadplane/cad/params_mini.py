@@ -36,7 +36,7 @@ GOUPILLE_D = 4.0          # jonc 4 mm, 200 mm
 GOUPILLE_X = 0.65
 GOUPILLE_FIN = 100.0
 JEU_TUBE = 0.3
-CONDUIT = (0.47, 3.5)   # conduit de câbles dans l'aile (fraction de corde, rayon) : continu jusqu'au fuselage
+CONDUIT = (0.47, 4.5)   # conduit de câbles Ø9 (fraction de corde, rayon) : continu jusqu'au fuselage ; remplissage 36 % (README, câblage)
 FOURREAU = 1.2
 
 # Ailerons

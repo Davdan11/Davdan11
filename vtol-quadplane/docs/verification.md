@@ -23,7 +23,7 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 
 ## 5. Chemins libres (câbles et tubes)
 
-✅ conduit de câbles de l'aile (Ø9 mm) libre du flanc du fuselage jusqu'au servo d'aileron, en passant au-dessus du pylône
+✅ conduit de câbles de l'aile (Ø10 mm) libre du flanc du fuselage jusqu'au servo d'aileron, en passant au-dessus du pylône
 ✅ la poutre de 16 mm passe dans les supports moteurs, le pylône et le bloc de queue
 ✅ longeron principal Ø16 mm : passage libre de Y = -500 à 500 mm
 ✅ goupille d'aile Ø6 mm : passage libre de Y = -150 à 150 mm
@@ -54,7 +54,7 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 |---|---:|
 | fuselage_nez | 2171 |
 | bloc_queue | 2114 |
-| fuselage_milieu | 2064 |
+| fuselage_milieu | 2066 |
 | cadre_servo_aile | 836 |
 | fuselage_queue | 831 |
 | support_moteur | 791 |
@@ -67,15 +67,15 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 | bloc_queue | 9.3 | 48 |
 | aileron_1 | 4.9 | 43 |
 | fuselage_milieu | 4.2 | 108 |
+| aile_segment_2 | 2.8 | 90 |
 | profondeur_3 | 2.0 | 221 |
 | patte_atterrissage | 1.7 | 230 |
 | pylone_poutre | 1.5 | 109 |
 | fuselage_avant | 1.5 | 70 |
-| fuselage_nez | 1.3 | 10 |
 
 ## Ce que ce contrôle ne peut pas garantir
 
 - Les cotes des pièces achetées viennent des fiches techniques. Les oreilles des servos (non publiées) et la taille réelle des tubes carbone sont à mesurer au pied à coulisse à la réception ; une différence se corrige dans les paramètres et tout se régénère.
 - Les tolérances d'impression (retrait du PETG, moussage du PLA Aero) : imprimer d'abord un segment d'aile, un support moteur et un cadre de servo pour valider les ajustements.
-- Les câbles sont supposés passer dans les conduits prévus (Ø9 mm DFR, Ø7 mm Mini) : utiliser les sections de fil indiquées dans la nomenclature.
+- Les câbles : le conduit de l'aile (Ø10 mm) est dimensionné pour le câblage du README (une paire d'alimentation par côté, en Y vers les 2 ESC, et des rallonges de servo), rempli à environ 37 %. Avec d'autres fils, refaire le compte.
 - Le comportement en vol (réglages, vibrations, autonomie réelle) ne se vérifie qu'en volant, en suivant le plan d'essais du README.

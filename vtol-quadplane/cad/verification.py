@@ -182,7 +182,7 @@ LIMITES = """
 
 - Les cotes des pièces achetées viennent des fiches techniques. Les oreilles des servos (non publiées) et la taille réelle des tubes carbone sont à mesurer au pied à coulisse à la réception ; une différence se corrige dans les paramètres et tout se régénère.
 - Les tolérances d'impression (retrait du PETG, moussage du PLA Aero) : imprimer d'abord un segment d'aile, un support moteur et un cadre de servo pour valider les ajustements.
-- Les câbles sont supposés passer dans les conduits prévus (Ø9 mm DFR, Ø7 mm Mini) : utiliser les sections de fil indiquées dans la nomenclature.
+- Les câbles : le conduit de l'aile (Ø{conduit:g} mm) est dimensionné pour le câblage du README (une paire d'alimentation par côté, en Y vers les 2 ESC, et des rallonges de servo), rempli à environ 37 %. Avec d'autres fils, refaire le compte.
 - Le comportement en vol (réglages, vibrations, autonomie réelle) ne se vérifie qu'en volant, en suivant le plan d'essais du README.
 """
 
@@ -366,7 +366,7 @@ def main():
               "GPS" + (", Raspberry Pi, modem, capteur de vitesse, nacelle" if PI5 else "") + ", tubes carbone), "
               "puis chaque contrôle est fait par calcul.\n",
               f"**Résultat : {'tout est bon' if not echecs else str(len(echecs)) + ' contrôle(s) en échec'}.**\n"]
-    texte = "\n".join(entete + rapport) + "\n" + LIMITES
+    texte = "\n".join(entete + rapport) + "\n" + LIMITES.format(conduit=2 * CONDUIT[1])
     racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     nom = "verification.md" if VERSION == "dfr" else f"verification_{VERSION}.md"
     with open(os.path.join(racine, "docs", nom), "w") as f:
