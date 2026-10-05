@@ -2,12 +2,15 @@
 
 Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les pièces imprimées et toutes les pièces achetées à leurs cotes (moteurs, hélices, servos, ESC, batterie, contrôleur de vol, GPS, Raspberry Pi, modem, capteur de vitesse, nacelle, tubes carbone), puis chaque contrôle est fait par calcul.
 
-**Résultat : tout est bon.**
+**Résultat : 1 contrôle(s) en échec.**
 
 
 ## 1. Collisions entre éléments
 
-✅ 88 éléments montés (31 modèles de pièces imprimées + pièces achetées) : aucune collision
+❌ 90 éléments montés (33 modèles de pièces imprimées + pièces achetées) : 3 collision(s)
+   - fuselage_nez ↔ fuselage_avant : 1.0 mm³
+   - fuselage_avant ↔ fuselage_milieu : 1.2 mm³
+   - fuselage_milieu ↔ fuselage_queue : 1.1 mm³
 
 ## 2. Débattement des gouvernes (±25°)
 
@@ -48,6 +51,18 @@ Généré par `cad/verification.py` : l'avion est monté en 3D avec toutes les p
 ## 7. Impression
 
 ✅ toutes les pièces tiennent sur le plateau 256 mm (voir build.py pour l'orientation)
+✅ toutes les pièces s'impriment sans supports dans leur orientation (surplombs ≤ 3000 mm² : plafonds de petites cavités et trous horizontaux, qui se font en pont)
+
+| Pièce | Surplombs > 45° (mm²) |
+|---|---:|
+| fuselage_milieu | 2472 |
+| fuselage_nez | 2180 |
+| bloc_queue | 2114 |
+| cadre_servo_aile | 836 |
+| fuselage_queue | 831 |
+| support_moteur | 791 |
+| fuselage_avant | 596 |
+| patte_atterrissage | 312 |
 
 ## Ce que ce contrôle ne peut pas garantir
 

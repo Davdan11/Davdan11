@@ -613,8 +613,8 @@ def _levre(x, long=10.0, collet=6.0):
     def fil(xx, r):
         w, h, zc = _section_a(xx)
         return _super_ellipse(xx, w - 2 * r, h - 2 * r, zc)
-    ext = cq.Solid.makeLoft([fil(x, PAROI_FUS + 0.25), fil(x + long, PAROI_FUS + 0.25)], True)
-    col = cq.Solid.makeLoft([fil(x - collet, PAROI_FUS - 0.3), fil(x + 0.01, PAROI_FUS - 0.3)], True)
+    ext = cq.Solid.makeLoft([fil(x - 1.0, PAROI_FUS + 0.25), fil(x + long, PAROI_FUS + 0.25)], True)
+    col = cq.Solid.makeLoft([fil(x - collet, PAROI_FUS - 0.3), fil(x, PAROI_FUS - 0.3)], True)
     inte = cq.Solid.makeLoft([fil(x - collet - 1, PAROI_FUS + 1.45), fil(x + long + 1, PAROI_FUS + 1.45)], True)
     return cq.Workplane().add(ext).union(cq.Workplane().add(col)).cut(cq.Workplane().add(inte))
 

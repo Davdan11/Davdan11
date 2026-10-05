@@ -15,7 +15,7 @@ pylone_poutre_droit,1,PETG,25x20x148,30.9,30.9,73
 pylone_poutre_gauche,1,PETG,25x20x148,30.9,30.9,73
 fuselage_nez,1,PLA Aero,76x72x66,9.7,9.7,-259
 fuselage_avant,1,PLA Aero,86x81x215,41.7,41.7,-132
-fuselage_milieu,1,PLA Aero,87x81x211,47.9,47.9,69
+fuselage_milieu,1,PLA Aero,87x81x211,47.8,47.8,69
 fuselage_queue,1,PLA Aero,87x81x105,17.3,17.3,213
 cloison_moteur,1,PETG,44x46x5,9.8,9.8,262
 plateau_electronique,1,PETG,245x54x17,35.3,35.3,-102
