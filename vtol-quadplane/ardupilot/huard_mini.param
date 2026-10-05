@@ -13,13 +13,13 @@ Q_FRAME_TYPE,1
 Q_M_PWM_TYPE,6
 Q_M_SPIN_ARM,0.08
 Q_M_SPIN_MIN,0.12
-Q_M_THST_HOVER,0.55
+Q_M_THST_HOVER,0.61
 Q_M_BAT_VOLT_MAX,16.8
 Q_M_BAT_VOLT_MIN,13.6
 # inclinaison max en VTOL, en degrés (avant la 4.7 : Q_ANGLE_MAX,3000)
 Q_A_ANGLE_MAX,30
 # aide des moteurs VTOL sous 12 m/s (1,1 x décrochage) : toujours sous AIRSPEED_MIN
-Q_ASSIST_SPEED,12
+Q_ASSIST_SPEED,13
 # filet de sécurité (vols simulés dans le vent fort) : sous 20 m en vol d'avion, les moteurs
 # VTOL aident automatiquement, par exemple si une rafale fait décrocher l'avion
 Q_ASSIST_ALT,20
@@ -47,12 +47,13 @@ SERVO_BLH_OTYPE,6
 
 # --- Pas de capteur de vitesse au début : vitesse estimée --------------------
 ARSPD_TYPE,0
-AIRSPEED_MIN,14
-AIRSPEED_CRUISE,18
-AIRSPEED_MAX,22
+AIRSPEED_MIN,15
+AIRSPEED_CRUISE,20
+AIRSPEED_MAX,25
 # sans capteur de vitesse, c'est ce gaz qui fixe la vitesse de croisière : viser
-# 65-70 km/h au GPS par vent nul au premier vol, et l'ajuster (simulé : 55 % -> ~75 km/h)
-TRIM_THROTTLE,55
+# 75-80 km/h au GPS par vent nul au premier vol, et l'ajuster (simulé : 62 % -> ~80 km/h). En PLA normal
+# (2,2 kg, décrochage 43 km/h), voler moins vite fait décrocher l'avion dans les rafales (vols simulés)
+TRIM_THROTTLE,62
 
 # --- Batterie LiPo 4S 4000 mAh (capteur intégré) ------------------------------
 # Vérifier la tension et le courant affichés au multimètre / wattmètre.

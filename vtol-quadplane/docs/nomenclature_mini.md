@@ -46,7 +46,16 @@ Boutique : [carbonfibertubes.net](https://carbonfibertubes.net). La livraison ve
 
 ## Filament
 
-Environ 1 bobine de [PLA Aero](https://ca.store.bambulab.com/products/pla-aero), ¼ de bobine de [PETG HF](https://ca.store.bambulab.com/products/petg-hf) et 100 g de [TPU 95A HF](https://ca.store.bambulab.com/products/tpu-95a-hf).
+Le Mini s'imprime en **PLA normal**, sauf l'empennage :
+
+| Filament | Quantité | Pour |
+|---|---:|---|
+| [PLA Basic](https://ca.store.bambulab.com/products/pla-basic-filament) | ≈ 710 g (1 bobine) | Aile, ailerons, saumons, fuselage |
+| [PLA Aero](https://ca.store.bambulab.com/products/pla-aero) | ≈ 120 g | **Empennage seulement** : stab, profondeurs, 2 blocs de queue. En PLA normal, la queue serait trop lourde : il faudrait 150 g de plomb dans le nez |
+| [PETG HF](https://ca.store.bambulab.com/products/petg-hf) | ≈ 250 g | Supports moteurs, pylônes, cadres, plateaux, trappe, berceau du GPS |
+| [TPU 95A HF](https://ca.store.bambulab.com/products/tpu-95a-hf) | ≈ 65 g | Pattes |
+
+En PLA normal le Mini pèse 2,2 kg au lieu de 1,9 kg (PLA Aero partout) : environ 23 min d'autonomie au lieu de 33, et une croisière un peu plus rapide (≈ 80 km/h).
 
 ## Quincaillerie et câblage (≈ 70 à 90 $)
 

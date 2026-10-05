@@ -63,9 +63,9 @@ def main():
     a, b = tranches_jonction()
     kit = [
         ("1_jauge_tubes", jauge_tubes(), "PETG", "Z"),   # 3 parois, 15 %
-        ("2_tranche_aile", tranche_aile(), "PLA Aero", "Y"),
-        ("3_jonction_cote_avant", a, "PLA Aero", "X"),
-        ("3_jonction_cote_milieu", b, "PLA Aero", "X"),
+        ("2_tranche_aile", tranche_aile(), P.MATERIAU_LEGER, "Y"),
+        ("3_jonction_cote_avant", a, P.MATERIAU_LEGER, "X"),
+        ("3_jonction_cote_milieu", b, P.MATERIAU_LEGER, "X"),
         ("4_support_moteur", P.support_moteur(P.X_MOT_AV), "PETG", "Zinv"),
         ("4_platine_moteur", P.platine_moteur(P.X_MOT_AV), "PETG", "Z"),
         ("5_cadre_servo_aile", P.cadre_servo_aile(), "PETG", "Zcal"),
@@ -77,7 +77,7 @@ def main():
         imp = B.orienter(wp, orient)
         cq.exporters.export(imp, os.path.join(dos, nom + ".stl"), tolerance=0.03, angularTolerance=0.15)
         m = B.vers_trimesh(wp, 0.1)
-        g = B.masse(m, mat, None if mat == "PLA Aero" else 1.6, 0.4)
+        g = B.masse(m, mat, None if mat == P.MATERIAU_LEGER else 1.6, 0.4)
         total[mat] = total.get(mat, 0) + g
         print(f"  {nom:26s} {mat:9s} {g:5.1f} g")
     print("  total : " + ", ".join(f"{k} {v:.0f} g" for k, v in total.items()))

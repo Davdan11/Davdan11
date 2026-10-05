@@ -1036,6 +1036,10 @@ X_AXE_SERVO_PROF = STAB_BA_X + PROFONDEUR_X * STAB_CORDE - 15
 X_SERVO_PROF = X_AXE_SERVO_PROF - (SERVO["L"] / 2 - SERVO["axe"])   # centre du boîtier
 
 
+MATERIAU_LEGER = globals().get("MATERIAU_LEGER", "PLA Aero")             # aile, fuselage
+MATERIAU_EMPENNAGE = globals().get("MATERIAU_EMPENNAGE", MATERIAU_LEGER)  # blocs de queue, stab, profondeurs
+
+
 def inventaire():
     """(nom, fonction, quantité, matériau, orientation, parois mm, remplissage, miroir)
 
@@ -1046,17 +1050,17 @@ def inventaire():
     """
     inv = []
     for i in range(N_SEGMENTS):
-        inv.append((f"aile_segment_{i + 1}", lambda i=i: segment_aile(i), 1, "PLA Aero",
+        inv.append((f"aile_segment_{i + 1}", lambda i=i: segment_aile(i), 1, MATERIAU_LEGER,
                     "Yinv" if i == 0 else "Y", None, 0, True))
     for k, i in enumerate(segments_aileron()):
-        inv.append((f"aileron_{k + 1}", lambda i=i: aileron(i), 1, "PLA Aero", "Y", None, 0, True))
+        inv.append((f"aileron_{k + 1}", lambda i=i: aileron(i), 1, MATERIAU_LEGER, "Y", None, 0, True))
     inv += [
-        ("saumon", saumon, 1, "PLA Aero", "Y", 1.2, 0.05, True),
+        ("saumon", saumon, 1, MATERIAU_LEGER, "Y", 1.2, 0.05, True),
         ("pylone_poutre", pylone, 1, "PETG", "X", 1.2, 0.10, True),
     ]
     noms_fus = NOMS_TRONCONS_FUS
     for k, nom in enumerate(noms_fus):
-        inv.append((f"fuselage_{nom}", lambda k=k: fuselage_pieces()[k], 1, "PLA Aero",
+        inv.append((f"fuselage_{nom}", lambda k=k: fuselage_pieces()[k], 1, MATERIAU_LEGER,
                     "Xinv" if k == 0 else "X", None, 0, False))
     inv += [
         ("cloison_moteur", cloison_moteur, 1, "PETG", "X", 1.6, 0.50, False),
@@ -1065,7 +1069,7 @@ def inventaire():
         ("support_moteur", lambda: support_moteur(X_MOT_AV), 4, "PETG", "Zinv", 1.6, 0.40, False),
         ("platine_moteur", lambda: platine_moteur(X_MOT_AV), 4, "PETG", "Z", 1.6, 1.0, False),
         ("patte_atterrissage", lambda: patte(X_PATTE_AV), 4, "TPU 95A", "Z", 1.6, 0.25, False),
-        ("bloc_queue", bloc_queue, 1, "PLA Aero", "Z", 1.2, 0.08, True),
+        ("bloc_queue", bloc_queue, 1, MATERIAU_EMPENNAGE, "Z", 1.2, 0.08, True),
     ]
     inv.append(("trappe_acces", trappe_acces, 1, "PETG", "X", 1.6, 1.0, False))
     inv.append(("support_gps", support_gps, 1, "PETG", "Zinv", 1.2, 1.0, False))
@@ -1078,6 +1082,6 @@ def inventaire():
         inv.append(("entretoise_plateau_avant", lambda: entretoise_plateau(0), 1, "PETG", "Z", 1.6, 1.0, False))
         inv.append(("entretoise_plateau_arriere", lambda: entretoise_plateau(1), 1, "PETG", "Z", 1.6, 1.0, False))
     for i in range(STAB_N_SEG):
-        inv.append((f"stab_segment_{i + 1}", lambda i=i: stab_segment(i), 1, "PLA Aero", "Y", None, 0, False))
-        inv.append((f"profondeur_{i + 1}", lambda i=i: profondeur(i), 1, "PLA Aero", "Y", None, 0, False))
+        inv.append((f"stab_segment_{i + 1}", lambda i=i: stab_segment(i), 1, MATERIAU_EMPENNAGE, "Y", None, 0, False))
+        inv.append((f"profondeur_{i + 1}", lambda i=i: profondeur(i), 1, MATERIAU_EMPENNAGE, "Y", None, 0, False))
     return inv

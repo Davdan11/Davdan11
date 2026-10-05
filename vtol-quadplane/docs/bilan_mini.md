@@ -6,7 +6,7 @@ Généré par `calc/dimensionnement.py`. Les chiffres aérodynamiques sont des e
 
 | Élément | Qté | Masse unitaire (g) | Total (g) | x (mm) |
 |---|---:|---:|---:|---:|
-| Pièces imprimées (cad/out/masses.csv) | 1 | 806 | 806 | 103 |
+| Pièces imprimées (cad/out/masses.csv) | 1 | 1144 | 1144 | 86 |
 | Moteur VTOL Emax ECO III 2807 1300KV | 4 | 56 | 224 | 45 |
 | Hélice VTOL HQProp Cine7 7x4x3 | 4 | 10 | 40 | 45 |
 | ESC Skystars Talon32 40A AM32 (VTOL) | 4 | 7 | 28 | 45 |
@@ -26,7 +26,7 @@ Généré par `calc/dimensionnement.py`. Les chiffres aérodynamiques sont des e
 | Joncs carbone 2 mm et 1,5 mm (stab, gouvernes) | 1 | 8 | 8 | 300 |
 | Câblage, connecteurs, condensateurs | 1 | 60 | 60 | 30 |
 | Visserie, guignols, colle, ruban | 1 | 25 | 25 | 80 |
-| **Sans batterie** | | | **1453** | 100 |
+| **Sans batterie** | | | **1791** | 90 |
 
 ## Centrage
 
@@ -40,17 +40,17 @@ Le centre de gravité doit tomber à **x = 45 mm** (28 % de corde), au milieu de
 
 | | CNHL G+Plus 4S 4000 mAh 70C (LiPo) |
 |---|---:|
-| Masse au décollage | 1.87 kg |
-| Charge alaire | 9.7 kg/m² |
-| Vitesse de décrochage | 11.0 m/s (39 km/h) |
-| Rapport poussée/poids VTOL | 2.57 (≈ 2.31 batterie affaissée) |
-| Puissance en stationnaire | 335 W (23 A) |
-| Transit à 72 km/h | 135 W |
-| Vol en cercle au-dessus des lieux | 53 km/h, 72 W |
-| Autonomie en cercle seulement | **32 min** |
-| Temps sur les lieux, intervention à 1 km | **29 min** (aller 1 min) |
-| Temps sur les lieux, intervention à 2 km | **26 min** (aller 2 min) |
-| Temps sur les lieux, intervention à 3 km | **23 min** (aller 2 min) |
-| Temps sur les lieux, intervention à 5 km | **17 min** (aller 4 min) |
+| Masse au décollage | 2.21 kg |
+| Charge alaire | 11.5 kg/m² |
+| Vitesse de décrochage | 11.9 m/s (43 km/h) |
+| Rapport poussée/poids VTOL | 2.17 (≈ 1.96 batterie affaissée) |
+| Puissance en stationnaire | 428 W (29 A) |
+| Transit à 79 km/h | 177 W |
+| Vol en cercle au-dessus des lieux | 58 km/h, 92 W |
+| Autonomie en cercle seulement | **23 min** |
+| Temps sur les lieux, intervention à 1 km | **21 min** (aller 1 min) |
+| Temps sur les lieux, intervention à 2 km | **18 min** (aller 2 min) |
+| Temps sur les lieux, intervention à 3 km | **15 min** (aller 2 min) |
+| Temps sur les lieux, intervention à 5 km | **9 min** (aller 4 min) |
 
 Surface alaire 0.192 m², allongement 7.5. Hypothèses : Cd0 = 0.055, e = 0.8, rendement de propulsion 0.45, figure de mérite VTOL 0.6, 3 W pour l'électronique de bord, 85% de la batterie utilisée (le reste est la réserve), 2 min de vol stationnaire par mission, 1.2 kg de poussée max par moteur VTOL (× 0.9 batterie affaissée).

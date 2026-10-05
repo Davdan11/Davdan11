@@ -34,6 +34,8 @@ G, RHO = 9.81, 1.225
 
 # --- Hypothèses -----------------------------------------------------------------
 PLA_AERO = dict(E=900.0, G=330.0, nu=0.35, sigma=12.0, tau=7.0)   # MPa, PLA Aero moussé (prudent)
+if P.MATERIAU_LEGER == "PLA":   # PLA normal imprimé (prudent : liaison entre couches)
+    PLA_AERO = dict(E=3000.0, G=1100.0, nu=0.35, sigma=25.0, tau=12.0)
 CARBONE_TUBE = dict(E=100e3, sigma=500.0, tau=150.0)              # MPa, tube roulé (prudent)
 CARBONE_JONC = dict(E=120e3, sigma=900.0, tau=250.0)              # MPa, jonc pultrudé
 N_MANOEUVRE = 3.8          # facteur de charge limite (catégorie normale)
@@ -56,8 +58,8 @@ else:
     SERVO_COUPLE = 2.2     # kg.cm, JX PDI-1109MG à 4,8 V
     MASSE_POD = 0.056 + 0.010 + 0.007 + 0.015
     KV, TENSION, PALES = 1300, 14.8, 3
-V_MAX = {"dfr": 30.0, "mini": 22.0}[VERSION]      # AIRSPEED_MAX des paramètres ArduPilot
-V_CROISIERE = {"dfr": 22.0, "mini": 18.0}[VERSION]   # AIRSPEED_CRUISE
+V_MAX = {"dfr": 30.0, "mini": 25.0}[VERSION]      # AIRSPEED_MAX des paramètres ArduPilot
+V_CROISIERE = {"dfr": 22.0, "mini": 20.0}[VERSION]   # AIRSPEED_CRUISE
 V_PLONGEE = 1.25 * V_MAX
 
 
@@ -525,7 +527,7 @@ def main():
           f"{v['scr']:.2f} MPa | **{v['n']:.1f} g** |")
     p("")
     p(f"Relais entre les longerons (recouvrement de {L_rec:.0f} mm) : le tube extérieur pousse sur son "
-      f"fourreau avec ≈ {F_tr:.0f} N à charge extrême, soit {portee:.1f} MPa d'appui sur le PLA Aero et "
+      f"fourreau avec ≈ {F_tr:.0f} N à charge extrême, soit {portee:.1f} MPa d'appui sur le {P.MATERIAU_LEGER} et "
       f"{colle:.2f} MPa dans la colle époxy (elle tient 10 à 20 MPa).\n")
 
     p("## 4. Torsion, goupille, inversion d'ailerons\n")
@@ -586,7 +588,7 @@ def main():
       f"({CG_X:.0f} mm du bord d'attaque) : il doit rester à plat ou piquer très légèrement du nez.")
     p("4. **Les vibrations** : premier vol stationnaire, puis lire le log (VIBE) dans Mission Planner.\n")
     p("## Hypothèses\n")
-    p(f"- PLA Aero moussé : module {PLA_AERO['E']:.0f} MPa, résistance {PLA_AERO['sigma']:g} MPa, "
+    p(f"- {P.MATERIAU_LEGER} imprimé : module {PLA_AERO['E']:.0f} MPa, résistance {PLA_AERO['sigma']:g} MPa, "
       f"cisaillement {PLA_AERO['tau']:g} MPa (valeurs prudentes, non mesurées).")
     p(f"- Tubes carbone roulés : module {CARBONE_TUBE['E'] / 1000:.0f} GPa, {CARBONE_TUBE['sigma']:.0f} MPa "
       "admissibles en flexion (les tubes du commerce tiennent 600 à 1000 MPa) ; épaisseur 1 mm.")

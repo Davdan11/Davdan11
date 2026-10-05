@@ -1,24 +1,24 @@
 piece,quantite,materiau,dimensions_impression_mm,masse_g,masse_totale_g,x_cg_mm
-aile_segment_1_droit,1,PLA Aero,160x21x195,43.1,43.1,73
-aile_segment_1_gauche,1,PLA Aero,160x21x195,43.1,43.1,73
-aile_segment_2_droit,1,PLA Aero,160x20x187,35.6,35.6,62
-aile_segment_2_gauche,1,PLA Aero,160x20x187,35.6,35.6,62
-aile_segment_3_droit,1,PLA Aero,120x19x187,28.3,28.3,60
-aile_segment_3_gauche,1,PLA Aero,120x19x187,28.3,28.3,60
-aileron_1_droit,1,PLA Aero,39x11x113,5.8,5.8,137
-aileron_1_gauche,1,PLA Aero,39x11x113,5.8,5.8,137
-aileron_2_droit,1,PLA Aero,39x11x185,9.4,9.4,137
-aileron_2_gauche,1,PLA Aero,39x11x185,9.4,9.4,137
-saumon_droit,1,PLA Aero,120x20x19,5.6,5.6,60
-saumon_gauche,1,PLA Aero,120x20x19,5.6,5.6,60
+aile_segment_1_droit,1,PLA,160x21x195,82.2,82.2,73
+aile_segment_1_gauche,1,PLA,160x21x195,82.2,82.2,73
+aile_segment_2_droit,1,PLA,160x20x187,68.0,68.0,62
+aile_segment_2_gauche,1,PLA,160x20x187,68.0,68.0,62
+aile_segment_3_droit,1,PLA,120x19x187,54.0,54.0,60
+aile_segment_3_gauche,1,PLA,120x19x187,54.0,54.0,60
+aileron_1_droit,1,PLA,39x11x113,11.0,11.0,137
+aileron_1_gauche,1,PLA,39x11x113,11.0,11.0,137
+aileron_2_droit,1,PLA,39x11x185,18.0,18.0,137
+aileron_2_gauche,1,PLA,39x11x185,18.0,18.0,137
+saumon_droit,1,PLA,120x20x19,10.7,10.7,60
+saumon_gauche,1,PLA,120x20x19,10.7,10.7,60
 pylone_poutre_droit,1,PETG,25x20x148,31.0,31.0,73
 pylone_poutre_gauche,1,PETG,25x20x148,31.0,31.0,73
-fuselage_nez,1,PLA Aero,76x72x66,9.7,9.7,-259
-fuselage_avant,1,PLA Aero,86x81x215,41.7,41.7,-132
-fuselage_milieu,1,PLA Aero,87x81x211,47.9,47.9,65
-fuselage_queue,1,PLA Aero,87x81x105,17.3,17.3,213
+fuselage_nez,1,PLA,76x72x66,18.6,18.6,-259
+fuselage_avant,1,PLA,86x81x215,79.6,79.6,-132
+fuselage_milieu,1,PLA,87x81x211,91.4,91.4,65
+fuselage_queue,1,PLA,87x81x105,33.0,33.0,213
 cloison_moteur,1,PETG,44x46x5,9.8,9.8,262
-plateau_electronique,1,PETG,245x54x17,35.3,35.3,-102
+plateau_electronique,1,PETG,245x54x17,35.3,35.3,-103
 plateau_compagnon,1,PETG,75x52x8,10.9,10.9,111
 support_moteur,4,PETG,39x39x30,17.9,71.4,45
 platine_moteur,4,PETG,39x39x4,6.7,26.7,45
@@ -37,4 +37,4 @@ stab_segment_1,1,PLA Aero,63x8x197,16.6,16.6,412
 profondeur_1,1,PLA Aero,26x5x196,5.3,5.3,454
 stab_segment_2,1,PLA Aero,63x8x197,16.6,16.6,412
 profondeur_2,1,PLA Aero,26x5x196,5.3,5.3,454
-TOTAL pièces imprimées,,,,,806,103
+TOTAL pièces imprimées,,,,,1144,86

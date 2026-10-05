@@ -32,11 +32,11 @@ Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](do
 | | **Huard Mini** (pour apprendre) | **Huard DFR** (la mission) |
 |---|---|---|
 | Envergure | 1,2 m | 1,8 m |
-| Masse au décollage | ≈ 1,9 kg | ≈ 4,9 kg |
+| Masse au décollage | ≈ 2,2 kg (PLA normal, empennage en PLA Aero) | ≈ 4,9 kg |
 | Batterie | LiPo 4S 4000 mAh | Li-ion 6S3P 13,5 Ah |
 | Moteurs | 5 × Emax ECO III 2807 (pièces FPV) | 4 × T-Motor MN4014 + SunnySky X2820 |
 | Caméra / 4G | non (caméra d'action en option) | SIYI A8 mini puis ZT6, Raspberry Pi, modem 4G |
-| Autonomie estimée | ≈ 33 min | ≈ 65 min |
+| Autonomie estimée | ≈ 23 min | ≈ 65 min |
 | Budget de l'avion | **≈ 710 $ CA** | ≈ 3 100 $ CA |
 | Liste d'achats | [docs/nomenclature_mini.md](docs/nomenclature_mini.md) | [docs/nomenclature.md](docs/nomenclature.md) |
 | Bilan | [docs/bilan_mini.md](docs/bilan_mini.md) | [docs/bilan.md](docs/bilan.md) |
@@ -184,6 +184,8 @@ Fichiers dans `cad/out_mini/essais/` (Mini) et `cad/out/essais/` (DFR), à rég�
 
 Les STL de `cad/out/stl/` sont déjà dans la bonne orientation et s'impriment sans supports : les segments d'aile et de stab sont debout sur leur face d'emplanture, les tronçons de fuselage debout (le nez pointe en haut) et les pattes debout sur leur pied.
 
+**Mini en PLA normal** : partout où ce tableau dit « PLA Aero », imprimer en PLA normal (PLA Basic) avec les mêmes réglages, **sauf l'empennage** (`stab_segment_*`, `profondeur_*`, `bloc_queue_*`), qui reste en PLA Aero pour le centrage. Les masses attendues sont dans `cad/out_mini/masses.csv`.
+
 | Pièces | Filament | Réglages |
 |---|---|---|
 | `aile_segment_*`, `stab_segment_*` | PLA Aero | **1 paroi, 0 % de remplissage, 0 couche dessus/dessous**, détection des parois fines activée. Les parois, âmes et fourreaux sont déjà modélisés. Exception : le segment qui porte la baie du servo d'aileron (segment 3 du DFR, segment 2 du Mini) avec 2 couches dessus/dessous pour fermer la baie. |
@@ -202,7 +204,7 @@ Les STL de `cad/out/stl/` sont déjà dans la bonne orientation et s'impriment s
 | `entretoise_plateau_*` (DFR) | PETG | 100 %, petites pièces |
 | `patte_atterrissage` (×4) | TPU 95A | 3 parois, 25 %, vitesse lente |
 
-Conseils pour la A1 : son plateau bouge d'avant en arrière, donc place les pièces hautes et minces (segments d'aile) avec la corde dans l'axe avant-arrière. Ajoute une bordure (brim) de 5 mm et ralentis les parois extérieures à environ 150 mm/s. Imprime d'abord **un seul segment d'aile** pour valider le profil PLA Aero (température, moussage, masse ≈ 60 g).
+Conseils pour la A1 : son plateau bouge d'avant en arrière, donc place les pièces hautes et minces (segments d'aile) avec la corde dans l'axe avant-arrière. Ajoute une bordure (brim) de 5 mm et ralentis les parois extérieures à environ 150 mm/s. Imprime d'abord **un seul segment d'aile** pour valider le profil (PLA Aero : température, moussage ; masse attendue dans `masses.csv`).
 
 Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si elles sont nettement plus lourdes, ajuste le débit du PLA Aero avant d'imprimer le reste.
 

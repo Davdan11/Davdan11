@@ -103,7 +103,7 @@ else:
     CD0 = 0.055           # petit avion : poutres et moteurs pèsent plus dans la traînée
     ETA_CROISIERE = 0.45  # moteur 2807 et hélice 7x6 : efficaces mais pas optimisés pour la croisière
     P_BORD = 3.0
-    V_TRANSIT = 20.0
+    V_TRANSIT = 22.0
     POUSSEE_MAX_MOTEUR = 1.2  # kg, estimation (2807 1300KV + 7x4 en 4S, à mesurer)
     AFFAISSEMENT = 0.90   # une LiPo s'affaisse moins qu'une Li-ion
     RAYONS_KM = (1, 2, 3, 5)

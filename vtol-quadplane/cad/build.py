@@ -29,6 +29,7 @@ OUT = os.path.join(ICI, "out" if VERSION == "dfr" else f"out_{VERSION}")
 
 COULEURS = {
     "PLA Aero": (235, 235, 228),
+    "PLA": (235, 235, 228),
     "PETG": (240, 120, 30),
     "TPU 95A": (40, 40, 40),
     "carbone": (35, 35, 38),

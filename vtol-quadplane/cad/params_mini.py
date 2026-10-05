@@ -105,7 +105,7 @@ NACELLE_X = None          # pas de nacelle : caméra d'action collée sur le des
 NACELLE_Z = None
 NACELLE_TROUS = []
 BATTERIE = (150.0, 53.0, 30.0)   # CNHL G+Plus 4S 4000 mAh : 147 x 51 x 28 mm + jeu
-X_BATTERIE = -145.0       # centre de la batterie pour le centrage (voir docs/bilan_mini.md)
+X_BATTERIE = -147.0       # centre de la batterie pour le centrage (voir docs/bilan_mini.md)
 
 # --- Empennage en H -----------------------------------------------------------
 STAB_CORDE = 90.0
@@ -146,4 +146,7 @@ SERVO = dict(
 SERVO_TRAPPE_EP = 1.6
 
 # --- Densités (g/cm³) ---------------------------------------------------------
+# matériau de l'aile, du fuselage et de l'empennage (PLA normal : +445 g par rapport au PLA Aero)
+MATERIAU_LEGER = "PLA"
+MATERIAU_EMPENNAGE = "PLA Aero"   # l'empennage reste en PLA Aero : sinon la queue est trop lourde (150 g de plomb dans le nez)
 DENSITE = {"PLA Aero": 0.65, "PLA": 1.24, "PETG": 1.27, "TPU 95A": 1.21}
