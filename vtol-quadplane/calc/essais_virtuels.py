@@ -57,7 +57,7 @@ else:
     MASSE_POD = 0.056 + 0.010 + 0.007 + 0.015
     KV, TENSION, PALES = 1300, 14.8, 3
 V_MAX = {"dfr": 30.0, "mini": 22.0}[VERSION]      # AIRSPEED_MAX des paramètres ArduPilot
-V_CROISIERE = {"dfr": 25.0, "mini": 16.0}[VERSION]
+V_CROISIERE = {"dfr": 22.0, "mini": 18.0}[VERSION]   # AIRSPEED_CRUISE
 V_PLONGEE = 1.25 * V_MAX
 
 

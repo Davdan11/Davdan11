@@ -1,6 +1,6 @@
 # Huard DFR : quadplane VTOL premier intervenant, imprimé en 3D
 
-C'est un drone à décollage vertical de 1,8 m d'envergure, pensé pour être **le premier sur les lieux d'une intervention** (accident, recherche de personne, incendie). Il part seul d'une station, file à 90 km/h vers les coordonnées reçues, tourne au-dessus des lieux et transmet **en direct** l'image d'une caméra zoom et thermique aux policiers par le réseau cellulaire. Il revient ensuite se poser à la verticale.
+C'est un drone à décollage vertical de 1,8 m d'envergure, pensé pour être **le premier sur les lieux d'une intervention** (accident, recherche de personne, incendie). Il part seul d'une station, file à 80 km/h vers les coordonnées reçues, tourne au-dessus des lieux et transmet **en direct** l'image d'une caméra zoom et thermique aux policiers par le réseau cellulaire. Il revient ensuite se poser à la verticale.
 
 Les pièces imprimées sont conçues pour une **Bambu Lab A1** (plateau 256 mm) et assemblées sur des tubes de carbone. Le concept complet (stations, logiciel, vidéo, réglementation, étapes) est dans [docs/concept_dfr.md](docs/concept_dfr.md).
 
@@ -14,16 +14,16 @@ Les pièces imprimées sont conçues pour une **Bambu Lab A1** (plateau 256 mm) 
 | Propulsion VTOL | 4 × T-Motor MN4014 KV400, hélices P15×5, poussée/poids ≈ 2,2 (≈ 1,8 batterie affaissée) |
 | Croisière | SunnySky X2820 V3 KV570 en pousseur, hélice APC 10×7EP |
 | Batterie | GAONENG 6S3P Molicel P45B (13,5 Ah, 290 Wh, 1,34 kg) |
-| Vitesses | transit 90 km/h, vol en cercle au-dessus des lieux ≈ 58 km/h |
+| Vitesses | transit 80 km/h, vol en cercle au-dessus des lieux ≈ 60 km/h |
 | Charge utile | nacelle SIYI A8 mini (puis ZT6 thermique), Raspberry Pi 5, modem 4G Waveshare SIM7600G-H |
 | Pilote automatique | ArduPilot sur TBS Lucid H7 Wing |
 
-**Temps disponible au-dessus des lieux** (estimation, avec 15 % de réserve) :
+**Temps disponible au-dessus des lieux** (estimation, avec 30 % de réserve pour atterrir à la verticale avec une batterie encore vaillante : voir la simulation de vol) :
 
 | Distance de l'intervention | 5 km | 10 km | 15 km | 20 km |
 |---|---|---|---|---|
-| Temps pour arriver | 3 min | 7 min | 10 min | 13 min |
-| Temps sur place | ≈ 65 min | ≈ 49 min | ≈ 34 min | ≈ 18 min |
+| Temps pour arriver | 4 min | 8 min | 11 min | 15 min |
+| Temps sur place | ≈ 52 min | ≈ 39 min | ≈ 26 min | ≈ 13 min |
 
 Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](docs/bilan.md). La **vérification d'intégration** (l'avion monté en 3D avec toutes les pièces achetées : collisions, débattements, hélices, garde au sol, chemins de câbles et de tubes) est dans [docs/verification.md](docs/verification.md) et [docs/verification_mini.md](docs/verification_mini.md). La **liste d'achats avec les modèles exacts et les liens** est dans [docs/nomenclature.md](docs/nomenclature.md) : le CAD est percé pour ces modèles.
 
@@ -36,7 +36,7 @@ Le détail des calculs (masse, centrage, puissances) est dans [docs/bilan.md](do
 | Batterie | LiPo 4S 4000 mAh | Li-ion 6S3P 13,5 Ah |
 | Moteurs | 5 × Emax ECO III 2807 (pièces FPV) | 4 × T-Motor MN4014 + SunnySky X2820 |
 | Caméra / 4G | non (caméra d'action en option) | SIYI A8 mini puis ZT6, Raspberry Pi, modem 4G |
-| Autonomie estimée | ≈ 33 min | ≈ 81 min |
+| Autonomie estimée | ≈ 33 min | ≈ 65 min |
 | Budget de l'avion | **≈ 670 $ CA** | ≈ 3 100 $ CA |
 | Liste d'achats | [docs/nomenclature_mini.md](docs/nomenclature_mini.md) | [docs/nomenclature.md](docs/nomenclature.md) |
 | Bilan | [docs/bilan_mini.md](docs/bilan_mini.md) | [docs/bilan.md](docs/bilan.md) |
@@ -59,7 +59,9 @@ cad/out/stl/            pièces prêtes à trancher, déjà orientées pour l'im
 cad/out/step/           pièces dans le repère avion, pour modifier dans Fusion ou Onshape
 cad/out/assemblage.glb  avion complet en 3D
 calc/dimensionnement.py bilan de masse, centrage, poussée, autonomie, rayon d'action
-ardupilot/huard_dfr.param  paramètres de départ ArduPilot (TBS Lucid H7 Wing)
+calc/essais_virtuels.py  pression, charges de vol, résistance, stabilité, servos
+simulation/              modèle de vol et vols simulés dans ArduPilot (SITL)
+ardupilot/huard_*.param  paramètres ArduPlane 4.7 (DFR : TBS Lucid H7 Wing ; Mini : AtomRC F405 NAVI)
 docs/                   concept du système, nomenclature, bilan
 ```
 
@@ -127,6 +129,40 @@ Ce que ces essais ont fait corriger :
 
 ```bash
 python calc/essais_virtuels.py && HUARD_VERSION=mini python calc/essais_virtuels.py
+```
+
+## Vols simulés dans ArduPilot
+
+`simulation/` fait voler l'avion dans le **vrai logiciel ArduPilot** (ArduPlane 4.7.1 compilé pour ordinateur,
+« SITL »). Le modèle de vol est calculé à partir des cotes réelles par `simulation/modele_sitl.py` :
+- masse et inerties de chaque pièce ;
+- aérodynamique et stabilité ;
+- poussée des moteurs, qui suit la tension de la batterie ;
+- hélice propulsive dont la poussée baisse avec la vitesse ;
+- résistance interne de la batterie.
+
+Les paramètres utilisés sont ceux de `ardupilot/huard_*.param`. Cinq scénarios sont testés :
+- mission complète sans vent ;
+- vent de 25 km/h avec rafales ;
+- vent de 32 km/h avec rafales fortes (test de limite) ;
+- perte de la radio en croisière ;
+- batterie presque vide en pleine mission.
+
+Rapports : [DFR](docs/simulation.md), [Mini](docs/simulation_mini.md).
+
+Ce que la simulation a fait corriger dans les paramètres :
+- **Noms ArduPlane 4.7** : `ARMING_CHECK` devient `ARMING_SKIPCHK`, et `Q_ANGLE_MAX` devient `Q_A_ANGLE_MAX`.
+- **Mini, aide des moteurs VTOL** : son seuil était égal à la vitesse mini de vol (`Q_ASSIST_SPEED` = `AIRSPEED_MIN`), donc les moteurs VTOL se rallumaient à chaque montée. Maintenant 12 m/s pour l'aide, 14 m/s pour la vitesse mini.
+- **`Q_ASSIST_ALT 20`** : si une rafale fait décrocher l'avion, les moteurs VTOL le rattrapent sous 20 m. Sans ce réglage, le Mini touchait le sol dans les rafales fortes.
+- **`BATT_FS_VOLTSRC 1`** : les alarmes de batterie se basent sur la tension au repos estimée. Sinon, la chute de tension sous la charge du stationnaire déclenchait une fausse alarme au décollage.
+- **DFR, 30 % de réserve de batterie** : en fin de pack Li-ion, les moteurs VTOL n'ont plus assez de marge pour atterrir.
+- **DFR, croisière à 79 km/h** (`AIRSPEED_CRUISE 22`) : avec l'hélice 10×7, le propulseur ne tenait ni 90 km/h ni l'altitude. Bonus : il consomme moins, et le temps sur les lieux augmente.
+- **Gaz de stationnaire réalistes** (`Q_M_THST_HOVER`) et **vitesse de croisière du Mini**, fixée par `TRIM_THROTTLE` puisqu'il n'a pas de capteur de vitesse.
+
+Pour relancer (une fois ArduPilot compilé avec `simulation/sitl_poussee.patch`, voir l'en-tête de `simulation/vol_simule.py`) :
+
+```bash
+HUARD_VERSION=mini python simulation/vol_simule.py && python simulation/vol_simule.py
 ```
 
 ## Avant d'imprimer l'avion : le kit d'essai (≈ 15 g de PLA Aero, ≈ 50 g de PETG)
@@ -219,6 +255,8 @@ Masse estimée de chaque pièce : `cad/out/masses.csv`. Pèse tes pièces : si e
 | S9 | profondeur | | |
 
 ## ArduPilot
+
+Les fichiers de paramètres sont faits pour **ArduPlane 4.7** (version stable) et ont été chargés et testés dans le simulateur 4.7.1. Sur une version plus ancienne, voir les commentaires dans le fichier (`ARMING_CHECK`, `Q_ANGLE_MAX`).
 
 1. Flasher ArduPlane sur le Lucid H7 Wing, cible `TBS_LUCID_H7_WING` (Mission Planner > Install Firmware).
 2. Charger `ardupilot/huard_dfr.param`, écrire, puis redémarrer **deux fois** : `Q_ENABLE` fait apparaître les autres paramètres.

@@ -1,0 +1,78 @@
+diff --git a/libraries/SITL/SIM_Plane.cpp b/libraries/SITL/SIM_Plane.cpp
+index 6a0322c..7bcddaa 100644
+--- a/libraries/SITL/SIM_Plane.cpp
++++ b/libraries/SITL/SIM_Plane.cpp
+@@ -20,6 +20,7 @@
+ #include "SIM_Plane.h"
+ 
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <AP_Filesystem/AP_Filesystem_config.h>
+ #include <AP_Filesystem/AP_Filesystem.h>
+ 
+@@ -501,6 +502,13 @@ void Plane::calculate_forces(const struct sitl_input &input, Vector3f &rot_accel
+     // scale thrust to newtons
+     thrust *= thrust_scale;
+ 
++    // hélice réelle : la poussée baisse avec la vitesse et s'annule à la vitesse de pas
++    // (variable d'environnement SIM_VITESSE_PAS, en m/s)
++    static const char *vitesse_pas = getenv("SIM_VITESSE_PAS");
++    if (vitesse_pas != nullptr && thrust > 0) {
++        thrust *= constrain_float(1.0f - airspeed / strtof(vitesse_pas, nullptr), 0, 1);
++    }
++
+     accel_body = Vector3f(thrust, 0, 0) + force;
+     accel_body /= mass;
+ 
+diff --git a/libraries/SITL/SIM_QuadPlane.cpp b/libraries/SITL/SIM_QuadPlane.cpp
+index 924e1af..39fb1e0 100644
+--- a/libraries/SITL/SIM_QuadPlane.cpp
++++ b/libraries/SITL/SIM_QuadPlane.cpp
+@@ -19,6 +19,7 @@
+ #include "SIM_QuadPlane.h"
+ 
+ #include <stdio.h>
++#include <stdlib.h>
+ 
+ using namespace SITL;
+ 
+@@ -107,6 +108,12 @@ QuadPlane::QuadPlane(const char *frame_str) :
+     mass = frame->get_mass() * 1.5;
+     frame->set_mass(mass);
+ 
++    // poussée max du moteur propulsif (N) : variable d'environnement SIM_POUSSEE_MAX_N
++    const char *poussee = getenv("SIM_POUSSEE_MAX_N");
++    if (poussee != nullptr) {
++        thrust_scale = strtof(poussee, nullptr);
++    }
++
+     lock_step_scheduled = true;
+ }
+ 
+@@ -138,17 +145,22 @@ void QuadPlane::update(const struct sitl_input &input)
+     // estimate voltage and current
+     frame->current_and_voltage(battery_voltage, battery_current);
+ 
+-    battery.set_current(battery_current);
+-
+     float throttle;
+     if (reverse_thrust) {
+         throttle = filtered_servo_angle(input, 2);
+     } else {
+         throttle = filtered_servo_range(input, 2);
+     }
+-    // assume 20A at full fwd throttle
+     throttle = fabsf(throttle);
+-    battery_current += 20 * throttle;
++    // courant du moteur propulsif, prélevé sur la batterie : SIM_COURANT_POUSSEUR_A à plein gaz
++    // (sinon 20 A, linéaire comme à l'origine)
++    static const char *courant_max = getenv("SIM_COURANT_POUSSEUR_A");
++    if (courant_max != nullptr) {
++        battery_current += strtof(courant_max, nullptr) * powf(throttle, 1.5f);
++    } else {
++        battery_current += 20 * throttle;
++    }
++    battery.set_current(battery_current);
+     
+     rot_accel += quad_rot_accel;
+     accel_body += quad_accel_body;

@@ -66,10 +66,13 @@ if VERSION == "dfr":
     ]
     # nom : (masse g, énergie Wh, tension nominale)
     BATTERIES = {"GAONENG GNB 6S3P P45B 13,5 Ah": (1337, 21.6 * 13.5, 21.6)}
+    # réserve de 30 % (BATT_LOW_MAH 4000) : en fin de pack Li-ion, la tension chute et les moteurs
+    # VTOL n'ont plus assez de marge pour l'atterrissage (simulation/vol_simule.py)
+    UTILISABLE = 0.70
     CD0 = 0.050           # traînée parasite (poutres, moteurs VTOL arrêtés, nacelle caméra)
     ETA_CROISIERE = 0.55  # hélice x moteur x ESC
     P_BORD = 15.0         # W : avionique + ordinateur de bord + modem + nacelle
-    V_TRANSIT = 25.0      # m/s (90 km/h) pour l'aller et le retour
+    V_TRANSIT = 22.0      # m/s (79 km/h) : l'hélice 10x7 ne pousse plus assez au-delà (vols simulés)
     POUSSEE_MAX_MOTEUR = 2.62  # kg, MN4014 KV400 + P15x5 à 22,2 V (table T-Motor)
     AFFAISSEMENT = 0.80   # poussée réelle sous la tension affaissée d'un pack Li-ion
     RAYONS_KM = (5, 10, 15, 20)

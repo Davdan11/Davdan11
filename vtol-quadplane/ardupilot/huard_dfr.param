@@ -1,4 +1,4 @@
-# Paramètres de départ ArduPilot Plane (4.5 / 4.6) pour le quadplane Huard DFR (6S)
+# Paramètres de départ ArduPilot Plane 4.7 (version stable, vérifiés dans le simulateur 4.7.1) pour le quadplane Huard DFR (6S)
 # Contrôleur : TBS Lucid H7 Wing (firmware ArduPlane, cible TBS_LUCID_H7_WING).
 # Charger dans Mission Planner :
 #   Config > Full Parameter List > Load from file, puis Write Params et redémarrer.
@@ -14,11 +14,15 @@ Q_FRAME_TYPE,1
 Q_M_PWM_TYPE,6
 Q_M_SPIN_ARM,0.08
 Q_M_SPIN_MIN,0.12
-Q_M_THST_HOVER,0.40
+Q_M_THST_HOVER,0.62
 Q_M_BAT_VOLT_MAX,25.2
 Q_M_BAT_VOLT_MIN,17.4
-Q_ANGLE_MAX,3000
+# inclinaison max en VTOL, en degrés (avant la 4.7 : Q_ANGLE_MAX,3000)
+Q_A_ANGLE_MAX,30
 Q_ASSIST_SPEED,14
+# filet de sécurité (vols simulés dans le vent fort) : sous 20 m en vol d'avion, les moteurs
+# VTOL aident automatiquement, par exemple si une rafale fait décrocher l'avion
+Q_ASSIST_ALT,20
 Q_TRANSITION_MS,5000
 Q_TRANS_DECEL,2
 Q_RTL_MODE,1
@@ -46,7 +50,9 @@ SERVO9_FUNCTION,19
 ARSPD_TYPE,1
 ARSPD_USE,1
 AIRSPEED_MIN,16
-AIRSPEED_CRUISE,25
+# 22 m/s (79 km/h) : avec l'hélice 10x7, le propulseur ne pousse presque plus vers 90 km/h
+# (vols simulés : plein gaz sans tenir 25 m/s ni l'altitude)
+AIRSPEED_CRUISE,22
 AIRSPEED_MAX,30
 TRIM_THROTTLE,50
 
@@ -56,10 +62,15 @@ TRIM_THROTTLE,50
 BATT_MONITOR,4
 BATT_AMP_PERVLT,40
 BATT_CAPACITY,13500
-BATT_LOW_VOLT,18.9
-BATT_CRT_VOLT,18.0
-BATT_LOW_MAH,3000
-BATT_CRT_MAH,1500
+# seuils sur la tension « au repos » estimée, pas sur la tension qui chute sous la
+# charge des moteurs VTOL (sinon fausse alarme au décollage : vu en simulation)
+BATT_FS_VOLTSRC,1
+BATT_LOW_VOLT,20.4
+BATT_CRT_VOLT,19.8
+# réserve de 30 % : en fin de pack Li-ion la tension chute et les moteurs VTOL perdent de la
+# poussée ; au-delà, l'atterrissage vertical se fait moteurs presque à fond (vu en simulation)
+BATT_LOW_MAH,4000
+BATT_CRT_MAH,2500
 # faible -> retour au point de départ ; critique -> atterrissage vertical sur place
 BATT_FS_LOW_ACT,1
 BATT_FS_CRT_ACT,4
@@ -73,6 +84,7 @@ RTL_ALTITUDE,60
 
 # --- Vol en cercle au-dessus des lieux ----------------------------------------
 # rayon du cercle (m) ; en mission AUTO, utiliser LOITER_UNLIM sur le point de l'accident
+ROLL_LIMIT_DEG,45
 WP_LOITER_RAD,120
 
 # --- Ports série du Lucid H7 Wing ---------------------------------------------
@@ -88,5 +100,6 @@ SERIAL7_PROTOCOL,2
 SERIAL7_BAUD,921
 
 # --- Divers ------------------------------------------------------------------
-ARMING_CHECK,1
+# tous les contrôles avant armement (ArduPlane 4.7 ; avant la 4.7 : ARMING_CHECK,1)
+ARMING_SKIPCHK,0
 LOG_DISARMED,0

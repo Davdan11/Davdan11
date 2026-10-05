@@ -12,7 +12,7 @@ Le concept existe déjà aux États-Unis sous le nom de « Drone as First Respon
  1. Appel 911 ─► le répartiteur clique sur l'adresse dans la carte ─► « Envoyer le drone »
  2. Le logiciel au sol envoie la mission au drone le plus proche (par 4G)
  3. Décollage vertical automatique depuis la station (≈ 30 s)
- 4. Transition en vol d'avion, transit à 90 km/h (10 km en ≈ 7 min)
+ 4. Transition en vol d'avion, transit à 80 km/h (10 km en ≈ 8 min)
  5. Cercle de 120 m au-dessus des lieux, caméra pointée automatiquement sur les coordonnées
  6. Vidéo en direct ─► tablettes des patrouilleurs + écran du centre de répartition
     Un policier peut prendre la main sur la caméra (zoom, thermique, suivi)
@@ -66,7 +66,7 @@ Pour une station compacte, une version future pourrait avoir des ailes repliable
 
 ## Couverture d'un territoire
 
-Avec un transit à 90 km/h et environ 36 minutes sur place à 15 km, une station couvre environ 700 km². À titre d'exemple, 3 ou 4 stations couvriraient l'essentiel d'une MRC rurale ; en ville, les distances sont plus courtes et le temps sur place plus long.
+Avec un transit à 80 km/h et environ 26 minutes sur place à 15 km, une station couvre environ 700 km². À titre d'exemple, 3 ou 4 stations couvriraient l'essentiel d'une MRC rurale ; en ville, les distances sont plus courtes et le temps sur place plus long.
 
 ## Réglementation et acceptabilité
 

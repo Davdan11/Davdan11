@@ -50,12 +50,12 @@ Le centre de gravité doit tomber à **x = 62 mm** (28 % de corde), au milieu de
 | Vitesse de décrochage | 12.3 m/s (44 km/h) |
 | Rapport poussée/poids VTOL | 2.14 (≈ 1.72 batterie affaissée) |
 | Puissance en stationnaire | 669 W (31 A) |
-| Transit à 90 km/h | 393 W |
+| Transit à 79 km/h | 288 W |
 | Vol en cercle au-dessus des lieux | 60 km/h, 168 W |
-| Autonomie en cercle seulement | **81 min** |
-| Temps sur les lieux, intervention à 5 km | **65 min** (aller 3 min) |
-| Temps sur les lieux, intervention à 10 km | **49 min** (aller 7 min) |
-| Temps sur les lieux, intervention à 15 km | **34 min** (aller 10 min) |
-| Temps sur les lieux, intervention à 20 km | **18 min** (aller 13 min) |
+| Autonomie en cercle seulement | **65 min** |
+| Temps sur les lieux, intervention à 5 km | **52 min** (aller 4 min) |
+| Temps sur les lieux, intervention à 10 km | **39 min** (aller 8 min) |
+| Temps sur les lieux, intervention à 15 km | **26 min** (aller 11 min) |
+| Temps sur les lieux, intervention à 20 km | **13 min** (aller 15 min) |
 
-Surface alaire 0.396 m², allongement 8.2. Hypothèses : Cd0 = 0.05, e = 0.8, rendement de propulsion 0.55, figure de mérite VTOL 0.6, 15 W pour l'électronique de bord, 85% de la batterie utilisée (le reste est la réserve), 2 min de vol stationnaire par mission, 2.62 kg de poussée max par moteur VTOL (× 0.8 batterie affaissée).
+Surface alaire 0.396 m², allongement 8.2. Hypothèses : Cd0 = 0.05, e = 0.8, rendement de propulsion 0.55, figure de mérite VTOL 0.6, 15 W pour l'électronique de bord, 70% de la batterie utilisée (le reste est la réserve), 2 min de vol stationnaire par mission, 2.62 kg de poussée max par moteur VTOL (× 0.8 batterie affaissée).

@@ -1,4 +1,4 @@
-# Paramètres de départ ArduPilot Plane (4.5 / 4.6) pour le Huard Mini (4S LiPo)
+# Paramètres de départ ArduPilot Plane 4.7 (version stable, vérifiés dans le simulateur 4.7.1) pour le Huard Mini (4S LiPo)
 # Contrôleur : AtomRC F405 NAVI (firmware ArduPlane, cible AtomRCF405NAVI).
 # Charger dans Mission Planner : Config > Full Parameter List > Load from file,
 # puis Write Params et redémarrer. Si un paramètre est signalé inconnu, chercher
@@ -13,11 +13,16 @@ Q_FRAME_TYPE,1
 Q_M_PWM_TYPE,6
 Q_M_SPIN_ARM,0.08
 Q_M_SPIN_MIN,0.12
-Q_M_THST_HOVER,0.30
+Q_M_THST_HOVER,0.55
 Q_M_BAT_VOLT_MAX,16.8
 Q_M_BAT_VOLT_MIN,13.6
-Q_ANGLE_MAX,3000
-Q_ASSIST_SPEED,13
+# inclinaison max en VTOL, en degrés (avant la 4.7 : Q_ANGLE_MAX,3000)
+Q_A_ANGLE_MAX,30
+# aide des moteurs VTOL sous 12 m/s (1,1 x décrochage) : toujours sous AIRSPEED_MIN
+Q_ASSIST_SPEED,12
+# filet de sécurité (vols simulés dans le vent fort) : sous 20 m en vol d'avion, les moteurs
+# VTOL aident automatiquement, par exemple si une rafale fait décrocher l'avion
+Q_ASSIST_ALT,20
 Q_TRANSITION_MS,4000
 Q_TRANS_DECEL,2
 Q_RTL_MODE,1
@@ -42,16 +47,20 @@ SERVO_BLH_OTYPE,6
 
 # --- Pas de capteur de vitesse au début : vitesse estimée --------------------
 ARSPD_TYPE,0
-ARSPD_USE,0
-AIRSPEED_MIN,13
-AIRSPEED_CRUISE,16
+AIRSPEED_MIN,14
+AIRSPEED_CRUISE,18
 AIRSPEED_MAX,22
-TRIM_THROTTLE,45
+# sans capteur de vitesse, c'est ce gaz qui fixe la vitesse de croisière : viser
+# 65-70 km/h au GPS par vent nul au premier vol, et l'ajuster (simulé : 55 % -> ~75 km/h)
+TRIM_THROTTLE,55
 
 # --- Batterie LiPo 4S 4000 mAh (capteur intégré) ------------------------------
 # Vérifier la tension et le courant affichés au multimètre / wattmètre.
 BATT_MONITOR,4
 BATT_CAPACITY,4000
+# seuils sur la tension « au repos » estimée, pas sur la tension qui chute sous la
+# charge des moteurs VTOL (sinon fausse alarme au décollage : vu en simulation)
+BATT_FS_VOLTSRC,1
 BATT_LOW_VOLT,14.4
 BATT_CRT_VOLT,14.0
 BATT_LOW_MAH,1000
@@ -70,8 +79,10 @@ FS_SHORT_ACTN,0
 FS_LONG_ACTN,1
 FS_LONG_TIMEOUT,5
 RTL_ALTITUDE,40
+ROLL_LIMIT_DEG,45
 WP_LOITER_RAD,60
 
 # --- Divers ------------------------------------------------------------------
-ARMING_CHECK,1
+# tous les contrôles avant armement (ArduPlane 4.7 ; avant la 4.7 : ARMING_CHECK,1)
+ARMING_SKIPCHK,0
 LOG_DISARMED,0

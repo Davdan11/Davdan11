@@ -6,21 +6,21 @@ Masse au décollage 4.89 kg, surface alaire 0.396 m², charge alaire 12.3 kg/m²
 
 ## Résumé
 
-✅ longeron principal Ø16 à 6.4 g (charge extrême) : 333 MPa pour 500 admissibles
-✅ longeron extérieur Ø8 : 318 MPa pour 500
+✅ longeron principal Ø16 à 5.8 g (charge extrême) : 302 MPa pour 500 admissibles
+✅ longeron extérieur Ø8 : 289 MPa pour 500
 ✅ aile en VTOL plein gaz : 141 MPa dans le longeron principal
 ✅ poutres en VTOL plein gaz : 70 MPa, flèche 1.8 mm
 ✅ atterrissage dur à 2 m/s : 408 MPa dans les poutres (21 g d'impact si les pattes s'écrasent de 10 mm)
-✅ peau sous la pression de l'air : 2.0 MPa au pire panneau pour 12 MPa (flèche 1.12 mm)
-✅ peau d'extrados comprimée par la flexion : elle n'ondule pas avant 5.3 g (charge limite 4.2 g)
+✅ peau sous la pression de l'air : 1.8 MPa au pire panneau pour 12 MPa (flèche 1.02 mm)
+✅ peau d'extrados comprimée par la flexion : elle n'ondule pas avant 5.3 g (charge limite 3.9 g)
 ✅ torsion à 135 km/h : peau 2.63 MPa, goupille 4 MPa, appui de la goupille dans le fuselage 3.8 MPa
-✅ relais des longerons (recouvrement de 120 mm) : colle 0.36 MPa, appui dans le fourreau 1.5 MPa
+✅ relais des longerons (recouvrement de 120 mm) : colle 0.33 MPa, appui dans le fourreau 1.4 MPa
 ✅ inversion des ailerons vers 384 km/h, divergence vers 212 km/h (il faut plus de 1,2 × 135 = 162 km/h)
 ⚠️ marge statique 22% : très stable (un peu lourd du nez à piloter, pas dangereux). Le centre de gravité reste à 62 mm, au milieu des moteurs VTOL, pour le vol stationnaire
 ✅ volume d'empennage horizontal 0.53 (habituel 0,35 à 0,6)
 ✅ volume d'empennage vertical 0.026 (habituel 0,02 à 0,04)
 ✅ braquage de profondeur pour équilibrer : au plus 8° sur ±25° disponibles
-✅ servos (±20° à 91 km/h, ±7° à 135 km/h) : aileron 0.58 kg·cm, profondeur 0.34 kg·cm, pour 2 kg·cm (29% ; à garder sous 50 %)
+✅ servos (±20° à 87 km/h, ±7° à 135 km/h) : aileron 0.53 kg·cm, profondeur 0.31 kg·cm, pour 2 kg·cm (26% ; à garder sous 50 %)
 ✅ résonance des poutres à 40 Hz (2370 tr/min) ; moteurs ≈ 4852 tr/min en stationnaire : on ne fait que la traverser en montant les gaz
 
 ✅ tient avec marge · ⚠️ à connaître (pas dangereux) · ❌ à corriger
@@ -31,17 +31,17 @@ Méthode des panneaux sur le profil NACA 4412 (Cp = 1 − (V/V∞)²). Dépressi
 
 | Cas | Vitesse | CL | Incidence du profil | Dépression max (bord d'attaque) |
 |---|---:|---:|---:|---:|
-| Croisière 90 km/h (1 g) | 90 km/h | 0.32 | -1.5° | 248 Pa (24.8 g/cm²) |
-| Ressource à 91 km/h (4.2 g, portance max) | 91 km/h | 1.30 | 7.2° | 1169 Pa (116.9 g/cm²) |
-| Ressource à 135 km/h (4.2 g) | 135 km/h | 0.60 | 0.9° | 751 Pa (75.1 g/cm²) |
+| Croisière 79 km/h (1 g) | 79 km/h | 0.41 | -0.7° | 212 Pa (21.2 g/cm²) |
+| Ressource à 87 km/h (3.9 g, portance max) | 87 km/h | 1.30 | 7.2° | 1061 Pa (106.1 g/cm²) |
+| Ressource à 135 km/h (3.9 g) | 135 km/h | 0.54 | 0.5° | 709 Pa (70.9 g/cm²) |
 
-Peau de 0.6 mm entre deux âmes : le pire panneau fait 75 mm de large (Ressource à 91 km/h (4.2 g, portance max), segment 689–900 mm). Sous 254 Pa il fléchit de 1.12 mm et travaille à 1.97 MPa, pour environ 12 MPa de résistance : la peau ne se creuse pas visiblement.
+Peau de 0.6 mm entre deux âmes : le pire panneau fait 75 mm de large (Ressource à 87 km/h (3.9 g, portance max), segment 689–900 mm). Sous 230 Pa il fléchit de 1.02 mm et travaille à 1.79 MPa, pour environ 12 MPa de résistance : la peau ne se creuse pas visiblement.
 
 ## 2. Charges de vol
 
-- Manœuvre : 3.8 g (catégorie normale). Rafale verticale de 7.6 m/s à 90 km/h : **4.2 g** (formule de Pratt ; un petit avion léger est très secoué par les rafales).
-- Charge limite retenue **4.2 g**, charge extrême (1.5 ×) **6.4 g**.
-- Vitesse de manœuvre (décroche avant de casser) : 91 km/h.
+- Manœuvre : 3.8 g (catégorie normale). Rafale verticale de 7.6 m/s à 79 km/h : **3.9 g** (formule de Pratt ; un petit avion léger est très secoué par les rafales).
+- Charge limite retenue **3.9 g**, charge extrême (1.5 ×) **5.8 g**.
+- Vitesse de manœuvre (décroche avant de casser) : 87 km/h.
 
 ## 3. Flexion de l'aile
 
@@ -49,8 +49,8 @@ Répartition de portance de Schrenk. Image : `docs/images/flexion_aile.png`.
 
 | Endroit | Moment à charge extrême | Tube | Contrainte | Admissible |
 |---|---:|---|---:|---:|
-| Emplanture (y = 55 mm) | 55.4 N·m | Ø16 × 1 mm | 333 MPa | 500 MPa |
-| Fin du longeron principal (y = 500 mm) | 10.9 N·m | Ø8 × 1 mm | 318 MPa | 500 MPa |
+| Emplanture (y = 55 mm) | 50.3 N·m | Ø16 × 1 mm | 302 MPa | 500 MPa |
+| Fin du longeron principal (y = 500 mm) | 9.9 N·m | Ø8 × 1 mm | 289 MPa | 500 MPa |
 | Emplanture en VTOL plein gaz | 23.5 N·m | Ø16 × 1 mm | 141 MPa | 500 MPa |
 
 Flèche en bout d'aile en vol normal (1 g) : **15 mm** (longerons seuls ; la peau raidit un peu).
@@ -64,7 +64,7 @@ Flèche en bout d'aile en vol normal (1 g) : **15 mm** (longerons seuls ; la pea
 | 3 | 10 | 38 mm | 18% | 0.14 MPa | 1.02 MPa | **7.4 g** |
 | 4 | 6 | 39 mm | 67% | 0.12 MPa | 1.01 MPa | **8.4 g** |
 
-Relais entre les longerons (recouvrement de 120 mm) : le tube extérieur pousse sur son fourreau avec ≈ 182 N à charge extrême, soit 1.5 MPa d'appui sur le PLA Aero et 0.36 MPa dans la colle époxy (elle tient 10 à 20 MPa).
+Relais entre les longerons (recouvrement de 120 mm) : le tube extérieur pousse sur son fourreau avec ≈ 165 N à charge extrême, soit 1.4 MPa d'appui sur le PLA Aero et 0.33 MPa dans la colle époxy (elle tient 10 à 20 MPa).
 
 ## 4. Torsion, goupille, inversion d'ailerons
 
@@ -82,20 +82,20 @@ Relais entre les longerons (recouvrement de 120 mm) : le tube extérieur pousse 
 | Vol en palier | Braquage de profondeur pour équilibrer | Assiette du fuselage |
 |---|---:|---:|
 | 58 km/h | -1.5° | +2.7° |
-| 90 km/h | +3.7° | -2.5° |
+| 79 km/h | +2.6° | -1.4° |
 | 108 km/h | +4.8° | -3.6° |
-| Ressource 4.2 g à 91 km/h | -7.5° | |
+| Ressource 3.9 g à 87 km/h | -7.5° | |
 
 (+ = bord de fuite de la profondeur vers le bas.) La profondeur garde de la réserve sur ses ±25°. ArduPilot règle le reste tout seul (TRIM_PITCH_DEG, autotune).
 
 ## 6. Servos et débattements
 
-Comme la norme des avions légers : plein braquage (±20°) à la vitesse de manœuvre (91 km/h), un tiers du braquage à la vitesse de piqué (135 km/h). Servo qui tourne de ±45°.
+Comme la norme des avions légers : plein braquage (±20°) à la vitesse de manœuvre (87 km/h), un tiers du braquage à la vitesse de piqué (135 km/h). Servo qui tourne de ±45°.
 
 | Gouverne | Moment de charnière | Bras du guignol (trou intérieur) | Trou du palonnier pour ±20° | Couple au servo | Servo |
 |---|---:|---:|---:|---:|---:|
-| Aileron (chacun) | 11.8 N·cm | 22 mm | **10 mm** de l'axe | 0.58 kg·cm | 29% de 2 kg·cm |
-| Profondeur (les deux) | 6.9 N·cm | 14 mm | **7 mm** de l'axe | 0.34 kg·cm | 17% de 2 kg·cm |
+| Aileron (chacun) | 10.7 N·cm | 22 mm | **10 mm** de l'axe | 0.53 kg·cm | 26% de 2 kg·cm |
+| Profondeur (les deux) | 6.3 N·cm | 14 mm | **7 mm** de l'axe | 0.31 kg·cm | 16% de 2 kg·cm |
 
 Régler les fins de course dans ArduPilot (SERVOx_MIN / MAX) pour ±20° de gouverne, mesurés au rapporteur. Plus de débattement n'apporte rien à cet avion et charge les servos.
 
@@ -107,7 +107,7 @@ Régler les fins de course dans ArduPilot (SERVOx_MIN / MAX) pour ±20° de gouv
 
 ## Ce qu'il faut vérifier en vrai
 
-1. **Test de charge de l'aile au sol** (le plus important) : aile montée sur le fuselage, posée à l'envers sur deux tréteaux sous le fuselage, répartir des sacs de sable sur l'intrados. 4.2 g, c'est 20.8 kg en tout, dont 60 % sur la moitié intérieure de chaque aile. Monter par paliers ; l'aile doit revenir droite. Ne pas aller jusqu'à la charge extrême.
+1. **Test de charge de l'aile au sol** (le plus important) : aile montée sur le fuselage, posée à l'envers sur deux tréteaux sous le fuselage, répartir des sacs de sable sur l'intrados. 3.9 g, c'est 18.8 kg en tout, dont 60 % sur la moitié intérieure de chaque aile. Monter par paliers ; l'aile doit revenir droite. Ne pas aller jusqu'à la charge extrême.
 2. **Les servos** : avec l'avion branché, pousser une gouverne au doigt : elle ne doit pas bouger, et le servo ne doit pas grogner au neutre.
 3. **Le centrage** : soulever l'avion du bout des doigts sous l'aile au point de centrage (62 mm du bord d'attaque) : il doit rester à plat ou piquer très légèrement du nez.
 4. **Les vibrations** : premier vol stationnaire, puis lire le log (VIBE) dans Mission Planner.
