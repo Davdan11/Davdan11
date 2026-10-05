@@ -112,6 +112,21 @@ cd cad && python verification.py && HUARD_VERSION=mini python verification.py
 
 Ordre de montage conseillé pour valider avant de tout imprimer : un segment d'aile, un support moteur avec sa platine, un cadre de servo avec sa trappe. On vérifie l'ajustement sur les vraies pièces achetées, et seulement ensuite on lance le reste.
 
+## Avant d'imprimer l'avion : le kit d'essai (≈ 15 g de PLA Aero, ≈ 50 g de PETG)
+
+Fichiers dans `cad/out_mini/essais/` (Mini) et `cad/out/essais/` (DFR), à régénérer avec `python outils_essais.py`. La moitié du kit, ce sont de vraies pièces de l'avion : rien n'est perdu.
+
+| Fichier | Filament | Ce qu'on vérifie | Si ça ne va pas |
+|---|---|---|---|
+| `1_jauge_tubes` | PETG, 3 parois, 15 % | Pour chaque tube carbone : trou « − » (jeu 0,1 mm), trou marqué du diamètre (jeu 0,3 mm, celui du modèle), trou « + » (0,5 mm). Le bon trou laisse glisser le tube **à la main, sans jeu qui ballotte** | Si c'est le « − » ou le « + » qui va, dis-le-moi : je change `JEU_TUBE` et tout se régénère |
+| `2_tranche_aile` | PLA Aero | Peau lisse et fermée, âmes collées aux peaux, tubes qui entrent dans les fourreaux. **Pèse-la** | Peau trouée ou molle : ajuster débit et température du PLA Aero. Plus lourde que prévu : idem (le poids attendu s'affiche quand on lance le script) |
+| `3_jonction_cote_avant` + `3_jonction_cote_milieu` | PLA Aero | Les deux tranches s'emboîtent par la lèvre, **à la main, sans forcer**, sans jeu visible | Trop serré ou trop lâche : je change le jeu de la lèvre |
+| `4_support_moteur` + `4_platine_moteur` | PETG | Le collier serre le tube avec ses 2 vis ; le moteur se visse sur la platine ; les têtes de vis tombent dans les creux de la bride ; les 4 vis de coin s'atteignent par-dessous | Envoie une photo |
+| `5_cadre_servo_aile` + `5_trappe_servo_aile` | PETG | Ton servo s'emboîte, ses oreilles entrent dans les encoches, la trappe se visse et le palonnier passe par la fente | Mesure le servo (longueur, épaisseur, oreilles) et envoie les chiffres |
+| `6_guignol_aileron` | PETG | Plaque nette, trous de 1,6 mm ouverts | — |
+
+**Quand tout le kit est bon, tu imprimes l'avion en confiance.** Ordre conseillé ensuite : un segment d'aile complet (le peser), puis le reste de l'aile, l'empennage, le fuselage, et les pattes en TPU en dernier.
+
 ## Impression (Bambu Studio)
 
 Les STL de `cad/out/stl/` sont déjà dans la bonne orientation et s'impriment sans supports : les segments d'aile et de stab sont debout sur leur face d'emplanture, les tronçons de fuselage debout (le nez pointe en haut) et les pattes debout sur leur pied.
