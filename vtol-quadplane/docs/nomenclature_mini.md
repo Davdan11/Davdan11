@@ -48,24 +48,30 @@ Boutique : [carbonfibertubes.net](https://carbonfibertubes.net). La livraison ve
 
 Environ 1 bobine de [PLA Aero](https://ca.store.bambulab.com/products/pla-aero), ¼ de bobine de [PETG HF](https://ca.store.bambulab.com/products/petg-hf) et 100 g de [TPU 95A HF](https://ca.store.bambulab.com/products/tpu-95a-hf).
 
-## Quincaillerie et câblage (≈ 60 à 80 $, liste complète vérifiée pièce par pièce)
+## Quincaillerie et câblage (≈ 70 à 90 $)
 
-| Où | Quoi | Qté |
-|---|---|---:|
-| Supports moteurs VTOL | Vis M3 × 16 + écrous M3 (colliers) ; vis M3 × 8 (vis de coin) | 8 + 8 ; 16 |
-| Moteurs (5) | Vis M3 × 6 (moteur → platine ou cloison ; vérifier la profondeur filetée) | 20 |
-| Cloison du propulseur | Vis M2 × 6 autotaraudeuses, radiales | 3 |
-| Ailes | Vis nylon M3 × 30 + écrou nylon (retenue sur le longeron) | 2 + 2 |
-| Pylônes (vissés sous l'aile) | Inserts laiton M3 **courts : longueur 4 mm** (Ø ext. 4,5 à 5 mm), dans un assortiment d'inserts M3 ; vis M3 **tête fraisée** × 20 (avant) et × 16 (arrière) | 4 ; 2 + 2 |
-| Servos d'aileron / trappe d'accès | Vis M2 × 6 autotaraudeuses | 4 + 2 |
-| Servo de profondeur | Vis fournies avec le servo | 2 |
-| Contrôleur de vol | Inserts laiton M3 (Ø4 × 5,7) + vis M3 × 10 nylon | 4 + 4 |
-| Gouvernes | Tringles acier 1,5 mm + chapes + bagues de serrage ; ruban de charnière | 3 |
-| Rallonges | **Rallonges de servo 30 cm** (2 ailerons, 1 profondeur) et **40 cm** (signal des 4 ESC VTOL) | 3 + 4 |
-| Puissance | Câble silicone **14 AWG rouge et noir, 2 m de chaque** (une paire par côté : fuselage → aile → poutre, Y vers les 2 ESC) ; **connecteurs balles 3,5 mm** (4 paires) ; 5 condensateurs 220–470 µF 35 V (un par ESC), prises XT60, gaine thermo | — |
-| Signaux | 4 rallonges de servo 50 cm (une par côté pour les 2 ESC, aileron, profondeur) + 2 de 30 cm | 6 |
-| Batterie | 2 sangles de 20 mm, velcro adhésif | — |
-| Divers | Colle CA + activateur, époxy, mousse adhésive 1 mm (sous le GPS dans son berceau) ; 2 vis M2 × 5 autotaraudeuses (berceau du GPS), colliers de serrage | — |
+Pièces standard, vendues partout. Les liens « Amazon.ca » sont des **recherches** : prends un assortiment bien noté. Une boutique de quincaillerie ou d'électronique fait aussi l'affaire.
+
+| Où | Quoi | Qté | Lien |
+|---|---|---:|---|
+| Supports moteurs VTOL | Vis M3 × 16 + écrous M3 (colliers) ; vis M3 × 8 (vis de coin) | 8 + 8 ; 16 | [assortiment vis M3](https://www.amazon.ca/s?k=assortiment+vis+M3+acier+inoxydable+tete+cylindrique+hexagonale) |
+| Moteurs (5) | Vis M3 × 6 (moteur → platine ou cloison ; vérifier la profondeur filetée) | 20 | (même assortiment) |
+| Pylônes (vissés sous l'aile) | Vis M3 **tête fraisée** × 20 (avant) et × 16 (arrière) | 2 + 2 | [vis M3 tête fraisée](https://www.amazon.ca/s?k=assortiment+vis+M3+tete+fraisee) |
+| Pylônes + contrôleur de vol | **Inserts laiton M3** : 4 **courts, longueur 4 mm** (pylônes) et 4 de 5,7 mm (contrôleur). Un assortiment contient les deux | 4 + 4 | [assortiment inserts M3](https://www.amazon.ca/s?k=heat+set+insert+M3+assortiment+laiton) |
+| Contrôleur de vol | Vis M3 × 10 en nylon | 4 | [vis nylon M3](https://www.amazon.ca/s?k=vis+nylon+M3+assortiment) |
+| Ailes | Vis nylon M3 × 30 + écrou nylon (retenue sur le longeron) | 2 + 2 | (même assortiment nylon) |
+| Servos d'aileron, trappe, cloison, berceau du GPS | Vis M2 autotaraudeuses : × 6 (servos, trappe, cloison) et × 5 (berceau du GPS) | 9 + 2 | [vis M2 autotaraudeuses](https://www.amazon.ca/s?k=vis+M2+autotaraudeuses+assortiment) |
+| Gouvernes | Tringles acier 1,5 mm + chapes + bagues de serrage ; ruban de charnière | 3 | [kit tringlerie RC](https://www.amazon.ca/s?k=RC+pushrod+clevis+kit+1.5mm) |
+| Signaux | Rallonges de servo : **2 de 30 cm** (ailerons), **3 de 60 cm** (signaux des ESC, une par côté, et servo de profondeur) | 5 | [rallonges servo](https://www.amazon.ca/s?k=rallonge+servo+JR+60cm) |
+| Puissance | Câble silicone **14 AWG rouge et noir, 2 m de chaque** (une paire par côté, en Y vers les 2 ESC, et batterie → contrôleur) | 2 × 2 m | [fil silicone 14 AWG](https://www.amazon.ca/s?k=fil+silicone+14+AWG+rouge+noir) |
+| | **Connecteurs balles 3,5 mm** (au fuselage, passent dans le tunnel de l'aile) | 4 paires | [balles 3,5 mm](https://www.amazon.ca/s?k=connecteur+balle+3.5mm+bullet) |
+| | Prises **XT60** (rallonge de batterie) et adaptateur XT90 → XT60 si la batterie a une XT90 | 2 ; 1 | [XT60](https://www.amazon.ca/s?k=XT60+connecteur+male+femelle) |
+| | 5 condensateurs 220–470 µF 35 V (un par ESC) ; gaine thermo | 5 | [condensateurs](https://www.amazon.ca/s?k=condensateur+470uF+35V+low+ESR) |
+| Premier branchement | **Smoke stopper** XT60 (fusible réarmable) | 1 | [smoke stopper](https://www.amazon.ca/s?k=smoke+stopper+XT60) |
+| GPS | Mousse adhésive double face **1 mm** | — | [mousse 1 mm](https://www.amazon.ca/s?k=ruban+mousse+double+face+1mm) |
+| Batterie | 2 sangles de 20 mm, velcro adhésif | — | [sangles batterie](https://www.amazon.ca/s?k=battery+strap+20mm+RC) |
+| Divers | Colle CA + activateur, époxy 30 min, frein filet bleu, colliers de serrage | — | — |
+| Outils | Fer à souder avec embout pour inserts (ou pointe conique), pied à coulisse | — | — |
 
 ## Si tu ne les as pas déjà
 
@@ -86,8 +92,8 @@ Environ 1 bobine de [PLA Aero](https://ca.store.bambulab.com/products/pla-aero),
 | Servos (3) | 30 |
 | Batterie | 58 |
 | Carbone | ≈ 95 |
-| Filament, quincaillerie et câblage | ≈ 130 |
-| **Total de l'avion** | **≈ 690 $** avant taxes et livraison |
+| Filament, quincaillerie et câblage | ≈ 145 |
+| **Total de l'avion** | **≈ 710 $** avant taxes et livraison |
 | Radiocommande + chargeur, si tu ne les as pas | + 185 $ |
 
 Tout ce matériel resservira : la radiocommande, le chargeur et le savoir-faire passent au grand Huard DFR.
