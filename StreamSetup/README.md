@@ -28,9 +28,39 @@ Tout est déjà monté : 5 scènes, des écrans animés, le micro réglé, des r
 
 ## 2. Réglages OBS (Fichier > Paramètres)
 
+### Ta configuration : Twitch avec une RTX 3060 (profil prêt à importer)
+
+1. Dans OBS, menu **Profil > Importer**, puis choisis le dossier `C:\StreamSetup\obs\profil-twitch-rtx3060`.
+2. Menu **Profil > StreamSetup Twitch RTX 3060**.
+3. **Paramètres > Stream > Connecter le compte** et connecte-toi à Twitch. Ça ajoute aussi le chat et le fil d'activité dans OBS. Ta clé de stream n'est pas dans le profil.
+4. **Paramètres > Avancé > Priorité du processus : Au-dessus de la normale.** Ce réglage n'est pas enregistré dans un profil, alors fais-le à la main.
+
+Voici ce que le profil règle :
+
+| Réglage | Valeur | Pourquoi |
+|---|---|---|
+| Résolution de base | 1920 × 1080 | taille de l'habillage |
+| Résolution de sortie | **1664 × 936**, filtre Lanczos | à 6000 kbps, c'est plus net qu'en 1080p dans les jeux qui bougent vite |
+| Images par seconde | 60 | |
+| Encodeur | **NVIDIA NVENC H.264**, préréglage **P5** | utilise la puce d'encodage séparée de ta carte, pas la puissance qui fait tourner le jeu |
+| Débit vidéo / audio | **6000 kbps** / 160 kbps | le maximum de Twitch pour la plupart des chaînes |
+| Serveur | Twitch, automatique | |
+| Enregistrement | même qualité que le stream, MKV converti automatiquement en MP4 | |
+
+- **Vitesse d'envoi nécessaire : au moins 8 Mbps.** Vérifie « Upload » sur speedtest.net. Si tu as moins, mets le débit vidéo à 4500 kbps et la sortie à 1280 × 720.
+- **Jeu calme (jasette, jeux de stratégie, Minecraft) :** tu peux passer la sortie à 1920 × 1080.
+- **Diffusion améliorée** (Paramètres > Stream) : si Twitch te l'offre, tu peux l'essayer. Elle envoie plusieurs qualités à tes viewers, mais elle utilise plus ta carte graphique. Si ton jeu ou ta caméra IA ralentit, désactive-la.
+
+**Ta RTX 3060 avec la caméra IA :** ton jeu, le logiciel d'IA (par exemple Deep-Live-Cam) et OBS se partagent la carte. L'encodage du stream ne ralentit presque pas le jeu, mais l'IA, oui. Pour garder tout fluide :
+- limite ton jeu à **60 images par seconde** : le stream est à 60 de toute façon ;
+- baisse un peu les réglages graphiques du jeu ;
+- dans Deep-Live-Cam, désactive l'option d'amélioration du visage (« face enhancer ») si ça saccade : elle coûte cher à la carte.
+
+### Autres configurations
+
 Commence par **Outils > Assistant de configuration automatique** (choisis « Optimiser pour le streaming »), puis vérifie ces valeurs.
 
-### Vidéo
+#### Vidéo
 | Réglage | Valeur |
 |---|---|
 | Résolution de base (canevas) | **1920 × 1080**, obligatoire : tout l'habillage est placé pour cette taille |
@@ -38,7 +68,7 @@ Commence par **Outils > Assistant de configuration automatique** (choisis « Opt
 | Filtre de mise à l'échelle | Lanczos |
 | Images par seconde | 60 |
 
-### Sortie (mode **Avancé**, onglet Streaming)
+#### Sortie (mode **Avancé**, onglet Streaming)
 Choisis l'encodeur selon ta carte graphique :
 
 | Ta carte graphique | Encodeur | Réglages |
@@ -59,15 +89,15 @@ Choisis ensuite le débit selon ta plateforme :
 - **Règle d'or :** ton débit vidéo ne doit pas dépasser **75 % de ta vitesse d'envoi**. Fais un test sur speedtest.net et regarde « Upload ». Avec 8 Mbps d'envoi, reste à 6000 kbps.
 - **Twitch avec une carte NVIDIA :** dans **Paramètres > Stream**, essaie « Diffusion améliorée » (Enhanced Broadcasting). OBS règle alors la qualité tout seul et envoie plusieurs qualités à Twitch.
 
-### Audio
+#### Audio
 - Fréquence d'échantillonnage : **48 kHz**.
 - Débit audio (onglet Sortie > Audio) : **160 kbps**.
 
-### Enregistrement (pour tes clips et tes vidéos)
+#### Enregistrement (pour tes clips et tes vidéos)
 - Format : **MP4 hybride** s'il est offert, sinon **MKV** en cochant « Convertir automatiquement en MP4 ». Avec ces formats, tu ne perds pas ton enregistrement si OBS plante.
 - Encodeur : « Utiliser l'encodeur du stream », pour ne pas charger la carte graphique deux fois.
 
-### Avancé
+### Pour tout le monde (Paramètres > Avancé)
 - Priorité du processus : **Au-dessus de la normale**.
 - Lance OBS **en tant qu'administrateur** (clic droit sur l'icône). La capture de jeu est plus fiable et OBS garde sa priorité sur la carte graphique quand le jeu est lourd.
 - Laisse le **mode Studio désactivé** : sinon les raccourcis de scène changent l'aperçu au lieu du direct.
@@ -175,7 +205,9 @@ Si tu as une carte **NVIDIA RTX**, l'application gratuite **NVIDIA Broadcast** e
 ```
 StreamSetup/
 ├── apercu.html              aperçu des 5 scènes dans ton navigateur
-├── obs/StreamSetup.json     collection de scènes à importer dans OBS
+├── obs/
+│   ├── StreamSetup.json         collection de scènes à importer dans OBS
+│   └── profil-twitch-rtx3060/   profil OBS (vidéo, encodeur, Twitch) à importer
 ├── overlays/
 │   ├── config.js            ← LE fichier à modifier (nom, couleurs, réseaux…)
 │   ├── debut.html           écran de début avec compte à rebours
