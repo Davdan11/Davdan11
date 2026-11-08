@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aperçu des scènes</title>
+  <style>
+    /*
+      Ouvre ce fichier dans ton navigateur (double-clic) pour voir tes
+      scènes sans OBS. Après avoir modifié overlays/config.js, actualise
+      la page (F5). Le jeu et la caméra sont remplacés par des exemples.
+    */
+    body {
+      margin: 0;
+      padding: 32px 16px 64px;
+      background: #07060c;
+      color: #f5f3ff;
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }
+    h1 { font-size: 22px; margin: 0 auto 6px; max-width: 1000px; }
+    p.aide { margin: 0 auto 28px; max-width: 1000px; color: rgba(245, 243, 255, 0.6); font-size: 14px; }
+    .scene { max-width: 1000px; margin: 0 auto 36px; }
+    .scene h2 {
+      font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(245, 243, 255, 0.55); margin: 0 0 10px;
+    }
+    .scene h2 kbd {
+      font: inherit; font-size: 12px; letter-spacing: 0.04em; padding: 2px 8px; margin-left: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 6px; color: #f5f3ff;
+    }
+    .cadre-16-9 {
+      position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden;
+      border-radius: 12px; outline: 1px solid rgba(255, 255, 255, 0.1); background: #000;
+    }
+    .scene-1080 {
+      position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0;
+    }
+    iframe { position: absolute; border: 0; background: transparent; }
+    .jeu {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(60% 50% at 70% 35%, rgba(255, 196, 120, 0.55), transparent 70%),
+        linear-gradient(180deg, #2b5876 0%, #4e4376 55%, #1b1530 56%, #0d0a18 100%);
+    }
+    .jeu::after {
+      content: "Ton jeu ici"; position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
+      font-size: 64px; font-weight: 800; color: rgba(255, 255, 255, 0.28); letter-spacing: 0.04em;
+    }
+    .camera {
+      position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0;
+      border-radius: 72px; overflow: hidden;
+    }
+    .camera .image {
+      position: absolute; inset: 0;
+      background: radial-gradient(70% 90% at 50% 100%, #3a2f5c 0%, #1b1220 70%);
+    }
+    .camera .image svg { position: absolute; left: 50%; bottom: 0; width: 900px; transform: translateX(-50%); opacity: 0.55; }
+    .camera .image span {
+      position: absolute; left: 50%; top: 80px; transform: translateX(-50%);
+      font-size: 64px; font-weight: 700; color: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <h1>Aperçu des scènes</h1>
+  <p class="aide">Change overlays/config.js, puis actualise cette page (F5). Le jeu et la caméra sont des exemples.</p>
+  <div id="scenes"></div>
+
+  <script>
+    (function () {
+      var scenes = [
+        { nom: "Début", touche: "Ctrl + Alt + 1", couches: [["overlays/debut.html", 0, 0, 1920, 1080]] },
+        { nom: "En jeu", touche: "Ctrl + Alt + 2", jeu: true, camera: [32, 778, 0.25] },
+        { nom: "Discussion", touche: "Ctrl + Alt + 3",
+          couches: [["overlays/fond.html", 0, 0, 1920, 1080]],
+          camera: [64, 135, 2 / 3],
+          apres: [["overlays/chat.html?demo", 1376, 135, 480, 720], ["overlays/bandeau.html", 0, 990, 1920, 90]] },
+        { nom: "Pause", touche: "Ctrl + Alt + 4 ou P", couches: [["overlays/pause.html", 0, 0, 1920, 1080]] },
+        { nom: "Fin", touche: "Ctrl + Alt + 5", couches: [["overlays/fin.html", 0, 0, 1920, 1080]] },
+      ];
+
+      var silhouette =
+        '<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="58" r="34" fill="#cbb8ff"/>' +
+        '<path d="M28 160c4-42 36-62 72-62s68 20 72 62z" fill="#cbb8ff"/></svg>';
+
+      function iframe(parent, c) {
+        var f = document.createElement("iframe");
+        f.src = c[0];
+        f.style.left = c[1] + "px";
+        f.style.top = c[2] + "px";
+        f.width = c[3];
+        f.height = c[4];
+        f.scrolling = "no";
+        parent.appendChild(f);
+      }
+
+      var conteneur = document.getElementById("scenes");
+      var plateaux = [];
+
+      scenes.forEach(function (s) {
+        var bloc = document.createElement("section");
+        bloc.className = "scene";
+        var titre = document.createElement("h2");
+        titre.textContent = s.nom;
+        var kbd = document.createElement("kbd");
+        kbd.textContent = s.touche;
+        titre.appendChild(kbd);
+        bloc.appendChild(titre);
+
+        var cadre = document.createElement("div");
+        cadre.className = "cadre-16-9";
+        var plateau = document.createElement("div");
+        plateau.className = "scene-1080";
+        cadre.appendChild(plateau);
+        bloc.appendChild(cadre);
+        conteneur.appendChild(bloc);
+        plateaux.push(plateau);
+
+        if (s.jeu) {
+          var jeu = document.createElement("div");
+          jeu.className = "jeu";
+          plateau.appendChild(jeu);
+        }
+        (s.couches || []).forEach(function (c) { iframe(plateau, c); });
+        if (s.camera) {
+          var cam = document.createElement("div");
+          cam.className = "camera";
+          cam.style.left = s.camera[0] + "px";
+          cam.style.top = s.camera[1] + "px";
+          cam.style.transform = "scale(" + s.camera[2] + ")";
+          cam.innerHTML = '<div class="image">' + silhouette + "<span>Caméra IA</span></div>";
+          iframe(cam, ["overlays/cadre-camera.html", 0, 0, 1920, 1080]);
+          plateau.appendChild(cam);
+        }
+        (s.apres || []).forEach(function (c) { iframe(plateau, c); });
+      });
+
+      function ajuster() {
+        plateaux.forEach(function (p) {
+          p.style.transform = "scale(" + p.parentNode.clientWidth / 1920 + ")";
+        });
+      }
+      window.addEventListener("resize", ajuster);
+      ajuster();
+    })();
+  </script>
+</body>
+</html>

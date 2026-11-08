@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="utf-8">
+  <title>Bandeau</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Source OBS de 1920 × 90. */
+    .bandeau {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: stretch;
+      background: rgba(12, 10, 21, 0.9);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .bandeau::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -1px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2) 40%, transparent 80%);
+    }
+    .bloc-nom {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 0 40px 0 34px;
+      background: linear-gradient(110deg, var(--accent) 0%, var(--accent-2) 140%);
+      clip-path: polygon(0 0, 100% 0, calc(100% - 26px) 100%, 0 100%);
+      min-width: 360px;
+    }
+    .bloc-nom .direct {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 14px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.28);
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+    }
+    .bloc-nom .direct .point {
+      width: 10px;
+      height: 10px;
+      background: var(--rouge-direct);
+    }
+    .bloc-nom .nom {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+    .zone-message {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+      overflow: hidden;
+    }
+    .zone-message .rotation {
+      width: 100%;
+      justify-items: start;
+    }
+    .zone-message .message-texte {
+      font-size: 27px;
+      font-weight: 600;
+      color: var(--texte);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+    .zone-droite {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      padding: 0 36px 0 0;
+    }
+    .zone-droite .rotation {
+      justify-items: end;
+      min-width: 340px;
+    }
+    .zone-droite .reseau {
+      padding: 10px 18px;
+      border-radius: 14px;
+    }
+    .zone-droite .reseau-texte {
+      font-size: 24px;
+    }
+    .heure {
+      font-size: 28px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--texte-doux);
+      padding-left: 26px;
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+    }
+  </style>
+</head>
+<body>
+  <div class="bandeau">
+    <div class="bloc-nom">
+      <span class="direct"><span class="point"></span>EN DIRECT</span>
+      <span class="nom" data-cfg="nom"></span>
+    </div>
+    <div class="zone-message"><div class="rotation" id="messages"></div></div>
+    <div class="zone-droite">
+      <div class="rotation" id="reseaux"></div>
+      <div class="heure" id="heure"></div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="commun.js"></script>
+  <script>
+    (function () {
+      var H = window.Habillage;
+      H.messages(document.getElementById("messages"), 9000);
+      H.reseauxRotation(document.getElementById("reseaux"), 6000);
+
+      var heure = document.getElementById("heure");
+      if (H.CFG.bandeau.heure === false) {
+        heure.hidden = true;
+        return;
+      }
+      function maj() {
+        var d = new Date();
+        heure.textContent = d.getHours() + " h " + H.deuxChiffres(d.getMinutes());
+      }
+      maj();
+      setInterval(maj, 5000);
+    })();
+  </script>
+</body>
+</html>

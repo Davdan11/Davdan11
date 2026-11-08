@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="utf-8">
+  <title>Fin du stream</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .prochain {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-top: 18px;
+      padding: 30px 56px;
+      border-radius: 28px;
+      background: var(--panneau);
+      border: 1px solid var(--bord);
+    }
+    .prochain .valeur {
+      font-size: 44px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="ecran">
+    <div class="fond" aria-hidden="true">
+      <div class="halo halo-1"></div>
+      <div class="halo halo-2"></div>
+      <div class="halo halo-3"></div>
+      <div class="grille"></div>
+      <div class="grain"></div>
+      <div class="vignette"></div>
+    </div>
+
+    <main class="centre">
+      <div class="pastille entree"><span class="point"></span><span data-cfg="nom"></span></div>
+      <h1 class="titre degrade entree entree-2" data-cfg="fin.titre"></h1>
+      <p class="sous-titre entree entree-3" data-cfg="fin.sousTitre"></p>
+      <div class="prochain entree entree-4" id="prochain">
+        <span class="etiquette">Prochain stream</span>
+        <span class="valeur" data-cfg="horaire"></span>
+      </div>
+    </main>
+
+    <footer class="pied pied-centre entree entree-4">
+      <div class="reseaux" id="reseaux"></div>
+    </footer>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="commun.js"></script>
+  <script>
+    (function () {
+      var H = window.Habillage;
+      if (!String(H.CFG.horaire || "").trim()) document.getElementById("prochain").hidden = true;
+      H.reseaux(document.getElementById("reseaux"));
+    })();
+  </script>
+</body>
+</html>

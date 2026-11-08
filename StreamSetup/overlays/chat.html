@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="utf-8">
+  <title>Chat</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Source OBS de 480 × 720. Lecture seule, sans connexion à ton compte. */
+    .fil {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 12px;
+      overflow: hidden;
+    }
+    .msg {
+      padding: 12px 16px 13px;
+      border-radius: 18px;
+      background: rgba(14, 12, 24, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      font-size: 21px;
+      line-height: 1.38;
+      overflow-wrap: anywhere;
+      animation: arrive 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      transition: opacity 0.6s ease;
+    }
+    .msg.part {
+      opacity: 0;
+    }
+    .msg .auteur {
+      font-weight: 700;
+      margin-right: 8px;
+    }
+    .msg.action .texte {
+      font-style: italic;
+      color: var(--texte-doux);
+    }
+    .msg .emote {
+      height: 1.5em;
+      vertical-align: -0.38em;
+      margin: 0 1px;
+    }
+    @keyframes arrive {
+      from { opacity: 0; transform: translateX(-18px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="fil" id="fil"></div>
+
+  <script src="config.js"></script>
+  <script src="commun.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var H = window.Habillage;
+      var cfg = H.CFG.chat;
+      var fil = document.getElementById("fil");
+      var max = Math.max(1, parseInt(cfg.maxMessages, 10) || 12);
+      var dureeMs = Math.max(0, parseFloat(cfg.dureeSecondes) || 0) * 1000;
+      var ignorer = (cfg.ignorer || []).map(function (n) { return String(n).toLowerCase(); });
+      var PALETTE = ["#FF7AB6", "#7CC4FF", "#8BF5B8", "#FFC46B", "#C9A6FF", "#6EF0E8", "#FF9B7A"];
+
+      function couleurNom(nom, couleur) {
+        if (/^#[0-9a-f]{6}$/i.test(couleur || "")) {
+          var r = parseInt(couleur.substr(1, 2), 16);
+          var g = parseInt(couleur.substr(3, 2), 16);
+          var b = parseInt(couleur.substr(5, 2), 16);
+          var lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+          if (lum >= 0.45) return couleur;
+          // Couleur trop sombre sur fond foncé : on l'éclaircit.
+          var k = 0.55;
+          return "rgb(" + [r, g, b].map(function (c) { return Math.round(c + (255 - c) * k); }).join(",") + ")";
+        }
+        var h = 0;
+        for (var i = 0; i < nom.length; i++) h = (h * 31 + nom.charCodeAt(i)) >>> 0;
+        return PALETTE[h % PALETTE.length];
+      }
+
+      // Construit le texte du message en remplaçant les émotes Twitch par leurs images.
+      function corps(texte, emotes) {
+        var frag = document.createDocumentFragment();
+        var car = Array.from(texte);
+        var positions = {};
+        if (emotes) {
+          emotes.split("/").forEach(function (groupe) {
+            var parts = groupe.split(":");
+            if (parts.length !== 2 || !/^[\w-]+$/.test(parts[0])) return;
+            parts[1].split(",").forEach(function (plage) {
+              var p = plage.split("-");
+              var debut = parseInt(p[0], 10);
+              var fin = parseInt(p[1], 10);
+              if (debut >= 0 && fin >= debut) positions[debut] = { id: parts[0], fin: fin };
+            });
+          });
+        }
+        var tampon = "";
+        for (var i = 0; i < car.length; i++) {
+          var e = positions[i];
+          if (e) {
+            if (tampon) { frag.appendChild(document.createTextNode(tampon)); tampon = ""; }
+            var img = document.createElement("img");
+            img.className = "emote";
+            img.alt = car.slice(i, e.fin + 1).join("");
+            img.src = "https://static-cdn.jtvnw.net/emoticons/v2/" + encodeURIComponent(e.id) + "/default/dark/2.0";
+            frag.appendChild(img);
+            i = e.fin;
+          } else {
+            tampon += car[i];
+          }
+        }
+        if (tampon) frag.appendChild(document.createTextNode(tampon));
+        return frag;
+      }
+
+      function ajouter(m) {
+        var texte = m.texte;
+        var action = false;
+        var a = /^\u0001ACTION (.*)\u0001$/.exec(texte);
+        if (a) { texte = a[1]; action = true; }
+        if (ignorer.indexOf(m.login) !== -1) return;
+        if (cfg.masquerCommandes && /^\s*!/.test(texte)) return;
+
+        var bloc = H.el("div", "msg" + (action ? " action" : ""));
+        bloc.dataset.id = m.id || "";
+        bloc.dataset.login = m.login;
+        var auteur = H.el("span", "auteur", m.nom);
+        auteur.style.color = couleurNom(m.nom, m.couleur);
+        var corpsEl = H.el("span", "texte");
+        corpsEl.appendChild(corps(texte, m.emotes));
+        bloc.appendChild(auteur);
+        bloc.appendChild(corpsEl);
+        fil.appendChild(bloc);
+
+        while (fil.children.length > max) fil.removeChild(fil.firstChild);
+        if (dureeMs) {
+          setTimeout(function () {
+            bloc.classList.add("part");
+            setTimeout(function () { if (bloc.parentNode) bloc.parentNode.removeChild(bloc); }, 700);
+          }, dureeMs);
+        }
+      }
+
+      // Modération : un message supprimé ou un utilisateur banni disparaît aussi du stream.
+      function retirer(filtre) {
+        Array.prototype.slice.call(fil.children).forEach(function (n) {
+          if (filtre(n)) fil.removeChild(n);
+        });
+      }
+
+      function lireTags(brut) {
+        var tags = {};
+        brut.split(";").forEach(function (paire) {
+          var i = paire.indexOf("=");
+          var cle = i === -1 ? paire : paire.slice(0, i);
+          var val = i === -1 ? "" : paire.slice(i + 1);
+          tags[cle] = val.replace(/\\s/g, " ").replace(/\\:/g, ";").replace(/\\\\/g, "\\");
+        });
+        return tags;
+      }
+
+      function lireLigne(ligne) {
+        var m = { tags: {}, prefixe: "", commande: "", params: [] };
+        var reste = ligne;
+        if (reste[0] === "@") {
+          var i = reste.indexOf(" ");
+          m.tags = lireTags(reste.slice(1, i));
+          reste = reste.slice(i + 1);
+        }
+        if (reste[0] === ":") {
+          var j = reste.indexOf(" ");
+          m.prefixe = reste.slice(1, j);
+          reste = reste.slice(j + 1);
+        }
+        var k = reste.indexOf(" :");
+        var finale = null;
+        if (k !== -1) {
+          finale = reste.slice(k + 2);
+          reste = reste.slice(0, k);
+        }
+        var morceaux = reste.split(" ").filter(Boolean);
+        m.commande = morceaux.shift() || "";
+        m.params = morceaux;
+        if (finale !== null) m.params.push(finale);
+        return m;
+      }
+
+      function connecter(chaine) {
+        var delai = 2000;
+        var ws;
+
+        function ouvrir() {
+          ws = new WebSocket("wss://irc-ws.chat.twitch.tv:443");
+          ws.onopen = function () {
+            delai = 2000;
+            ws.send("CAP REQ :twitch.tv/tags twitch.tv/commands");
+            ws.send("PASS SCHMOOPIIE");
+            ws.send("NICK justinfan" + Math.floor(10000 + Math.random() * 80000));
+            ws.send("JOIN #" + chaine);
+          };
+          ws.onmessage = function (ev) {
+            String(ev.data).split("\r\n").forEach(function (ligne) {
+              if (!ligne) return;
+              var m = lireLigne(ligne);
+              if (m.commande === "PING") {
+                ws.send("PONG :" + (m.params[0] || "tmi.twitch.tv"));
+              } else if (m.commande === "PRIVMSG") {
+                var login = m.prefixe.split("!")[0].toLowerCase();
+                ajouter({
+                  id: m.tags["id"],
+                  login: login,
+                  nom: m.tags["display-name"] || login,
+                  couleur: m.tags["color"],
+                  emotes: m.tags["emotes"],
+                  texte: m.params[1] || "",
+                });
+              } else if (m.commande === "CLEARMSG") {
+                var id = m.tags["target-msg-id"];
+                retirer(function (n) { return n.dataset.id === id; });
+              } else if (m.commande === "CLEARCHAT") {
+                var cible = (m.params[1] || "").toLowerCase();
+                retirer(function (n) { return !cible || n.dataset.login === cible; });
+              } else if (m.commande === "RECONNECT") {
+                ws.close();
+              }
+            });
+          };
+          ws.onclose = function () {
+            setTimeout(ouvrir, delai);
+            delai = Math.min(delai * 2, 60000);
+          };
+        }
+
+        ouvrir();
+      }
+
+      function demo() {
+        var exemples = [
+          ["Mika", "#FF7AB6", "Yo! Bon stream 🔥"],
+          ["Jojo_QC", "#1E3A8A", "c'est quoi ton setup?"],
+          ["LaPatate", "", "GG la dernière game"],
+          ["Sam", "#22C55E", "\u0001ACTION envoie de la bonne énergie\u0001"],
+          ["Frédé", "#F59E0B", "on veut le boss final ce soir"],
+        ];
+        var i = 0;
+        function suivant() {
+          var e = exemples[i % exemples.length];
+          ajouter({ id: "demo" + i, login: e[0].toLowerCase(), nom: e[0], couleur: e[1], texte: e[2] });
+          i += 1;
+        }
+        for (var n = 0; n < 4; n++) suivant();
+        setInterval(suivant, 2500);
+      }
+
+      var chaine = String(cfg.chaineTwitch || "").trim().toLowerCase()
+        .replace(/^https?:\/\/(www\.)?twitch\.tv\//, "").replace(/[^a-z0-9_]/g, "");
+      if (cfg.demo || /[?&]demo\b/.test(location.search)) demo();
+      else if (chaine) connecter(chaine);
+    })();
+  </script>
+</body>
+</html>

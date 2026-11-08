@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="utf-8">
+  <title>Début du stream</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ecran">
+    <div class="fond" aria-hidden="true">
+      <div class="halo halo-1"></div>
+      <div class="halo halo-2"></div>
+      <div class="halo halo-3"></div>
+      <div class="grille"></div>
+      <div class="grain"></div>
+      <div class="vignette"></div>
+    </div>
+
+    <main class="centre">
+      <div class="pastille entree"><span class="point"></span><span data-cfg="nom"></span></div>
+      <h1 class="titre degrade entree entree-2" data-cfg="debut.titre"></h1>
+      <div class="grand-chiffre entree entree-3" id="compte">--:--</div>
+      <div class="barre entree entree-3"><div class="barre-rempli" id="rempli"></div></div>
+      <div class="message rotation entree entree-4" id="messages"></div>
+    </main>
+
+    <footer class="pied pied-centre entree entree-4">
+      <div class="reseaux" id="reseaux"></div>
+    </footer>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="commun.js"></script>
+  <script>
+    (function () {
+      var H = window.Habillage;
+      var cfg = H.CFG.debut;
+      var compte = document.getElementById("compte");
+      var rempli = document.getElementById("rempli");
+      var depart = Date.now();
+
+      // Heure précise ("19:00") ou durée en minutes à partir de l'ouverture de la scène.
+      function cible() {
+        var m = /^\s*(\d{1,2})\s*[:hH]\s*(\d{2})\s*$/.exec(String(cfg.heure || ""));
+        if (m) {
+          var d = new Date();
+          d.setHours(parseInt(m[1], 10), parseInt(m[2], 10), 0, 0);
+          return d.getTime();
+        }
+        var minutes = parseFloat(cfg.minutes);
+        if (!(minutes > 0)) minutes = 5;
+        return depart + minutes * 60000;
+      }
+
+      var fin = cible();
+      var duree = Math.max(1, fin - depart);
+
+      function maj() {
+        var reste = fin - Date.now();
+        if (reste <= 0) {
+          compte.textContent = cfg.zero || "C'est parti!";
+          compte.classList.add("zero");
+          rempli.style.width = "100%";
+          return;
+        }
+        compte.textContent = H.formatDuree(reste);
+        rempli.style.width = Math.min(100, (1 - reste / duree) * 100).toFixed(2) + "%";
+        setTimeout(maj, 250);
+      }
+
+      maj();
+      H.messages(document.getElementById("messages"), 6500);
+      H.reseaux(document.getElementById("reseaux"));
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="utf-8">
+  <title>Cadre caméra</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /*
+      Source OBS de 1920 × 1080, posée par-dessus la caméra dans la
+      scène « [Source] Caméra ». Le rayon des coins (72 px) correspond
+      au masque img/masque-camera.png : si tu changes l'un, change l'autre.
+    */
+    @property --angle {
+      syntax: "<angle>";
+      initial-value: 0deg;
+      inherits: false;
+    }
+    .anneau {
+      position: absolute;
+      inset: 0;
+      border-radius: 72px;
+      padding: 14px;
+      background: conic-gradient(
+        from var(--angle),
+        var(--accent) 0deg,
+        var(--accent-2) 180deg,
+        var(--accent) 360deg
+      );
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+    }
+    .anneau.anime {
+      animation: tourne 10s linear infinite;
+    }
+    @keyframes tourne {
+      to { --angle: 360deg; }
+    }
+    /* Léger assombrissement des bords pour fondre la caméra dans le cadre. */
+    .ombre {
+      position: absolute;
+      inset: 14px;
+      border-radius: 58px;
+      box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.45);
+    }
+  </style>
+</head>
+<body>
+  <div class="ombre"></div>
+  <div class="anneau" id="anneau"></div>
+
+  <script src="config.js"></script>
+  <script src="commun.js"></script>
+  <script>
+    if (window.Habillage.CFG.cadre.anime !== false) {
+      document.getElementById("anneau").classList.add("anime");
+    }
+  </script>
+</body>
+</html>
