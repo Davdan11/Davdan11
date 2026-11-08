@@ -339,7 +339,7 @@
                             "y": 1.0
                         },
                         "align": 5,
-                        "bounds_type": 2,
+                        "bounds_type": 3,
                         "bounds_align": 0,
                         "bounds": {
                             "x": 1920.0,
@@ -377,7 +377,7 @@
                             "y": 1.0
                         },
                         "align": 5,
-                        "bounds_type": 2,
+                        "bounds_type": 3,
                         "bounds_align": 0,
                         "bounds": {
                             "x": 1920.0,

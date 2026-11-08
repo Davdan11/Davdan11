@@ -56,6 +56,30 @@ Voici ce que le profil règle :
 - baisse un peu les réglages graphiques du jeu ;
 - dans Deep-Live-Cam, désactive l'option d'amélioration du visage (« face enhancer ») si ça saccade : elle coûte cher à la carte.
 
+### Ton écran Odyssey G9 49 po (5120 × 1440, format 32:9)
+
+![Avant et après](apercus/ecran-ultralarge.jpg)
+
+Twitch affiche tout en 16:9. Par défaut, OBS règle son canevas à la taille de ton écran, donc en 32:9. Ton image est alors réduite pour entrer en entier, et les viewers voient une mince bande entourée de noir. Ce kit corrige déjà ça de deux façons :
+- **Le profil fixe le canevas à 1920 × 1080 (16:9).** Vérifie dans **Paramètres > Vidéo** que la résolution de base est bien 1920 × 1080, et non 5120 × 1440.
+- **La source « Jeu » remplit l'écran.** Avec un jeu en 32:9, les viewers voient le centre de ton écran en grand, et les côtés sont coupés.
+- **N'ajoute pas de « Capture d'écran » de tout ton moniteur.** C'est la bande mince assurée, et c'est lourd à capturer.
+
+Choisis ensuite comment tu joues pendant le stream.
+
+**Option 1 : tu ne changes rien (le plus simple).** Tu gardes ton 32:9 et les viewers voient le centre. Si l'interface du jeu (minicarte, vie, munitions) est collée sur les bords, elle sera coupée. Dans les options du jeu, cherche un réglage comme « Interface 16:9 », « HUD aspect ratio » ou « Largeur de l'interface » et mets-le en 16:9.
+
+**Option 2 : tu joues en 2560 × 1440 pendant le stream (recommandé).** Les viewers voient tout le jeu, interface comprise. Ta RTX 3060 calcule deux fois moins de pixels, ce qui laisse de la puissance pour la caméra IA.
+1. **Une seule fois :** ouvre le panneau de configuration NVIDIA > **Ajuster la taille et la position du bureau**. Règle le mode de mise à l'échelle sur **Format** (*Aspect ratio*) et fais la mise à l'échelle sur le **GPU**. Coche **Ignorer le mode de mise à l'échelle défini par les jeux et programmes** (*Override the scaling mode set by games and programs*), puis applique.
+2. **Avant chaque stream :** va dans Paramètres Windows > Affichage > Résolution d'affichage et choisis **2560 × 1440**. Ton écran montre l'image au centre avec des bandes noires sur les côtés, c'est normal.
+3. **Après le stream :** remets 5120 × 1440.
+
+Si ton jeu a un mode plein écran (pas « fenêtré sans bordure »), tu peux aussi choisir 2560 × 1440 directement dans le jeu, sans toucher à Windows.
+
+> **Astuce avancée :** si ton jeu accepte le mode fenêtré, mets-le en 2560 × 1440 au centre de ton écran, puis place OBS, le chat et ta caméra IA sur les côtés. Dans OBS, double-clique sur la source « Jeu » et choisis le mode **Capturer une fenêtre précise**.
+
+**HDR :** ton écran OLED fonctionne souvent en HDR. Si le stream paraît délavé, gris ou trop sombre, désactive le HDR de Windows pendant le stream avec **Win + Alt + B**, et réactive-le après.
+
 ### Autres configurations
 
 Commence par **Outils > Assistant de configuration automatique** (choisis « Optimiser pour le streaming »), puis vérifie ces valeurs.
@@ -191,6 +215,7 @@ Si tu as une carte **NVIDIA RTX**, l'application gratuite **NVIDIA Broadcast** e
 
 | Problème | Solution |
 |---|---|
+| Les viewers voient une petite bande ou presque rien | Ta résolution de base (**Paramètres > Vidéo**) doit être 1920 × 1080, et non la taille de ton écran. Lis la section sur l'Odyssey G9 (section 2). |
 | Écran noir à la place du jeu | Lance OBS en administrateur. Sinon, utilise « Jeu (fenêtre) ». Sur un portable, règle OBS pour qu'il utilise la carte graphique haute performance (Paramètres Windows > Affichage > Graphiques). |
 | « Encodage surchargé » | Baisse le préréglage d'un cran (P5 → P4) ou la résolution de sortie, ou limite les images par seconde du jeu. |
 | « Images perdues (réseau) » | Baisse le débit vidéo de 1000 kbps et branche ton PC avec un fil plutôt qu'en Wi-Fi. |

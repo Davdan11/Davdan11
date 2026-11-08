@@ -227,9 +227,12 @@ def construire(dossier):
         element(alertes, 2),
     ], raccourci=touche("OBS_KEY_1"))
 
+    # Mode « remplir » : un jeu 16:9 occupe tout l'écran ; un jeu en 32:9
+    # (écran ultralarge comme l'Odyssey G9) montre le centre en grand au lieu
+    # d'une mince bande entourée de noir.
     s_jeu = scene("En jeu", [
-        element(jeu, 1, cadre=(1920, 1080)),
-        element(jeu_fenetre, 2, visible=False, cadre=(1920, 1080)),
+        element(jeu, 1, cadre=(1920, 1080), mode_cadre=3),
+        element(jeu_fenetre, 2, visible=False, cadre=(1920, 1080), mode_cadre=3),
         element(scene_cam, 3, x=32, y=778, echelle=0.25),        # 480 × 270, coin bas-gauche
         element(chat, 4, x=1408, y=96, visible=False),
         element(bandeau, 5, y=990, visible=False),
